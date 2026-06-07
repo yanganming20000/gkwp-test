@@ -471,10 +471,23 @@ body {
       <div style="font-size:13px;opacity:0.7;margin-bottom:6px">完整三模块系统</div>
       <div class="lp-price"><sup>¥</sup>19.9</div>
       <div class="lp-price-note">一次付费 · 终身使用 · 专属验证码 · 48小时有效窗口</div>
-      <button class="lp-buy-btn" onclick="window.open('https://你的小鹅通链接','_blank')">
+      <button class="lp-buy-btn" onclick="document.getElementById('qr-section').scrollIntoView({behavior:'smooth'})">
         🛒 立即购买，获取验证码
       </button>
-      <div class="lp-divider">── 已有验证码？直接输入 ──</div>
+
+      <!-- 企业微信付款引导 -->
+      <div id="qr-section" style="margin-top:20px;background:rgba(255,255,255,0.08);border-radius:14px;padding:20px 16px;text-align:center;">
+        <div style="font-size:14px;color:rgba(255,255,255,0.9);margin-bottom:4px;font-weight:500;">📱 购买步骤</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:14px;line-height:1.8;">
+          扫码添加企业微信 → 发送付款截图 → 收到专属验证码
+        </div>
+        <img src="/wechat-qr.png" alt="企业微信二维码"
+          style="width:160px;height:160px;border-radius:12px;border:3px solid rgba(255,255,255,0.3);display:block;margin:0 auto 12px;">
+        <div style="font-size:13px;color:rgba(255,255,255,0.8);font-weight:500;">扫码添加 · 杨叔8868</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;">添加后发送付款截图，即刻获取专属验证码</div>
+      </div>
+
+      <div class="lp-divider" style="margin-top:16px;">── 已有验证码？直接输入 ──</div>
       <div class="lp-code-row">
         <input class="lp-code-input" id="lp_code_input" placeholder="输入验证码（如：ABC12345）"
           maxlength="8" onkeydown="if(event.key==='Enter')lpVerify()">
