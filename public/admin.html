@@ -240,9 +240,9 @@ tr:hover td{background:#FAFAFA}
         </div>
       </div>
 
-      <!-- 活跃验证码（48h内） -->
+      <!-- 活跃验证码(48h内) -->
       <div class="card">
-        <div class="card-title">🟠 当前活跃验证码（48小时窗口内）</div>
+        <div class="card-title">🟠 当前活跃验证码(48小时窗口内)</div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>验证码</th><th>备注</th><th>首次进入</th><th>窗口截止</th><th>剩余时间</th><th>进入次数</th></tr></thead>
@@ -310,15 +310,15 @@ tr:hover td{background:#FAFAFA}
             💡 每个验证码独立且唯一，用户首次使用后进入48小时有效窗口，窗口内可多次进入，窗口结束后自动失效。
           </div>
           <div class="form-group" style="margin-bottom:14px">
-            <label>生成数量（最多100个）</label>
+            <label>生成数量(最多100个)</label>
             <input class="form-input" type="number" id="genCount" value="1" min="1" max="100">
           </div>
           <div class="form-group" style="margin-bottom:14px">
-            <label>备注（付款人信息，便于追溯）</label>
+            <label>备注(付款人信息，便于追溯)</label>
             <input class="form-input" type="text" id="genNote" placeholder="如：微信昵称、手机尾号、订单号">
           </div>
           <div class="form-group" style="margin-bottom:14px">
-            <label>有效天数（0 = 永久不过期）</label>
+            <label>有效天数(0 = 永久不过期)</label>
             <input class="form-input" type="number" id="genDays" value="30" min="0">
             <div style="font-size:11px;color:#888;margin-top:3px">建议设30天，防止长期未使用的码被滥用</div>
           </div>
@@ -427,7 +427,7 @@ tr:hover td{background:#FAFAFA}
       </div>
 
       <div class="card">
-        <div class="card-title">🌐 访问IP统计（Top 10）</div>
+        <div class="card-title">🌐 访问IP统计(Top 10)</div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>IP地址</th><th>访问次数</th><th>最后访问</th><th>占比</th></tr></thead>
@@ -455,7 +455,7 @@ tr:hover td{background:#FAFAFA}
             <label>48小时窗口说明</label>
             <div style="font-size:12px;color:#666;background:#F4F6F8;padding:10px;border-radius:8px;line-height:1.8">
               ✅ 用户首次输入验证码后，开启48小时有效窗口<br>
-              ✅ 窗口内用户可多次进入测评（防止网页崩溃丢失进度）<br>
+              ✅ 窗口内用户可多次进入测评(防止网页崩溃丢失进度)<br>
               ✅ 48小时后验证码自动失效，无法再次进入<br>
               ✅ 如有特殊情况，可在验证码管理中手动作废旧码并重新生成
             </div>
@@ -469,11 +469,11 @@ tr:hover td{background:#FAFAFA}
             <input class="form-input" type="text" id="contactInfo" value="杨叔8868">
           </div>
           <div class="form-group" style="margin-bottom:14px">
-            <label>测评价格（元）</label>
+            <label>测评价格(元)</label>
             <input class="form-input" type="number" id="priceConfig" value="19.9" step="0.1">
           </div>
           <div class="form-group" style="margin-bottom:14px">
-            <label>网站地址（用于话术模板）</label>
+            <label>网站地址(用于话术模板)</label>
             <input class="form-input" type="text" id="siteUrl" placeholder="如：https://gkwp.onrender.com">
           </div>
           <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
@@ -489,7 +489,7 @@ tr:hover td{background:#FAFAFA}
           </div>
           <div style="background:#F4F6F8;border-radius:8px;padding:14px">
             <div style="font-size:12px;color:#888;margin-bottom:6px">服务器平台</div>
-            <div style="font-size:14px;font-weight:500">Render.com（免费版）</div>
+            <div style="font-size:14px;font-weight:500">Render.com(免费版)</div>
           </div>
           <div style="background:#F4F6F8;border-radius:8px;padding:14px">
             <div style="font-size:12px;color:#888;margin-bottom:6px">免费版说明</div>
@@ -509,8 +509,14 @@ var settings = { defaultDays:30, contact:'杨叔8868', price:19.9, siteUrl:'' };
 // ── 登录 ─────────────────────────────────────────────────────
 function adminLogin() {
   var pwd = document.getElementById('adminPwd').value;
+  if(!pwd){ alert('请输入密码'); return; }
+  var btn = document.querySelector('.btn-primary');
+  btn.textContent = '验证中...';
+  btn.disabled = true;
   fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})})
   .then(r=>r.json()).then(d=>{
+    btn.textContent = '登录管理后台';
+    btn.disabled = false;
     if(d.success){
       TOKEN = d.token;
       document.getElementById('loginPage').style.display='none';
@@ -519,9 +525,14 @@ function adminLogin() {
       startClock();
     } else {
       var e=document.getElementById('loginErr');
+      e.textContent = '❌ ' + (d.message || '密码错误，请重试');
       e.style.display='block';
-      setTimeout(()=>e.style.display='none',2500);
+      setTimeout(()=>e.style.display='none',3000);
     }
+  }).catch(function(err){
+    btn.textContent = '登录管理后台';
+    btn.disabled = false;
+    alert('网络错误：' + err.message + '\n请检查网络连接后重试');
   });
 }
 
@@ -574,7 +585,7 @@ function loadStats(){
       '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>已完成</span><span style="font-weight:500;color:#0C447C">'+usedPct+'%</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+usedPct+'%;background:#2E5F9E"></div></div></div>'+
       '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>使用中(48h)</span><span style="font-weight:500;color:#854F0B">'+activePct+'%</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+activePct+'%;background:#E65100"></div></div></div>'+
       '<div style="font-size:12px;color:#888;margin-top:8px">共 '+total+' 个验证码，已销售约 '+(s.used||0)+(s.active||0)?' <strong style="color:#1F3864">'+(+(s.used||0)+(s.active||0))+'</strong> 份':'0'+'</div>';
-    // 趋势图（使用logs数据）
+    // 趋势图(使用logs数据)
     loadTrend();
   });
 }
@@ -609,7 +620,7 @@ function loadRecentLogs(){
     document.getElementById('recentLogs').innerHTML=d.logs.map(l=>
       '<tr><td><code style="font-weight:600">'+l.code+'</code></td>'+
       '<td>'+(actionMap[l.action]||l.action)+'</td>'+
-      '<td style="color:#888;font-size:12px">'+（l.ip||'-')+'</td>'+
+      '<td style="color:#888;font-size:12px">'+(l.ip||'-')+'</td>'+
       '<td style="font-size:12px">'+fmtDate(l.timestamp)+'</td></tr>'
     ).join('') || '<tr><td colspan="4" class="empty-state">暂无记录</td></tr>';
   });
@@ -626,11 +637,11 @@ function loadActiveCodes(){
       var color=hrs<6?'#E24B4A':hrs<24?'#854F0B':'#085041';
       return '<tr>'+
         '<td><code style="font-weight:600;font-size:14px">'+c.code+'</code></td>'+
-        '<td style="color:#666">'+（c.note||'-')+'</td>'+
+        '<td style="color:#666">'+(c.note||'-')+'</td>'+
         '<td style="font-size:12px">'+fmtDate(c.firstUsedAt)+'</td>'+
         '<td style="font-size:12px">'+fmtDate(c.activeUntil)+'</td>'+
         '<td><span style="color:'+color+';font-weight:600">剩 '+hrs+' 小时</span></td>'+
-        '<td style="text-align:center">'+（c.useCount||1)+'次</td>'+
+        '<td style="text-align:center">'+(c.useCount||1)+'次</td>'+
       '</tr>';
     }).join('') : '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">当前没有活跃中的验证码</td></tr>';
   });
@@ -655,12 +666,12 @@ function loadCodes(){
       return '<tr>'+
         '<td><code style="font-size:14px;font-weight:600;letter-spacing:1px">'+c.code+'</code></td>'+
         '<td><span class="badge '+badgeMap[c.status]+'">'+textMap[c.status]+'</span></td>'+
-        '<td style="color:#666;font-size:12px">'+（c.note||'-')+'</td>'+
-        '<td style="text-align:center">'+（c.useCount||0)+'</td>'+
+        '<td style="color:#666;font-size:12px">'+(c.note||'-')+'</td>'+
+        '<td style="text-align:center">'+(c.useCount||0)+'</td>'+
         '<td style="font-size:12px">'+fmtDate(c.createdAt)+'</td>'+
-        '<td style="font-size:12px">'+（c.firstUsedAt?fmtDate(c.firstUsedAt):'-')+'</td>'+
-        '<td style="font-size:12px">'+（c.activeUntil?fmtDate(c.activeUntil)+（c.status==='active'?' <span style="color:#854F0B">(剩'+hrs+'h)</span>':''):'-')+'</td>'+
-        '<td style="font-size:12px;color:#888">'+（c.usedIP||'-')+'</td>'+
+        '<td style="font-size:12px">'+(c.firstUsedAt?fmtDate(c.firstUsedAt):'-')+'</td>'+
+        '<td style="font-size:12px">'+(c.activeUntil?fmtDate(c.activeUntil)+(c.status==='active'?' <span style="color:#854F0B">(剩'+hrs+'h)</span>':''):'-')+'</td>'+
+        '<td style="font-size:12px;color:#888">'+(c.usedIP||'-')+'</td>'+
         '<td>'+expireBtn+'</td>'+
       '</tr>';
     }).join('') || '<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">暂无数据</td></tr>';
@@ -732,9 +743,9 @@ function loadLogsPage(){
                  ua.includes('Windows')?'💻 Windows':
                  ua.includes('Mac')?'💻 Mac':'🖥️ 其他';
       return '<tr>'+
-        '<td><code style="font-weight:600">'+（l.code||'-')+'</code></td>'+
+        '<td><code style="font-weight:600">'+(l.code||'-')+'</code></td>'+
         '<td>'+(actionMap[l.action]||l.action)+'</td>'+
-        '<td style="font-size:12px;color:#888">'+（l.ip||'-')+'</td>'+
+        '<td style="font-size:12px;color:#888">'+(l.ip||'-')+'</td>'+
         '<td style="font-size:12px">'+device+'</td>'+
         '<td style="font-size:12px">'+fmtDate(l.timestamp)+'</td>'+
       '</tr>';
@@ -752,17 +763,17 @@ function loadAnalysis(){
     var revenue=(sold*19.9).toFixed(1);
     document.getElementById('revenueStats').innerHTML=
       '<div class="stat-num" style="color:#0F6E56;font-size:28px">¥'+revenue+'</div>'+
-      '<div class="stat-label">估算总收入（'+sold+' 份 × ¥19.9）</div>'+
+      '<div class="stat-label">估算总收入('+sold+' 份 × ¥19.9)</div>'+
       '<div style="font-size:11px;color:#888;margin-top:6px">实际收入以微信/支付宝记录为准</div>';
     var total=s.total||1;
     var usedPct=Math.round(sold/total*100);
     document.getElementById('usageStats').innerHTML=
       '<div class="stat-num" style="color:#2E5F9E;font-size:28px">'+usedPct+'%</div>'+
-      '<div class="stat-label">已激活率（'+sold+'/'+total+'）</div>'+
+      '<div class="stat-label">已激活率('+sold+'/'+total+')</div>'+
       '<div class="prog-bar" style="margin-top:10px"><div class="prog-fill" style="width:'+usedPct+'%;background:#2E5F9E"></div></div>';
     document.getElementById('todayStats').innerHTML=
       '<div class="stat-num" style="color:#854F0B;font-size:28px">'+(s.today||0)+'</div>'+
-      '<div class="stat-label">次进入（今日）</div>'+
+      '<div class="stat-label">次进入(今日)</div>'+
       '<div style="font-size:11px;color:#888;margin-top:6px">包含首次验证和重复进入</div>';
   });
   // IP统计
@@ -805,7 +816,7 @@ function saveSettings(){
   settings.price=parseFloat(document.getElementById('priceConfig').value)||19.9;
   settings.siteUrl=document.getElementById('siteUrl').value;
   document.getElementById('sampleCode').textContent='【验证码】';
-  alert('设置已保存（本地）');
+  alert('设置已保存(本地)');
 }
 
 // ── 工具函数 ─────────────────────────────────────────────────
