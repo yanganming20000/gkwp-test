@@ -1,0 +1,3006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GKWP 高考志愿幸福测评系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #3B6D11;
+  --green-mid: #639922;
+  --green-light: #EAF3DE;
+  --green-pale: #f4faea;
+  --blue: #185FA5;
+  --blue-light: #E6F1FB;
+  --amber: #854F0B;
+  --amber-light: #FAEEDA;
+  --purple: #534AB7;
+  --purple-light: #EEEDFE;
+  --gray: #5F5E5A;
+  --gray-light: #F1EFE8;
+  --border: #C0DD97;
+  --border-gray: #D3D1C7;
+  --text: #2C2C2A;
+  --text-muted: #888780;
+  --bg: #fafaf8;
+  --white: #ffffff;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.header {
+  background: var(--green);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-brand {
+  display: flex; align-items: center; gap: 14px;
+}
+.header-logo {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px; font-weight: 700; color: #fff;
+}
+.header-title { color: #fff; }
+.header-title h1 { font-size: 17px; font-weight: 500; line-height: 1.3; }
+.header-title p { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.header-badge {
+  background: rgba(255,255,255,0.15);
+  color: #fff; font-size: 11px;
+  padding: 4px 10px; border-radius: 20px;
+  border: 0.5px solid rgba(255,255,255,0.3);
+}
+
+.progress-bar-wrap {
+  background: var(--white);
+  border-bottom: 0.5px solid var(--border-gray);
+  padding: 12px 32px;
+  display: flex; align-items: center; gap: 0;
+}
+.progress-step {
+  display: flex; align-items: center; gap: 8px;
+  flex: 1; cursor: pointer; padding: 4px 8px;
+  border-radius: 8px; transition: background 0.15s;
+}
+.progress-step:hover { background: var(--green-pale); }
+.step-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--gray-light); color: var(--text-muted);
+  font-size: 12px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s;
+}
+.progress-step.active .step-num { background: var(--green); color: #fff; }
+.progress-step.done .step-num { background: var(--green-mid); color: #fff; }
+.step-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.progress-step.active .step-label { color: var(--green); font-weight: 500; }
+.progress-step.done .step-label { color: var(--green-mid); }
+.step-sep { width: 20px; height: 0.5px; background: var(--border-gray); flex-shrink: 0; }
+
+.main { max-width: 860px; margin: 0 auto; padding: 28px 24px 60px; }
+
+.section-card {
+  background: var(--white);
+  border: 0.5px solid var(--border-gray);
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.section-head {
+  padding: 18px 24px 14px;
+  border-bottom: 0.5px solid var(--border-gray);
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.section-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.section-head-text h2 { font-size: 16px; font-weight: 500; margin-bottom: 3px; }
+.section-head-text p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+.q-block { padding: 16px 24px; border-bottom: 0.5px solid #f0f0ec; }
+.q-block:last-child { border-bottom: none; }
+.q-text {
+  font-size: 14px; color: var(--text); margin-bottom: 12px; line-height: 1.6;
+}
+.q-num { color: var(--green-mid); font-weight: 500; margin-right: 4px; }
+
+.scale-row {
+  display: flex; align-items: center; gap: 0;
+}
+.scale-labels {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text-muted);
+  margin-top: 4px;
+}
+.scale-option {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.scale-option input[type=radio] { display: none; }
+.scale-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 0.5px solid var(--border-gray);
+  background: var(--white);
+  cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--text-muted);
+}
+.scale-option input:checked + .scale-btn {
+  background: var(--green); border-color: var(--green); color: #fff; font-weight: 500;
+}
+.scale-option:hover .scale-btn { border-color: var(--green-mid); color: var(--green-mid); }
+
+.checkbox-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px;
+}
+.check-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  border: 0.5px solid var(--border-gray);
+  border-radius: var(--radius); cursor: pointer;
+  transition: all 0.15s; background: var(--white);
+}
+.check-item:hover { border-color: var(--green-mid); background: var(--green-pale); }
+.check-item input { display: none; }
+.check-item.checked { border-color: var(--green); background: var(--green-light); }
+.check-box {
+  width: 16px; height: 16px; border-radius: 4px;
+  border: 0.5px solid var(--border-gray);
+  background: var(--white); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.check-item.checked .check-box { background: var(--green); border-color: var(--green); }
+.check-mark { width: 9px; height: 6px; display: none; }
+.check-item.checked .check-mark { display: block; }
+.check-mark::before {
+  content: '✓'; color: #fff; font-size: 11px; line-height: 1;
+}
+.check-label { font-size: 13px; color: var(--text); }
+
+.info-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 20px 24px;
+}
+.info-field label {
+  display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;
+}
+.info-field input, .info-field select {
+  width: 100%; height: 36px; padding: 0 10px;
+  border: 0.5px solid var(--border-gray); border-radius: var(--radius);
+  background: var(--white); color: var(--text); font-size: 13px;
+  font-family: 'Noto Sans SC', sans-serif;
+  outline: none; transition: border-color 0.15s;
+}
+.info-field input:focus, .info-field select:focus { border-color: var(--green-mid); }
+
+.nav-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 0 0;
+}
+.btn {
+  padding: 10px 24px; border-radius: var(--radius);
+  font-size: 14px; font-family: 'Noto Sans SC', sans-serif;
+  cursor: pointer; transition: all 0.15s; font-weight: 500;
+}
+.btn-primary {
+  background: var(--green); color: #fff; border: none;
+}
+.btn-primary:hover { background: var(--green-mid); }
+.btn-outline {
+  background: transparent; color: var(--gray);
+  border: 0.5px solid var(--border-gray);
+}
+.btn-outline:hover { border-color: var(--gray); color: var(--text); }
+.btn-export {
+  background: var(--blue); color: #fff; border: none;
+}
+.btn-export:hover { background: #1a6fba; }
+
+.score-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  padding: 16px 24px;
+}
+.score-card {
+  background: var(--gray-light);
+  border-radius: var(--radius); padding: 12px;
+  text-align: center;
+}
+.score-card .s-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+.score-card .s-val { font-size: 24px; font-weight: 500; color: var(--green); }
+.score-card .s-max { font-size: 11px; color: var(--text-muted); }
+
+.result-section {
+  background: var(--white);
+  border: 0.5px solid var(--border-gray);
+  border-radius: var(--radius-lg);
+  overflow: hidden; margin-bottom: 20px;
+}
+.result-head {
+  padding: 14px 20px;
+  border-bottom: 0.5px solid var(--border-gray);
+  font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; gap: 8px;
+}
+.result-body { padding: 16px 20px; }
+
+.type-badge {
+  display: inline-block;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 500;
+}
+.type-R { background: #E6F1FB; color: #185FA5; }
+.type-I { background: #EEEDFE; color: #534AB7; }
+.type-A { background: #FBEAF0; color: #993556; }
+.type-S { background: #EAF3DE; color: #3B6D11; }
+.type-E { background: #FAEEDA; color: #854F0B; }
+.type-C { background: #F1EFE8; color: #5F5E5A; }
+.type-INTJ, .type-MBTI { background: #EEEDFE; color: #534AB7; }
+
+.bar-row {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+}
+.bar-label { font-size: 12px; color: var(--text); min-width: 90px; text-align: right; }
+.bar-track {
+  flex: 1; height: 8px; background: var(--gray-light); border-radius: 4px; overflow: hidden;
+}
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+.bar-val { font-size: 12px; color: var(--text-muted); min-width: 28px; }
+
+.riasec-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+}
+.riasec-col {
+  text-align: center;
+}
+.riasec-type { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.riasec-bar-wrap { height: 80px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 4px; }
+.riasec-bar { width: 28px; border-radius: 3px 3px 0 0; transition: height 0.8s ease; }
+.riasec-score { font-size: 11px; color: var(--text-muted); }
+
+.summary-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.summary-table th {
+  background: var(--green); color: #fff; padding: 8px 12px;
+  text-align: left; font-weight: 500;
+}
+.summary-table td { padding: 8px 12px; border-bottom: 0.5px solid #f0f0ec; vertical-align: top; }
+.summary-table tr:nth-child(even) td { background: var(--gray-light); }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.welcome-hero {
+  text-align: center; padding: 40px 24px 32px;
+}
+.welcome-hero h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 22px; font-weight: 700; color: var(--green);
+  margin-bottom: 10px;
+}
+.welcome-hero p { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 480px; margin: 0 auto 24px; }
+
+.module-cards {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;
+}
+.module-card {
+  border: 0.5px solid var(--border-gray);
+  border-radius: var(--radius); padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.module-card-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.module-card-text h4 { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.module-card-text p { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+.time-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+@media print {
+  .header, .progress-bar-wrap, .nav-row, .welcome-hero, .module-cards { display: none !important; }
+  .page { display: block !important; }
+  .section-card, .result-section { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     产品落地页 (page 0)
+══════════════════════════════════════════════════════════ -->
+<style>
+/* 落地页样式 */
+#landing-page {
+  display:none; min-height:100vh;
+  background:linear-gradient(160deg,#0D2137 0%,#1F3864 50%,#2E5F9E 100%);
+  color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+.lp-hero { text-align:center; padding:60px 24px 40px; }
+.lp-badge { display:inline-block; background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.3); border-radius:20px;
+  padding:6px 18px; font-size:12px; margin-bottom:20px; letter-spacing:0.05em; }
+.lp-title { font-size:32px; font-weight:800; line-height:1.3; margin-bottom:12px; }
+.lp-title span { color:#64C8FF; }
+.lp-sub { font-size:15px; opacity:0.8; line-height:1.8; max-width:500px; margin:0 auto 32px; }
+.lp-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+  max-width:800px; margin:0 auto 40px; padding:0 20px; }
+.lp-card { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+  border-radius:14px; padding:20px 16px; text-align:center; }
+.lp-card-icon { font-size:28px; margin-bottom:10px; }
+.lp-card-title { font-size:14px; font-weight:600; margin-bottom:6px; }
+.lp-card-desc { font-size:12px; opacity:0.7; line-height:1.6; }
+.lp-card-badge { display:inline-block; background:rgba(100,200,255,0.2);
+  border:1px solid rgba(100,200,255,0.4); border-radius:20px;
+  padding:3px 10px; font-size:11px; color:#64C8FF; margin-top:8px; }
+.lp-buy { background:rgba(255,255,255,0.06); border-radius:20px;
+  padding:32px 24px; max-width:500px; margin:0 auto; text-align:center; }
+.lp-price { font-size:48px; font-weight:800; color:#FFD700; }
+.lp-price sup { font-size:22px; vertical-align:top; margin-top:10px; display:inline-block; }
+.lp-price-note { font-size:13px; opacity:0.6; margin-bottom:20px; }
+.lp-buy-btn { display:block; background:linear-gradient(135deg,#FFD700,#FFA500);
+  color:#1A1A00; font-weight:700; font-size:17px; padding:16px;
+  border-radius:12px; border:none; cursor:pointer; width:100%; margin-bottom:12px; }
+.lp-buy-btn:hover { opacity:0.92; }
+.lp-code-row { display:flex; gap:8px; }
+.lp-code-input { flex:1; padding:13px 14px; border:1.5px solid rgba(255,255,255,0.25);
+  border-radius:10px; background:rgba(255,255,255,0.08); color:#fff;
+  font-size:15px; outline:none; letter-spacing:2px; text-transform:uppercase; }
+.lp-code-input::placeholder { color:rgba(255,255,255,0.4); letter-spacing:0; }
+.lp-code-input:focus { border-color:rgba(255,255,255,0.5); }
+.lp-code-btn { padding:13px 20px; background:#2E5F9E; color:#fff;
+  border:none; border-radius:10px; cursor:pointer; font-size:14px; font-weight:500; }
+.lp-code-btn:hover { background:#3A72B5; }
+.lp-err { color:#FF6B6B; font-size:13px; margin-top:8px; display:none; text-align:left; }
+.lp-divider { text-align:center; opacity:0.4; margin:14px 0; font-size:12px; }
+.lp-features { max-width:700px; margin:0 auto; padding:32px 20px 40px; }
+.lp-features h3 { text-align:center; font-size:18px; margin-bottom:20px; opacity:0.9; }
+.lp-feature-row { display:flex; gap:12px; margin-bottom:14px; align-items:flex-start; }
+.lp-feature-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
+.lp-feature-text { font-size:13px; line-height:1.7; opacity:0.85; }
+.lp-feature-text strong { color:#64C8FF; }
+.lp-footer { text-align:center; padding:20px; opacity:0.4; font-size:12px;
+  border-top:1px solid rgba(255,255,255,0.1); }
+
+/* 模块一样式 */
+#module1-page {
+  display:none; min-height:100vh;
+  background:#F8F9FB; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+.m1-header { background:linear-gradient(135deg,#1F3864,#2E5F9E);
+  color:#fff; padding:20px 24px; }
+.m1-header-top { display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:12px; }
+.m1-logo { font-size:14px; font-weight:600; opacity:0.9; }
+.m1-step { font-size:12px; opacity:0.6; }
+.m1-progress { height:4px; background:rgba(255,255,255,0.2); border-radius:2px; }
+.m1-progress-fill { height:100%; background:#64C8FF; border-radius:2px; transition:width 0.4s; }
+.m1-content { max-width:680px; margin:0 auto; padding:32px 20px; }
+.m1-slide { display:none; animation:slideIn 0.3s ease; }
+.m1-slide.active { display:block; }
+@keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.m1-badge { display:inline-block; padding:4px 14px; border-radius:20px;
+  font-size:12px; font-weight:600; margin-bottom:14px; color:#fff; }
+.m1-title { font-size:26px; font-weight:800; color:#1F3864; margin-bottom:20px; line-height:1.3; }
+.m1-body { font-size:15px; line-height:1.9; color:#333; margin-bottom:24px; }
+.m1-body strong { color:#1F3864; }
+.m1-quote { background:#F0F4F8; border-left:4px solid #2E5F9E;
+  padding:14px 18px; border-radius:0 10px 10px 0;
+  font-size:13px; color:#555; font-style:italic; margin-bottom:24px; line-height:1.7; }
+.m1-question-box { background:#fff; border:1.5px solid #D0D8E8;
+  border-radius:14px; padding:20px; margin-bottom:28px; }
+.m1-question-label { font-size:13px; font-weight:600; color:#2E5F9E; margin-bottom:10px; }
+.m1-question-text { font-size:14px; color:#333; margin-bottom:12px; line-height:1.7; }
+.m1-textarea { width:100%; padding:12px; border:1.5px solid #E0E8F0;
+  border-radius:8px; font-size:14px; resize:vertical; min-height:80px;
+  outline:none; font-family:inherit; color:#333; }
+.m1-textarea:focus { border-color:#2E5F9E; }
+.m1-nav { display:flex; justify-content:space-between; align-items:center;
+  padding:16px 0; border-top:1px solid #E8EDF2; }
+.m1-dots { display:flex; gap:6px; }
+.m1-dot { width:8px; height:8px; border-radius:50%; background:#D0D8E8; transition:all 0.2s; }
+.m1-dot.active { background:#2E5F9E; width:20px; border-radius:4px; }
+.m1-btn-prev { padding:10px 20px; background:#E8EDF2; color:#444;
+  border:none; border-radius:8px; cursor:pointer; font-size:14px; }
+.m1-btn-next { padding:10px 24px; background:#2E5F9E; color:#fff;
+  border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:500; }
+.m1-btn-start { padding:14px 32px; background:linear-gradient(135deg,#0F6E56,#1A9E7A);
+  color:#fff; border:none; border-radius:10px; cursor:pointer;
+  font-size:16px; font-weight:600; display:block; width:100%; margin-top:8px; }
+.m1-note { font-size:12px; color:#888; text-align:center; margin-top:8px; }
+.m1-dimension-card { background:#fff; border-radius:14px; padding:16px;
+  margin-bottom:12px; border:1.5px solid #E8EDF2; display:flex; gap:14px; align-items:center; }
+.m1-dim-icon { width:44px; height:44px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.m1-dim-title { font-size:14px; font-weight:600; color:#1F3864; margin-bottom:3px; }
+.m1-dim-desc { font-size:12px; color:#666; line-height:1.6; }
+</style>
+
+<!-- 落地页 -->
+<div id="landing-page">
+  <div class="lp-hero">
+    <div class="lp-badge">📚 金钥匙全民幸福计划 · GKWP</div>
+    <div class="lp-title">填志愿前<br>先<span>了解真实的自己</span></div>
+    <div class="lp-sub">基于盖洛普幸福五维度理论 × 霍兰德职业兴趣 × MBTI性格 × 多元智能<br>帮高中生找到最匹配幸福的专业方向</div>
+  </div>
+
+  <!-- 三大模块 -->
+  <div class="lp-cards">
+    <div class="lp-card">
+      <div class="lp-card-icon">💡</div>
+      <div class="lp-card-title">模块一：幸福观念建立</div>
+      <div class="lp-card-desc">基于盖洛普幸福五维度理论，帮你建立填志愿的正确底层认知</div>
+      <div class="lp-card-badge">约30分钟阅读</div>
+    </div>
+    <div class="lp-card">
+      <div class="lp-card-icon">🧠</div>
+      <div class="lp-card-title">模块二：性格与兴趣测评</div>
+      <div class="lp-card-desc">五维度综合测评，生成你的专属性格画像和专业匹配报告</div>
+      <div class="lp-card-badge">约90分钟测评</div>
+    </div>
+    <div class="lp-card">
+      <div class="lp-card-icon">🎯</div>
+      <div class="lp-card-title">模块三：志愿方向匹配</div>
+      <div class="lp-card-desc">基于测评结果，输出个性化专业方向推荐和查询入口</div>
+      <div class="lp-card-badge">自动生成报告</div>
+    </div>
+  </div>
+
+  <!-- 购买入口 -->
+  <div style="max-width:500px;margin:0 auto;padding:0 20px 32px">
+    <div class="lp-buy">
+      <div style="font-size:13px;opacity:0.7;margin-bottom:6px">完整三模块系统</div>
+      <div class="lp-price"><sup>¥</sup>19.9</div>
+      <div class="lp-price-note">一次付费 · 终身使用 · 专属验证码 · 48小时有效窗口</div>
+      <button class="lp-buy-btn" onclick="window.open('https://你的小鹅通链接','_blank')">
+        🛒 立即购买，获取验证码
+      </button>
+      <div class="lp-divider">── 已有验证码？直接输入 ──</div>
+      <div class="lp-code-row">
+        <input class="lp-code-input" id="lp_code_input" placeholder="输入验证码（如：ABC12345）"
+          maxlength="8" onkeydown="if(event.key==='Enter')lpVerify()">
+        <button class="lp-code-btn" onclick="lpVerify()">进入</button>
+      </div>
+      <div class="lp-err" id="lp_err"></div>
+    </div>
+  </div>
+
+  <!-- 产品特点 -->
+  <div class="lp-features">
+    <h3>为什么选择 GKWP 测评系统？</h3>
+    <div class="lp-feature-row">
+      <div class="lp-feature-icon">🔬</div>
+      <div class="lp-feature-text"><strong>科学理论支撑</strong>：整合盖洛普幸福五维度、霍兰德职业兴趣RIASEC、MBTI性格、加德纳多元智能四大权威理论，不是随机测测，是真正的多维度交叉分析</div>
+    </div>
+    <div class="lp-feature-row">
+      <div class="lp-feature-icon">🎲</div>
+      <div class="lp-feature-text"><strong>动态题库，每人不同</strong>：系统从超过200道题目中随机抽取，每个人看到的题目组合都不同，保证测评的真实性和可信度</div>
+    </div>
+    <div class="lp-feature-row">
+      <div class="lp-feature-icon">📊</div>
+      <div class="lp-feature-text"><strong>综合报告一键生成</strong>：完成测评后自动生成六大模块综合报告，包含专业方向推荐、职业路径说明、阳光高考精准查询链接</div>
+    </div>
+    <div class="lp-feature-row">
+      <div class="lp-feature-icon">👨‍🏫</div>
+      <div class="lp-feature-text"><strong>20年工程师亲身参与设计</strong>：由做了20年工程师、经历过认知升维的杨叔叔主导设计，不是空洞的理论，是真实走过来的人对职业幸福的理解</div>
+    </div>
+    <div class="lp-feature-row">
+      <div class="lp-feature-icon">📅</div>
+      <div class="lp-feature-text"><strong>适合高一高二提前规划</strong>：不用等到高考出分才来焦虑，提前了解自己，选课、选科、选专业都更有方向</div>
+    </div>
+  </div>
+
+  <div class="lp-footer">
+    深圳市元启中和科技有限公司 · 杨叔8868 · GKWP 金钥匙全民幸福计划
+  </div>
+</div>
+
+<!-- 模块一页面 -->
+<div id="module1-page">
+  <div class="m1-header">
+    <div class="m1-header-top">
+      <div class="m1-logo">📚 GKWP · 模块一：幸福观念建立</div>
+      <div class="m1-step" id="m1-step-label">第 1 页 / 共 7 页</div>
+    </div>
+    <div class="m1-progress"><div class="m1-progress-fill" id="m1-progress" style="width:14%"></div></div>
+  </div>
+
+  <div class="m1-content">
+
+    <!-- Slide 0: 导言 -->
+    <div class="m1-slide active" id="m1s0">
+      <div class="m1-badge" style="background:#1F3864">导言</div>
+      <div class="m1-title">填志愿之前，先想清楚这件事</div>
+      <div class="m1-body">
+        每年高考季，千万家庭面对同一个问题——<br><br>
+        <strong>填什么专业？</strong><br><br>
+        大多数人的答案是：哪个好就业填哪个，哪个分数够填哪个。<br><br>
+        但很少有人问过另一个问题：<br><br>
+        <strong>这条路走下去，你会幸福吗？</strong><br><br>
+        美国盖洛普公司历时超过50年，调查了全球150个国家、超过150万人，得出一个结论：<br><br>
+        决定一个人是否幸福的，不是钱，不是名校，不是铁饭碗——<br><br>
+        而是<strong>五个维度的综合状态</strong>。<br><br>
+        任何一个维度出了问题，即使其他四个都很好，幸福感也会大打折扣。<br><br>
+        今天，在你做出人生中第一个重大选择之前，我们先一起来了解这五个维度。<br><br>
+        带着这个视角去选专业、选学校，你的决定会更有底气。
+      </div>
+      <div class="m1-quote">真正的幸福只有当你真实地认识到人生的价值时，才能体会到。——穆尼尔·纳素夫</div>
+    </div>
+
+    <!-- Slide 1: 职业幸福感 -->
+    <div class="m1-slide" id="m1s1">
+      <div class="m1-badge" style="background:#0F6E56">第一维度</div>
+      <div class="m1-title">职业生活幸福感</div>
+      <div class="m1-body">
+        <strong>你每天醒来，有没有期待去做的事情？</strong><br><br>
+        这是盖洛普衡量职业幸福感的核心问题。<br><br>
+        职业幸福感，不只是有没有工作，而是你做的事情是否能发挥你的优势，是否让你充满热情。<br><br>
+        研究发现，全球只有13%的人对自己的工作真正投入。剩下87%的人，要么在混日子，要么在忍耐。<br><br>
+        <strong>为什么这一点和填志愿有关？</strong><br><br>
+        因为你今天选的专业，很大程度上决定了你未来从事的职业方向。<br><br>
+        选对了，你会越做越好，越做越有劲。选错了，你会花人生最好的20年，做一件让你感到空洞的事。<br><br>
+        <strong>有人做了15年的结构工程师，收入稳定，从未失业。但他在45岁那年说：我从来没有一天是真心期待上班的。</strong><br><br>
+        职业幸福感的核心不是稳定，是你做的事情和你这个人是否匹配。
+      </div>
+      <div class="m1-quote">最好的职业，是当你做它的时候，感觉不像在工作。</div>
+      <div class="m1-question-box">
+        <div class="m1-question-label">💭 思考一下</div>
+        <div class="m1-question-text">你现在有没有一件事，做起来不觉得累，甚至忘记时间？是什么？</div>
+        <textarea class="m1-textarea" placeholder="写下你的想法（选填，仅供自己参考）" id="q1"></textarea>
+      </div>
+    </div>
+
+    <!-- Slide 2: 社交关系 -->
+    <div class="m1-slide" id="m1s2">
+      <div class="m1-badge" style="background:#2E5F9E">第二维度</div>
+      <div class="m1-title">社交关系幸福感</div>
+      <div class="m1-body">
+        <strong>你有没有一个在你最难的时候，愿意打电话给他的朋友？</strong><br><br>
+        哈佛大学一项持续70年、追踪2000多人的研究，得出了一个令人意外的结论：<br><br>
+        <strong>最终决定人们幸福感的，是我们与周围人之间的关系。</strong><br><br>
+        不是财富，不是名气，不是成就——是关系。<br><br>
+        社交关系幸福感包括三个层面：你有没有真正了解你的朋友；你的家庭关系是否给你支撑；你在集体中是否有归属感。<br><br>
+        <strong>这和选专业有什么关系？</strong><br><br>
+        不同的职业，社交环境完全不同。有的职业让你每天和人打交道，有的让你长期独自面对屏幕。<br><br>
+        如果你是一个从人际互动中获取能量的人，却选了一个高度孤独的工作，职业幸福感再高也撑不住。<br><br>
+        反过来，一个内向的人被迫长期做高强度社交工作，也会精疲力竭。<br><br>
+        <strong>了解自己的社交需求，是选择适配职业的重要前提。</strong>
+      </div>
+      <div class="m1-quote">好的关系，是人生中最稳定的投资。</div>
+      <div class="m1-question-box">
+        <div class="m1-question-label">💭 思考一下</div>
+        <div class="m1-question-text">你更享受独处做事，还是和人合作？在哪种状态下你感觉更有活力？</div>
+        <textarea class="m1-textarea" placeholder="写下你的想法（选填，仅供自己参考）" id="q2"></textarea>
+      </div>
+    </div>
+
+    <!-- Slide 3: 财务 -->
+    <div class="m1-slide" id="m1s3">
+      <div class="m1-badge" style="background:#854F0B">第三维度</div>
+      <div class="m1-title">财务状况幸福感</div>
+      <div class="m1-body">
+        <strong>财务幸福感，不是越有钱越幸福。</strong><br><br>
+        这是盖洛普研究中最反常识的发现之一。<br><br>
+        研究表明，当收入超过某个门槛（能满足基本生活保障）之后，继续增加收入对幸福感的提升非常有限。<br><br>
+        真正决定财务幸福感的是：你对自己的财务状况有没有掌控感；你花的钱，是不是花在了自己真正在乎的事情上。<br><br>
+        <strong>对高中生来说，这意味着什么？</strong><br><br>
+        很多人选专业只看"这个专业毕业后平均薪资多少"。但他们没有考虑的是：<br><br>
+        一份让你痛苦的高薪工作，你做不了多久。<br><br>
+        一份让你投入的工作，你会越做越好，收入也会随之提升。<br><br>
+        <strong>财务幸福感的真正来源，是做你擅长的事所带来的长期价值。</strong><br><br>
+        理想的状态是：在你有热情的方向里，找到有市场价值的切入点。这正是后面测评要帮你做的事。
+      </div>
+      <div class="m1-quote">不要为了钱去选职业，要为了能做好这件事去选职业——做好了，钱会跟来。</div>
+      <div class="m1-question-box">
+        <div class="m1-question-label">💭 思考一下</div>
+        <div class="m1-question-text">如果钱不是问题，你最想做什么工作？为什么？</div>
+        <textarea class="m1-textarea" placeholder="写下你的想法（选填，仅供自己参考）" id="q3"></textarea>
+      </div>
+    </div>
+
+    <!-- Slide 4: 健康 -->
+    <div class="m1-slide" id="m1s4">
+      <div class="m1-badge" style="background:#993556">第四维度</div>
+      <div class="m1-title">健康状况幸福感</div>
+      <div class="m1-body">
+        <strong>身体是幸福的底层基础。</strong><br><br>
+        这一点听起来像废话，但大多数人在选专业时完全没有考虑过它。<br><br>
+        盖洛普的研究发现，健康状况幸福感不只是身体没有疾病，而是你有足够的精力去做你想做的事，你的工作方式对你的身体是可持续的。<br><br>
+        <strong>不同的职业，对身体的要求差别巨大：</strong><br><br>
+        久坐的工作（程序员、设计师、财务）——颈椎、腰椎、视力压力大<br>
+        高度精神压力工作（法律、金融、传媒）——睡眠质量和心理韧性至关重要<br>
+        医生护士等——体力消耗大，节奏紧张<br>
+        化工地质等——需要特定的身体适应能力<br><br>
+        <strong>你的身体状况和你的性格一样，是选择职业的重要参考。</strong><br><br>
+        一个本身就容易焦虑的人，选择了高压力、高竞争的职业，不是挑战自我，而是慢性消耗。<br><br>
+        了解自己的心理压力承受模式，是接下来测评的重要内容之一。
+      </div>
+      <div class="m1-quote">能量充沛的人，才能持续做有意义的事。</div>
+      <div class="m1-question-box">
+        <div class="m1-question-label">💭 思考一下</div>
+        <div class="m1-question-text">你在压力大的时候，通常会有什么反应？你是如何恢复状态的？</div>
+        <textarea class="m1-textarea" placeholder="写下你的想法（选填，仅供自己参考）" id="q4"></textarea>
+      </div>
+    </div>
+
+    <!-- Slide 5: 社会环境 -->
+    <div class="m1-slide" id="m1s5">
+      <div class="m1-badge" style="background:#534AB7">第五维度</div>
+      <div class="m1-title">社会环境幸福感</div>
+      <div class="m1-body">
+        <strong>你生活和工作的环境，是否让你有安全感和归属感？</strong><br><br>
+        这是最容易被忽视的一个维度。<br><br>
+        社会环境幸福感包括：你所在的城市和社区是否让你感到安全；你的工作单位或行业文化是否认同你的价值观；你是否觉得自己对周围的环境有贡献感。<br><br>
+        <strong>对于选专业的人来说，这个维度有一个特别重要的含义：</strong><br><br>
+        你将来想在什么样的环境里工作和生活？<br><br>
+        是繁华的大城市，还是有归属感的小城市？<br>
+        是快节奏的商业环境，还是相对稳定的体制内？<br>
+        是能频繁看到自己工作成果的环境，还是在一个大系统里做一颗螺丝钉？<br><br>
+        这些问题没有对错，只有适不适合你。<br><br>
+        <strong>而"适不适合你"，正是你需要先了解自己才能回答的问题。</strong><br><br>
+        这也是我们设计这整套测评系统的根本原因：不是给你一个标准答案，而是帮你更清楚地看见自己。
+      </div>
+      <div class="m1-quote">选择一个你能在其中成长的环境，比选择一个高薪的环境更重要。</div>
+      <div class="m1-question-box">
+        <div class="m1-question-label">💭 思考一下</div>
+        <div class="m1-question-text">你理想中的工作环境是什么样的？城市、规模、文化氛围，你最在意哪一点？</div>
+        <textarea class="m1-textarea" placeholder="写下你的想法（选填，仅供自己参考）" id="q5"></textarea>
+      </div>
+    </div>
+
+    <!-- Slide 6: 小结 -->
+    <div class="m1-slide" id="m1s6">
+      <div class="m1-badge" style="background:#1F3864">小结</div>
+      <div class="m1-title">五个维度，缺一不可</div>
+      <div class="m1-body">
+        现在你已经了解了盖洛普幸福五维度，以及每个维度和你填志愿的关联：
+      </div>
+      <div class="m1-dimension-card">
+        <div class="m1-dim-icon" style="background:#E1F5EE">💼</div>
+        <div><div class="m1-dim-title">职业生活幸福感</div><div class="m1-dim-desc">你做的事是否让你投入和有成就感 → 选与你匹配的专业方向</div></div>
+      </div>
+      <div class="m1-dimension-card">
+        <div class="m1-dim-icon" style="background:#E6F1FB">👥</div>
+        <div><div class="m1-dim-title">社交关系幸福感</div><div class="m1-dim-desc">你的社交需求 → 选适合你社交风格的职业环境</div></div>
+      </div>
+      <div class="m1-dimension-card">
+        <div class="m1-dim-icon" style="background:#FFF3E0">💰</div>
+        <div><div class="m1-dim-title">财务状况幸福感</div><div class="m1-dim-desc">长期价值 > 短期高薪 → 做擅长的事，收入会跟来</div></div>
+      </div>
+      <div class="m1-dimension-card">
+        <div class="m1-dim-icon" style="background:#FAECEA">❤️</div>
+        <div><div class="m1-dim-title">健康状况幸福感</div><div class="m1-dim-desc">了解自己的压力承受模式 → 选可持续的工作方式</div></div>
+      </div>
+      <div class="m1-dimension-card">
+        <div class="m1-dim-icon" style="background:#EDE7F6">🌍</div>
+        <div><div class="m1-dim-title">社会环境幸福感</div><div class="m1-dim-desc">你想在什么环境里工作和生活 → 选适合你的城市和行业文化</div></div>
+      </div>
+      <div class="m1-body" style="margin-top:20px;background:#F0F4F8;border-radius:12px;padding:16px;font-size:14px">
+        盖洛普最重要的发现是：<strong>这五个维度要相对均衡。</strong><br><br>
+        即使职业非常成功，如果健康崩了或关系全断了，幸福感依然会崩塌。<br><br>
+        填志愿，本质上是在为这五个维度做选择。<br><br>
+        带着这五个维度的视角，接下来的测评会更有意义。
+      </div>
+      <button class="m1-btn-start" onclick="startAssessment()">
+        ✅ 我已了解，开始测评 →
+      </button>
+      <div class="m1-note">接下来进入模块二：性格与兴趣测评（约90分钟）</div>
+    </div>
+
+    <!-- 导航 -->
+    <div class="m1-nav">
+      <button class="m1-btn-prev" id="m1-btn-prev" onclick="m1Prev()" style="display:none">← 上一页</button>
+      <div class="m1-dots" id="m1-dots"></div>
+      <button class="m1-btn-next" id="m1-btn-next" onclick="m1Next()">下一页 →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 落地页逻辑 ────────────────────────────────────────────────
+function showLanding() {
+  document.getElementById('pwd_overlay').style.display = 'none';
+  document.getElementById('main_app').style.display = 'none';
+  document.getElementById('module1-page').style.display = 'none';
+  document.getElementById('landing-page').style.display = 'block';
+}
+
+function lpVerify() {
+  var input = document.getElementById('lp_code_input').value.trim().toUpperCase();
+  var errEl = document.getElementById('lp_err');
+  if(!input) return;
+  errEl.style.display = 'none';
+  fetch('/api/verify', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({code: input})
+  }).then(r=>r.json()).then(d=>{
+    if(d.success) {
+      document.getElementById('landing-page').style.display = 'none';
+      showModule1();
+    } else {
+      errEl.textContent = '❌ ' + d.message;
+      errEl.style.display = 'block';
+    }
+  }).catch(()=>{
+    errEl.textContent = '❌ 网络错误，请稍后重试';
+    errEl.style.display = 'block';
+  });
+}
+
+// ── 模块一逻辑 ───────────────────────────────────────────────
+var m1Current = 0;
+var m1Total = 7;
+
+function showModule1() {
+  document.getElementById('module1-page').style.display = 'block';
+  window.scrollTo(0,0);
+  m1BuildDots();
+  m1UpdateNav();
+}
+
+function m1BuildDots() {
+  var dots = '';
+  for(var i=0; i<m1Total; i++) {
+    dots += '<div class="m1-dot'+(i===0?' active':'')+'"></div>';
+  }
+  document.getElementById('m1-dots').innerHTML = dots;
+}
+
+function m1UpdateNav() {
+  var pct = Math.round((m1Current+1)/m1Total*100);
+  document.getElementById('m1-progress').style.width = pct+'%';
+  document.getElementById('m1-step-label').textContent = '第 '+(m1Current+1)+' 页 / 共 '+m1Total+' 页';
+  var dots = document.querySelectorAll('.m1-dot');
+  dots.forEach(function(d,i){ d.classList.toggle('active', i===m1Current); });
+  document.getElementById('m1-btn-prev').style.display = m1Current>0?'block':'none';
+  document.getElementById('m1-btn-next').style.display = m1Current<m1Total-1?'flex':'none';
+}
+
+function m1Next() {
+  if(m1Current >= m1Total-1) return;
+  document.getElementById('m1s'+m1Current).classList.remove('active');
+  m1Current++;
+  document.getElementById('m1s'+m1Current).classList.add('active');
+  m1UpdateNav();
+  window.scrollTo(0,0);
+}
+
+function m1Prev() {
+  if(m1Current <= 0) return;
+  document.getElementById('m1s'+m1Current).classList.remove('active');
+  m1Current--;
+  document.getElementById('m1s'+m1Current).classList.add('active');
+  m1UpdateNav();
+  window.scrollTo(0,0);
+}
+
+function startAssessment() {
+  document.getElementById('module1-page').style.display = 'none';
+  document.getElementById('main_app').style.display = 'block';
+  initApp();
+  window.scrollTo(0,0);
+}
+
+// ── 覆盖原来的checkPassword，改为先进入落地页 ─────────────────
+// 页面加载时显示落地页（如果有后台API则走API，如果是本地测试直接进模块一）
+window.addEventListener('DOMContentLoaded', function() {
+  // 隐藏原来的密码输入页
+  var pwdOverlay = document.getElementById('pwd_overlay');
+  if(pwdOverlay) pwdOverlay.style.display = 'none';
+  // 显示落地页
+  showLanding();
+});
+
+// 覆盖checkPassword（兼容旧逻辑）
+function checkPassword() { lpVerify(); }
+</script>
+
+
+<style>
+#pwd_overlay {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:linear-gradient(135deg,#1F3864,#2E5F9E);
+  z-index:9999; display:flex; align-items:center; justify-content:center;
+}
+#pwd_box {
+  background:#fff; border-radius:20px; padding:48px 40px;
+  width:360px; max-width:90vw; text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+#pwd_logo { font-size:48px; margin-bottom:12px; }
+#pwd_title { font-size:22px; font-weight:700; color:#1F3864; margin-bottom:6px; }
+#pwd_sub { font-size:13px; color:#666; margin-bottom:28px; line-height:1.6; }
+#pwd_input {
+  width:100%; padding:14px 18px; border:1.5px solid #D0D8E8;
+  border-radius:10px; font-size:16px; text-align:center;
+  outline:none; box-sizing:border-box; margin-bottom:14px;
+  letter-spacing:3px;
+}
+#pwd_input:focus { border-color:#2E5F9E; }
+#pwd_btn {
+  width:100%; padding:14px; background:linear-gradient(135deg,#1F3864,#2E5F9E);
+  color:#fff; border:none; border-radius:10px; font-size:16px;
+  font-weight:500; cursor:pointer;
+}
+#pwd_btn:hover { opacity:0.9; }
+#pwd_error {
+  display:none; color:#E24B4A; font-size:13px; margin-top:10px;
+}
+#pwd_hint { font-size:12px; color:#999; margin-top:20px; line-height:1.6; }
+#main_app { display:none; }
+</style>
+
+<div id="pwd_overlay">
+  <div id="pwd_box">
+    <div id="pwd_logo">🔐</div>
+    <div id="pwd_title">GKWP 幸福测评系统</div>
+    <div id="pwd_sub">金钥匙全民幸福计划<br>请输入专属验证码进入测评</div>
+    <input type="text" id="pwd_input" placeholder="请输入验证码（如：ABC12345）"
+      style="text-transform:uppercase;letter-spacing:3px"
+      onkeydown="if(event.key==='Enter')checkPassword()" maxlength="8">
+    <button id="pwd_btn" onclick="checkPassword()">进入测评系统</button>
+    <div id="pwd_error">❌ 密码错误，请重新输入</div>
+    <div id="pwd_hint">验证码为一次性使用，每码仅限一人<br>如需获取验证码，请联系<br><strong>杨叔8868</strong></div>
+  </div>
+</div>
+
+
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">金</div>
+    <div class="header-title">
+      <h1>GKWP 高考志愿幸福测评系统</h1>
+      <p>金钥匙全民幸福计划 · 幸福少年报考计划</p>
+    </div>
+  </div>
+  <div class="header-badge">深圳市元启中和科技有限公司 版权所有</div>
+</div>
+
+<div id="main_app"><div class="progress-bar-wrap" id="progressBar">
+  <div class="progress-step active" onclick="gotoPage(0)" data-page="0">
+    <div class="step-num">0</div>
+    <div class="step-label">基本信息</div>
+  </div>
+  <div class="step-sep"></div>
+  <div class="progress-step" onclick="gotoPage(1)" data-page="1">
+    <div class="step-num">1</div>
+    <div class="step-label">霍兰德</div>
+  </div>
+  <div class="step-sep"></div>
+  <div class="progress-step" onclick="gotoPage(2)" data-page="2">
+    <div class="step-num">2</div>
+    <div class="step-label">MBTI</div>
+  </div>
+  <div class="step-sep"></div>
+  <div class="progress-step" onclick="gotoPage(3)" data-page="3">
+    <div class="step-num">3</div>
+    <div class="step-label">多元智能</div>
+  </div>
+  <div class="step-sep"></div>
+  <div class="progress-step" onclick="gotoPage(4)" data-page="4">
+    <div class="step-num">4</div>
+    <div class="step-label">情绪压力</div>
+  </div>
+  <div class="step-sep"></div>
+  <div class="progress-step" onclick="gotoPage(5)" data-page="5">
+    <div class="step-num">5</div>
+    <div class="step-label">价值观</div>
+  </div>
+  <div class="step-sep"></div>
+  <div class="progress-step" onclick="gotoPage(6)" data-page="6">
+    <div class="step-num">6</div>
+    <div class="step-label">综合报告</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- PAGE 0: 基本信息 -->
+<div class="page active" id="page0">
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-icon" style="background:#EAF3DE;">🎓</div>
+      <div class="section-head-text">
+        <h2>基本信息登记</h2>
+        <p>请填写以下基本信息，用于生成个人幸福画像报告</p>
+      </div>
+    </div>
+    <div class="info-row">
+      <div class="info-field">
+        <label>姓名</label>
+        <input type="text" id="f_name" placeholder="请输入姓名">
+      </div>
+      <div class="info-field">
+        <label>性别</label>
+        <select id="f_gender">
+          <option value="">请选择</option>
+          <option>男</option>
+          <option>女</option>
+          <option>不愿透露</option>
+        </select>
+      </div>
+      <div class="info-field">
+        <label>就读年级</label>
+        <select id="f_grade">
+          <option value="">请选择</option>
+          <option>高一</option>
+          <option>高二</option>
+          <option>高三</option>
+          <option>复读生</option>
+        </select>
+      </div>
+      <div class="info-field">
+        <label>省份</label>
+        <input type="text" id="f_province" placeholder="如：广东省">
+      </div>
+      <div class="info-field">
+        <label>预估分数（选填）</label>
+        <input type="number" id="f_score" placeholder="如：580">
+      </div>
+      <div class="info-field">
+        <label>测评日期</label>
+        <input type="date" id="f_date">
+      </div>
+    </div>
+    <div style="padding: 0 24px 20px;">
+      <div class="info-field" style="grid-column: span 3;">
+        <label>我的幸福目标宣言摘要（简述你希望的未来人生）</label>
+        <textarea id="f_declaration" rows="3" style="width:100%;padding:8px 10px;border:0.5px solid var(--border-gray);border-radius:var(--radius);font-size:13px;font-family:'Noto Sans SC',sans-serif;resize:vertical;outline:none;color:var(--text);" placeholder="例：我希望从事能帮助他人成长的工作，在有深度人际连接的环境中保持身心健康……"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-icon" style="background:#EAF3DE;">📋</div>
+      <div class="section-head-text">
+        <h2>测评说明</h2>
+        <p>本系统包含五个测评模块，约需90-120分钟完成，请在安静环境中独立作答</p>
+      </div>
+    </div>
+    <div class="module-cards" style="padding:16px 24px 20px;">
+      <div class="module-card">
+        <div class="module-card-icon" style="background:#E6F1FB;">🔵</div>
+        <div class="module-card-text">
+          <h4>模块一：霍兰德职业兴趣（RIASEC）</h4>
+          <p>48题 · 主测工具 · 约25分钟</p>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-card-icon" style="background:#EEEDFE;">🟣</div>
+        <div class="module-card-text">
+          <h4>模块二：MBTI性格类型</h4>
+          <p>48题 · 辅助工具 · 约20分钟</p>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-card-icon" style="background:#EAF3DE;">🟢</div>
+        <div class="module-card-text">
+          <h4>模块三：多元智能自评</h4>
+          <p>56题 · 潜力识别 · 约20分钟</p>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-card-icon" style="background:#FAEEDA;">🟠</div>
+        <div class="module-card-text">
+          <h4>模块四：情绪与压力适应性</h4>
+          <p>20题 · 心理评估 · 约10分钟</p>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-card-icon" style="background:#EEEDFE;">💎</div>
+        <div class="module-card-text">
+          <h4>模块五：职业价值观评估</h4>
+          <p>10题 · 价值匹配 · 约5分钟</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <div></div>
+    <button class="btn btn-primary" onclick="nextPage()">开始测评 →</button>
+  </div>
+</div>
+
+<!-- PAGE 1: 霍兰德 -->
+<div class="page" id="page1">
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-icon" style="background:#E6F1FB;">🔵</div>
+      <div class="section-head-text">
+        <h2>模块一：霍兰德职业兴趣测评（RIASEC）</h2>
+        <p>请根据自己的真实想法，为每道题打分。1=完全不符合，5=完全符合。共48题，请逐题作答。</p>
+      </div>
+    </div>
+    <div id="holland_questions"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-outline" onclick="prevPage()">← 上一步</button>
+    <button class="btn btn-primary" onclick="nextPage()">下一模块 →</button>
+  </div>
+</div>
+
+<!-- PAGE 2: MBTI -->
+<div class="page" id="page2">
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-icon" style="background:#EEEDFE;">🟣</div>
+      <div class="section-head-text">
+        <h2>模块二：MBTI性格类型测评</h2>
+        <p>每题有两个描述，请选择更符合你真实状态的一项。没有对错之分，请凭直觉作答。共32题。</p>
+      </div>
+    </div>
+    <div id="mbti_questions"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-outline" onclick="prevPage()">← 上一步</button>
+    <button class="btn btn-primary" onclick="nextPage()">下一模块 →</button>
+  </div>
+</div>
+
+<!-- PAGE 3: 多元智能 -->
+<div class="page" id="page3">
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-icon" style="background:#EAF3DE;">🟢</div>
+      <div class="section-head-text">
+        <h2>模块三：多元智能自评</h2>
+        <p>对以下每项能力描述按1-5分打分，1=完全不符合，5=完全符合。每类7题，共56题，约20分钟。</p>
+      </div>
+    </div>
+    <div id="mi_questions"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-outline" onclick="prevPage()">← 上一步</button>
+    <button class="btn btn-primary" onclick="nextPage()">下一模块 →</button>
+  </div>
+</div>
+
+<!-- PAGE 4: 情绪压力 -->
+<div class="page" id="page4">
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-icon" style="background:#FAEEDA;">🟠</div>
+      <div class="section-head-text">
+        <h2>模块四：情绪与压力适应性评估</h2>
+        <p>以下描述关于你面对压力与情绪的方式，请按1-5分打分。1=完全不符合，5=完全符合。共20题。</p>
+      </div>
+    </div>
+    <div id="stress_questions"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-outline" onclick="prevPage()">← 上一步</button>
+    <button class="btn btn-primary" onclick="nextPage()">下一模块 →</button>
+  </div>
+</div>
+
+<!-- PAGE 5: 价值观 -->
+<div class="page" id="page5">
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-icon" style="background:#EEEDFE;">💎</div>
+      <div class="section-head-text">
+        <h2>模块五：职业价值观评估</h2>
+        <p>以下描述关于你对职业和生活的价值取向，请按1-5分打分。1=完全不重要，5=非常重要。共10题，约5分钟。</p>
+      </div>
+    </div>
+    <div id="value_questions"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-outline" onclick="prevPage()">← 上一步</button>
+    <button class="btn btn-primary" onclick="generateReport()">生成综合报告 →</button>
+  </div>
+</div>
+
+<!-- PAGE 6: 综合报告 -->
+<div class="page" id="page6">
+  <div id="report_content"></div>
+  <div class="nav-row">
+    <button class="btn btn-outline" onclick="prevPage()">← 修改答案</button>
+    <button class="btn btn-export" onclick="exportReport()">导出报告（打印/PDF）</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const currentPage = { v: 0 };
+const TOTAL = 7;
+
+const hollandData = [
+  { type:'R', text:'我喜欢动手修理或组装机械、电器等设备' },
+  { type:'R', text:'我在户外工作或体力劳动中感到满足' },
+  { type:'R', text:'我善于使用工具、仪器进行实际操作' },
+  { type:'R', text:'我喜欢驾驶、操作机器或运动器械' },
+  { type:'R', text:'我觉得做出一个实物成品比写报告更有成就感' },
+  { type:'R', text:'我对建筑、工程、制造类工作很感兴趣' },
+  { type:'R', text:'我喜欢读地图、图纸或工程设计图' },
+  { type:'R', text:'我愿意在工厂、农场、实验室等实地环境工作' },
+  { type:'I', text:'我喜欢思考复杂的科学或数学问题' },
+  { type:'I', text:'我对未知现象充满好奇，喜欢探索规律' },
+  { type:'I', text:'我能长时间独立专注于某一研究课题' },
+  { type:'I', text:'我倾向于用数据和逻辑来分析问题，而不是靠直觉' },
+  { type:'I', text:'我喜欢阅读学术文章、科普书籍或研究报告' },
+  { type:'I', text:'我在解决逻辑推理题或科学实验中感到乐趣' },
+  { type:'I', text:'我会主动思考"为什么"，而不仅仅接受现有答案' },
+  { type:'I', text:'我认为科学研究是一项有意义的工作' },
+  { type:'A', text:'我享受绘画、写作、音乐或其他创意表达活动' },
+  { type:'A', text:'我经常会有独特的、与众不同的想法或点子' },
+  { type:'A', text:'我对美感和设计细节非常敏感' },
+  { type:'A', text:'我在自由发挥的环境中比在规则约束中工作得更好' },
+  { type:'A', text:'我喜欢欣赏艺术作品、电影、文学或音乐' },
+  { type:'A', text:'我倾向于用故事或比喻来表达想法' },
+  { type:'A', text:'我对传统的、标准化的工作方式感到厌倦' },
+  { type:'A', text:'我认为创造出有美感的作品是一种重要的成就' },
+  { type:'S', text:'我喜欢帮助他人解决问题或给予情感支持' },
+  { type:'S', text:'我在与人交流、沟通时感到自在和充实' },
+  { type:'S', text:'我对教学、辅导或培训他人有浓厚兴趣' },
+  { type:'S', text:'我能够理解他人的情绪，并给予恰当的回应' },
+  { type:'S', text:'我愿意花时间倾听朋友或同学的烦恼' },
+  { type:'S', text:'我关注社会问题，希望为社区或社会做贡献' },
+  { type:'S', text:'我在团队合作中更关注成员关系是否和谐' },
+  { type:'S', text:'我认为帮助他人实现成长是一件有意义的事' },
+  { type:'E', text:'我喜欢在团队中承担领导或组织协调的角色' },
+  { type:'E', text:'我善于说服他人接受我的观点或方案' },
+  { type:'E', text:'我具有较强的竞争意识，喜欢在竞争中胜出' },
+  { type:'E', text:'我对商业、创业或项目运营有浓厚兴趣' },
+  { type:'E', text:'我愿意在公众面前发言或展示自己' },
+  { type:'E', text:'我喜欢策划活动、制定计划并推动执行' },
+  { type:'E', text:'我关注市场动态、经济趋势和社会热点' },
+  { type:'E', text:'我认为影响他人或推动改变是一种重要能力' },
+  { type:'C', text:'我喜欢整理数据、做表格、核对数字' },
+  { type:'C', text:'我在有明确规则和流程的工作中效率更高' },
+  { type:'C', text:'我做事仔细认真，不容易出现粗心错误' },
+  { type:'C', text:'我喜欢将文件、资料、物品分类整理得井井有条' },
+  { type:'C', text:'我对财务、会计、统计类工作感兴趣' },
+  { type:'C', text:'我倾向于按计划行事，不喜欢临时变动' },
+  { type:'C', text:'我注重细节，能发现别人容易忽略的小问题' },
+  { type:'C', text:'我认为准确和可靠比创新和灵活更重要' },
+];
+
+const _oldMbtiData = [
+  { dim:'EI', a:'在聚会或社交场合中，我通常感到精力充沛', b:'社交活动之后，我需要独处时间来恢复精力' },
+  { dim:'EI', a:'我喜欢主动发起对话和认识新朋友', b:'我更喜欢与少数几个亲密朋友深入交流' },
+  { dim:'EI', a:'我在群体讨论中更容易激发灵感', b:'我在独处思考中更容易形成清晰想法' },
+  { dim:'EI', a:'我喜欢分享自己的经历和感受', b:'我通常先思考再说话，不轻易透露内心想法' },
+  { dim:'EI', a:'我在热闹环境中能快速适应并找到乐趣', b:'我更享受安静的学习和工作环境' },
+  { dim:'EI', a:'我倾向于先行动、再调整', b:'我倾向于先计划周全、再行动' },
+  { dim:'EI', a:'我喜欢广泛认识各种不同的人', b:'我更重视与少数人建立深厚的关系' },
+  { dim:'EI', a:'表达自己的意见让我感到满足', b:'倾听和思考比表达更令我舒适' },
+  { dim:'SN', a:'我更相信具体的事实和实际经验', b:'我更倾向于关注可能性和潜在意义' },
+  { dim:'SN', a:'我注重细节，喜欢一步步按顺序做事', b:'我更关注整体模式，喜欢跳跃式思维' },
+  { dim:'SN', a:'我喜欢有明确操作步骤的任务', b:'我喜欢探索新概念，即使结果不确定' },
+  { dim:'SN', a:'我相信"眼见为实"，不轻易相信未经证实的想法', b:'我常常凭直觉做判断，事后证明往往是对的' },
+  { dim:'SN', a:'我记忆力强，擅长记住具体信息和细节', b:'我更善于理解抽象概念和宏观框架' },
+  { dim:'SN', a:'我偏向传统的、经过验证的解决方式', b:'我喜欢创新的、非常规的解决方式' },
+  { dim:'SN', a:'我喜欢脚踏实地地做好当下的事', b:'我总是在思考未来的可能性和愿景' },
+  { dim:'SN', a:'我注重实用性，不喜欢过于抽象的讨论', b:'我享受讨论理论、假设和宏大想法' },
+  { dim:'TF', a:'做决定时我更依赖逻辑分析和客观标准', b:'做决定时我更考虑对他人的影响和自身价值观' },
+  { dim:'TF', a:'我认为公平和一致性比照顾个别情感更重要', b:'我认为关怀和体谅比严格执行规则更重要' },
+  { dim:'TF', a:'批评别人时我更直接，不太顾虑对方的感受', b:'批评别人时我会想很多措辞，避免伤害对方' },
+  { dim:'TF', a:'面对问题时我首先想分析原因，而不是安慰对方', b:'面对问题时我首先关注对方的情绪感受' },
+  { dim:'TF', a:'我更欣赏有能力、有成就的人，而不仅仅是善良的人', b:'我更看重一个人的善良和真诚，而不仅仅是能力' },
+  { dim:'TF', a:'在争论中我倾向于坚持自己认为正确的立场', b:'在争论中我倾向于寻求和解，避免冲突' },
+  { dim:'TF', a:'我对赞美不太在意，更看重实际结果', b:'他人的认可和赞美对我很重要' },
+  { dim:'TF', a:'我会在评估利弊后做出理性决策', b:'我的决策常常受到感情因素的影响' },
+  { dim:'JP', a:'我喜欢提前计划好，一切按计划进行', b:'我喜欢保持灵活，随机应变' },
+  { dim:'JP', a:'我在有明确截止日期和清晰目标时工作最好', b:'我在开放式环境中更能激发创造力' },
+  { dim:'JP', a:'我倾向于早早完成任务，不喜欢拖到最后', b:'我常常在截止日期临近时才进入最佳状态' },
+  { dim:'JP', a:'生活中我喜欢有条理，事情安排好让我有安全感', b:'我喜欢保留弹性空间，不被过多计划束缚' },
+  { dim:'JP', a:'我在做决定后感到如释重负', b:'我在做决定后还想保留更多可能性' },
+  { dim:'JP', a:'我的房间、书包、时间表通常是整洁有序的', b:'我的生活有时显得无序，但我知道东西在哪里' },
+  { dim:'JP', a:'我喜欢先定好规则再开始工作', b:'我喜欢边做边摸索规律' },
+  { dim:'JP', a:'我会仔细列出待办事项并逐一完成', b:'我更喜欢凭感觉处理事务，不太依赖清单' },
+];
+
+const _oldMiData = [
+  { type:'语言智能', qa:'我喜欢阅读，能准确表达复杂想法', qb:'在写作或演讲时，我感到自然流畅' },
+  { type:'逻辑-数学智能', qa:'我喜欢解数学题和逻辑谜题', qb:'我倾向于用数据和证据来说话' },
+  { type:'空间智能', qa:'我能在脑海中清晰想象和旋转三维图形', qb:'我有较好的方向感和地图阅读能力' },
+  { type:'音乐智能', qa:'我能轻松分辨音调高低，有良好节奏感', qb:'我喜欢创作或即兴演奏音乐' },
+  { type:'身体-运动智能', qa:'我擅长需要身体协调的运动或手工活动', qb:'我倾向于「做」而非「思考」来学习' },
+  { type:'人际智能', qa:'我善于理解他人的情绪和需求', qb:'在团队中我常常承担协调或领导角色' },
+  { type:'内省智能', qa:'我经常深入反思自己的行为和动机', qb:'我清楚地知道自己的优势和局限所在' },
+  { type:'自然探索智能', qa:'我对自然界的现象有强烈的好奇心', qb:'我喜欢分类、观察和研究生物或自然事物' },
+];
+
+const stressData = [
+  { dim:'稳定性', text:'面对批评或否定时，我能保持相对冷静，不会很长时间情绪低落' },
+  { dim:'稳定性', text:'遇到突发状况时，我能较快调整心态，找到应对方案' },
+  { dim:'稳定性', text:'在高压考试或比赛前，我的表现通常不会明显下滑' },
+  { dim:'稳定性', text:'即使遇到困难或挫折，我也能保持基本的积极态度' },
+  { dim:'感知', text:'我对周围人的情绪变化很敏感，能感受到细微的气氛变化' },
+  { dim:'感知', text:'一件小事也可能让我思考很久、感受很深' },
+  { dim:'感知', text:'我对批评的感受比大多数同学更加强烈' },
+  { dim:'感知', text:'他人的负面评价会在我心里停留较长时间' },
+  { dim:'弹性', text:'经历失败或打击后，我通常能在较短时间内恢复正常状态' },
+  { dim:'弹性', text:'我能从负面经历中找到值得学习的地方' },
+  { dim:'弹性', text:'即使计划落空，我也能较快适应新的情况' },
+  { dim:'弹性', text:'过去的遗憾不太会长期影响我的当下心态' },
+  { dim:'表达', text:'当我有负面情绪时，我能找到合适的方式表达出来' },
+  { dim:'表达', text:'我善于在团队中调节气氛，帮助他人放松' },
+  { dim:'表达', text:'和他人分享我的感受让我感到轻松' },
+  { dim:'表达', text:'我能在适当的时候鼓励身边情绪低落的朋友' },
+  { dim:'耐受', text:'我能承受较长时间的重复性或单调工作而不感到烦躁' },
+  { dim:'耐受', text:'面对长期目标时，我能保持持续的专注和动力' },
+  { dim:'耐受', text:'即使工作成果不被立即认可，我也能继续坚持' },
+  { dim:'耐受', text:'我能在不受外界认可的情况下，凭内在动力继续前行' },
+];
+
+function makeScaleRow(name, val) {
+  return `<div class="scale-row">${[1,2,3,4,5].map(n=>`
+    <div class="scale-option">
+      <input type="radio" name="${name}" value="${n}" id="${name}_${n}">
+      <label class="scale-btn" for="${name}_${n}">${n}</label>
+    </div>`).join('')}</div>
+  <div class="scale-labels"><span>完全不符合</span><span>完全符合</span></div>`;
+}
+
+function makeMbtiRow(idx, item, displayNum) {
+  const num = displayNum !== undefined ? displayNum : idx+1;
+  return `<div class="q-block">
+    <div class="q-text"><span class="q-num">Q${num}.</span>以下两项描述，哪项更符合你的真实状态？</div>
+    <div class="checkbox-grid" style="grid-template-columns:1fr 1fr;">
+      <label class="check-item" onclick="selectMbti(this,'mbti_${idx}','A')">
+        <input type="radio" name="mbti_${idx}" value="A">
+        <div class="check-box"><span class="check-mark"></span></div>
+        <span class="check-label">A. ${item.a}</span>
+      </label>
+      <label class="check-item" onclick="selectMbti(this,'mbti_${idx}','B')">
+        <input type="radio" name="mbti_${idx}" value="B">
+        <div class="check-box"><span class="check-mark"></span></div>
+        <span class="check-label">B. ${item.b}</span>
+      </label>
+    </div>
+  </div>`;
+}
+
+function selectMbti(el, name, val) {
+  document.querySelectorAll(`[name="${name}"]`).forEach(r=>r.parentElement.classList.remove('checked'));
+  el.classList.add('checked');
+  el.querySelector('input').checked = true;
+}
+
+function buildHolland() {
+  const el = document.getElementById('holland_questions');
+  const flat = hollandData.map((q,i)=>({text:q.text, key:'h_'+i}));
+  for(let i=flat.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[flat[i],flat[j]]=[flat[j],flat[i]];}
+  el.innerHTML = flat.map((q,i)=>`
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">Q${i+1}.</span>${q.text}</div>
+      ${makeScaleRow(q.key, 0)}
+    </div>`).join('');
+}
+
+function _oldBuildMBTI() {
+  const el = document.getElementById('mbti_questions');
+  const flat = mbtiData.map((q,i)=>({q, origIdx:i}));
+  for(let i=flat.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[flat[i],flat[j]]=[flat[j],flat[i]];}
+  el.innerHTML = flat.map((item,i)=>makeMbtiRow(item.origIdx, item.q, i+1)).join('');
+}
+
+function _oldBuildMI() {
+  const el = document.getElementById('mi_questions');
+  const flat = [];
+  miData.forEach((cat,ci)=>{
+    flat.push({text:cat.qa, key:'mi_'+ci+'_a'});
+    flat.push({text:cat.qb, key:'mi_'+ci+'_b'});
+  });
+  for(let i=flat.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[flat[i],flat[j]]=[flat[j],flat[i]];}
+  el.innerHTML = flat.map((q,i)=>`
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">Q${i+1}.</span>${q.text}</div>
+      ${makeScaleRow(q.key,0)}
+    </div>`).join('');
+}
+
+function buildStress() {
+  const el = document.getElementById('stress_questions');
+  const dims = ['稳定性','感知','弹性','表达','耐受'];
+  const flat = [];
+  dims.forEach(dim=>{
+    stressData.filter(q=>q.dim===dim).forEach(q=>flat.push({text:q.text, dim}));
+  });
+  for(let i=flat.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[flat[i],flat[j]]=[flat[j],flat[i]];}
+  window._stressOrder = flat;
+  el.innerHTML = flat.map((q,i)=>`
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">Q${i+1}.</span>${q.text}</div>
+      ${makeScaleRow('st_'+i,0)}
+    </div>`).join('');
+}
+
+function getRadioVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? parseInt(el.value) : 0;
+}
+
+function calcHolland() {
+  const types = ['R','I','A','S','E','C'];
+  const scores = {};
+  types.forEach(t=>scores[t]=0);
+  hollandData.forEach((q,i)=>{
+    scores[q.type] += getRadioVal('h_'+i);
+  });
+  return scores;
+}
+
+function _oldCalcMBTI() {
+  const dims = {EI:{E:0,I:0}, SN:{S:0,N:0}, TF:{T:0,F:0}, JP:{J:0,P:0}};
+  mbtiData.forEach((q,i)=>{
+    const val = document.querySelector(`input[name="mbti_${i}"]:checked`);
+    if(val) {
+      if(val.value==='A') dims[q.dim][Object.keys(dims[q.dim])[0]]++;
+      else dims[q.dim][Object.keys(dims[q.dim])[1]]++;
+    }
+  });
+  let type = '';
+  type += dims.EI.E >= dims.EI.I ? 'E':'I';
+  type += dims.SN.S >= dims.SN.N ? 'S':'N';
+  type += dims.TF.T >= dims.TF.F ? 'T':'F';
+  type += dims.JP.J >= dims.JP.P ? 'J':'P';
+  return { type, dims };
+}
+
+function _oldCalcMI() {
+  const scores = {};
+  miData.forEach((cat,ci)=>{
+    const a = getRadioVal('mi_'+ci+'_a');
+    const b = getRadioVal('mi_'+ci+'_b');
+    scores[cat.type] = a + b;
+  });
+  return scores;
+}
+
+function calcStress() {
+  const dims = {稳定性:0, 感知:0, 弹性:0, 表达:0, 耐受:0};
+  (window._stressOrder||[]).forEach((q,i)=>{
+    dims[q.dim] += getRadioVal('st_'+i);
+  });
+  return dims;
+}
+
+const mbtiDescriptions = {
+  INTJ:'战略家——远见卓识、独立思考、系统规划',
+  INTP:'思想家——逻辑严密、创新思维、喜好理论探索',
+  ENTJ:'指挥官——领导力强、决断果断、目标导向',
+  ENTP:'辩论家——思维灵活、创意丰富、善于辩证分析',
+  INFJ:'提倡者——洞察力强、理想主义、关怀他人',
+  INFP:'调停者——富有理想、同理心强、创造性表达',
+  ENFJ:'主人公——有感召力、善解人意、推动他人成长',
+  ENFP:'竞选者——热情开放、富有创意、善于激励他人',
+  ISTJ:'检查者——可靠细心、注重规则、责任感强',
+  ISFJ:'守护者——耐心体贴、服务精神、注重传统',
+  ESTJ:'总经理——务实高效、善于组织、推崇规则',
+  ESFJ:'执政官——热情友善、关怀他人、注重和谐',
+  ISTP:'鉴赏家——冷静分析、动手能力强、灵活实际',
+  ISFP:'探险家——温和敏感、审美敏锐、享受当下',
+  ESTP:'企业家——行动力强、善于观察、喜欢冒险',
+  ESFP:'表演者——热情开朗、享受互动、善于调动气氛',
+};
+
+const mbtiMajors = {
+  INTJ:'计算机科学、数学、战略管理、建筑学',
+  INTP:'数学、物理、哲学、计算机、理论研究',
+  ENTJ:'工商管理、法学、经济学、政治学',
+  ENTP:'法学、创业管理、科学研究、传播学',
+  INFJ:'心理咨询、教育、文学、社会政策',
+  INFP:'文学、心理学、艺术设计、社会工作',
+  ENFJ:'教育学、心理学、传播学、社会工作',
+  ENFP:'心理学、传播学、设计、社会工作',
+  ISTJ:'会计、法律、行政管理、工程管理',
+  ISFJ:'护理、教育、社会工作、档案管理',
+  ESTJ:'工商管理、法学、行政、工程',
+  ESFJ:'护理、教育、人力资源、社会工作',
+  ISTP:'机械工程、计算机、体育、急救医学',
+  ISFP:'艺术设计、音乐、护理、自然科学',
+  ESTP:'市场营销、运动科学、急救医学、创业',
+  ESFP:'传媒、旅游管理、表演、教育',
+};
+
+const hollandTypeName = {R:'现实型',I:'研究型',A:'艺术型',S:'社会型',E:'企业型',C:'传统型'};
+const hollandMajors = {
+  R:'机械工程、土木工程、建筑学、电气工程、农林类、地质勘探',
+  I:'数学、物理、化学、生物、计算机科学、医学研究、经济学',
+  A:'艺术设计、音乐、影视传媒、汉语言文学、广告学、建筑设计',
+  S:'教育学、心理学、社会工作、护理学、公共卫生、人力资源管理',
+  E:'工商管理、市场营销、法学、政治学、国际关系、传播学',
+  C:'会计学、统计学、行政管理、档案学、金融学、图书馆学',
+};
+const hollandColors = {R:'#185FA5',I:'#534AB7',A:'#993556',S:'#3B6D11',E:'#854F0B',C:'#5F5E5A'};
+const hollandBg = {R:'#E6F1FB',I:'#EEEDFE',A:'#FBEAF0',S:'#EAF3DE',E:'#FAEEDA',C:'#F1EFE8'};
+
+const miColors = ['#185FA5','#534AB7','#993556','#3B6D11','#854F0B','#5F5E5A','#0F6E56','#BA7517'];
+
+function countAnswered(prefix, total) {
+  let n = 0;
+  for(let i=0;i<total;i++){
+    if(document.querySelector(`input[name="${prefix}${i}"]:checked`)) n++;
+  }
+  return n;
+}
+
+function _oldCountMBTI() {
+  let n=0;
+  for(let i=0;i<32;i++){
+    if(document.querySelector(`input[name="mbti_${i}"]:checked`)) n++;
+  }
+  return n;
+}
+
+function _oldCountMI() {
+  let n=0;
+  for(let i=0;i<8;i++){
+    if(document.querySelector(`input[name="mi_${i}_a"]:checked`)) n++;
+    if(document.querySelector(`input[name="mi_${i}_b"]:checked`)) n++;
+  }
+  return n;
+}
+
+function countStress() {
+  let n=0;
+  const total=(window._stressOrder||[]).length||20;
+  for(let i=0;i<total;i++){
+    if(document.querySelector(`input[name="st_${i}"]:checked`)) n++;
+  }
+  return n;
+}
+
+function _oldGenerateReport() {
+  const hollandDone = countAnswered('h_', 48);
+  const mbtiDone = countMBTI();
+  const miDone = countMI();
+  const stressDone = countStress();
+
+  const errors = [];
+  if(hollandDone < 48) errors.push(`模块一（霍兰德）：还有 ${48 - hollandDone} 题未作答`);
+  if(mbtiDone < 32)    errors.push(`模块二（MBTI）：还有 ${32 - mbtiDone} 题未作答`);
+  if(miDone < 16)      errors.push(`模块三（多元智能）：还有 ${16 - miDone} 题未作答`);
+  if(stressDone < 20)  errors.push(`模块四（情绪压力）：还有 ${20 - stressDone} 题未作答`);
+
+  if(errors.length > 0) {
+    document.getElementById('report_content').innerHTML = `
+      <div style="background:var(--white);border:0.5px solid #E24B4A;border-radius:var(--radius-lg);padding:28px 28px 24px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:14px;">⚠️</div>
+        <div style="font-size:17px;font-weight:500;color:#A32D2D;margin-bottom:10px;">还有题目未完成，无法生成报告</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.8;">
+          请返回以下模块补全所有题目后，再生成报告：
+        </div>
+        <div style="display:inline-block;text-align:left;background:#FCEBEB;border-radius:var(--radius);padding:14px 20px;margin-bottom:24px;">
+          ${errors.map(e=>`<div style="font-size:13px;color:#A32D2D;padding:4px 0;display:flex;align-items:center;gap:8px;"><span style="color:#E24B4A;font-size:16px;">✗</span>${e}</div>`).join('')}
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          ${hollandDone < 48 ? `<button class="btn btn-outline" onclick="gotoPage(1)" style="font-size:13px;">→ 模块一（霍兰德）</button>`:''}
+          ${mbtiDone < 32    ? `<button class="btn btn-outline" onclick="gotoPage(2)" style="font-size:13px;">→ 模块二（MBTI）</button>`:''}
+          ${miDone < 16      ? `<button class="btn btn-outline" onclick="gotoPage(3)" style="font-size:13px;">→ 模块三（多元智能）</button>`:''}
+          ${stressDone < 20  ? `<button class="btn btn-outline" onclick="gotoPage(4)" style="font-size:13px;">→ 模块四（情绪压力）</button>`:''}
+        </div>
+      </div>`;
+    gotoPage(5);
+    return;
+  }
+
+  const h = calcHolland();
+  const m = calcMBTI();
+  const mi = calcMI();
+  const st = calcStress();
+
+  const sortedH = Object.entries(h).sort((a,b)=>b[1]-a[1]);
+  const topH = sortedH.slice(0,3).map(([t])=>t);
+  const code3 = topH.join('');
+
+  const sortedMI = Object.entries(mi).sort((a,b)=>b[1]-a[1]);
+  const sortedST = Object.entries(st).sort((a,b)=>b[1]-a[1]);
+
+  const name = document.getElementById('f_name').value || '（未填写）';
+  const date = document.getElementById('f_date').value || new Date().toISOString().split('T')[0];
+  const score = document.getElementById('f_score').value || '——';
+  const decl = document.getElementById('f_declaration').value || '（未填写）';
+
+  const stressRisk = sortedST[sortedST.length-1][0];
+  const stressStrong = sortedST[0][0];
+
+  const pressureMap = {
+    '稳定性':'高强度竞争压力（临床医学、法学、金融）',
+    '感知':'持续评价压力（艺术设计、传媒、表演）',
+    '弹性':'长期耐心型压力（科研类、教育、基础研究）',
+    '表达':'人际情绪压力（心理咨询、护理、教育）',
+    '耐受':'长期目标导向型压力（研究类、技术类）',
+  };
+
+  const maxH = Math.max(...Object.values(h));
+  const maxMI = Math.max(...Object.values(mi));
+  const maxST = Math.max(...Object.values(st));
+
+  document.getElementById('report_content').innerHTML = `
+  <div style="background:var(--green);color:#fff;border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:20px;">
+    <div style="font-size:12px;opacity:0.7;margin-bottom:6px;">GKWP 金钥匙全民幸福计划 · 个人幸福画像报告</div>
+    <div style="font-size:22px;font-family:'Noto Serif SC',serif;font-weight:700;margin-bottom:4px;">${name} 的综合测评报告</div>
+    <div style="display:flex;gap:20px;font-size:12px;opacity:0.8;flex-wrap:wrap;">
+      <span>测评日期：${date}</span>
+      <span>预估分数：${score}</span>
+      <span>画像代码：${code3}-${m.type}</span>
+    </div>
+    <div style="margin-top:14px;font-size:13px;opacity:0.85;background:rgba(255,255,255,0.1);padding:10px 14px;border-radius:8px;line-height:1.6;">
+      幸福目标宣言：${decl}
+    </div>
+  </div>
+
+  <div class="result-section">
+    <div class="result-head" style="background:var(--blue-light);color:var(--blue);">
+      🔵 模块一：霍兰德职业兴趣图谱（RIASEC）
+    </div>
+    <div class="result-body">
+      <div style="display:flex;align-items:flex-end;gap:4px;margin-bottom:16px;">
+        <span style="font-size:13px;color:var(--text-muted);">三位代码：</span>
+        ${topH.map(t=>`<span class="type-badge type-${t}" style="font-size:15px;padding:4px 14px;">${t}（${hollandTypeName[t]}）</span>`).join('')}
+      </div>
+      <div class="riasec-grid" style="margin-bottom:16px;">
+        ${sortedH.map(([t,s])=>`
+          <div class="riasec-col">
+            <div class="riasec-type" style="color:${hollandColors[t]};">${t}</div>
+            <div class="riasec-bar-wrap">
+              <div class="riasec-bar" style="height:${Math.round(s/maxH*76)}px;background:${hollandBg[t]};border:1px solid ${hollandColors[t]};"></div>
+            </div>
+            <div style="font-size:13px;font-weight:500;color:${hollandColors[t]};">${s}</div>
+            <div class="riasec-score">${hollandTypeName[t]}</div>
+          </div>`).join('')}
+      </div>
+      <div style="margin-bottom:12px;">
+        ${topH.map(t=>`<div style="margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:500;color:${hollandColors[t]};margin-bottom:3px;">${hollandTypeName[t]}（${t}型）适配专业</div>
+          <div style="font-size:12px;color:var(--text-muted);">${hollandMajors[t]}</div>
+        </div>`).join('')}
+      </div>
+      <div style="background:var(--blue-light);border-left:3px solid var(--blue);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:#0C447C;line-height:1.6;">
+        <strong>综合解读：</strong>你的主型为 <strong>${hollandTypeName[topH[0]]}（${topH[0]}）</strong>，兼具 ${hollandTypeName[topH[1]]}（${topH[1]}）和 ${hollandTypeName[topH[2]]}（${topH[2]}）特质。
+        建议优先考虑能同时调用这三种兴趣的专业方向，可与辅导员进一步探讨具体院校推荐。
+      </div>
+    </div>
+  </div>
+
+  <div class="result-section">
+    <div class="result-head" style="background:var(--purple-light);color:var(--purple);">
+      🟣 模块二：MBTI性格类型
+    </div>
+    <div class="result-body">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap;">
+        <div style="font-size:32px;font-weight:700;color:var(--purple);font-family:'Noto Serif SC',serif;">${m.type}</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:3px;">${mbtiDescriptions[m.type]||m.type}</div>
+          <div style="font-size:12px;color:var(--text-muted);">适配专业参考：${mbtiMajors[m.type]||'请咨询辅导员'}</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        ${Object.entries(m.dims).map(([dim,scores])=>{
+          const [k1,k2] = Object.keys(scores);
+          const total = scores[k1]+scores[k2]||1;
+          const pct = Math.round(scores[k1]/total*100);
+          const winner = scores[k1]>=scores[k2]?k1:k2;
+          return `<div style="background:var(--purple-light);border-radius:var(--radius);padding:10px 12px;">
+            <div style="font-size:11px;color:var(--purple);font-weight:500;margin-bottom:6px;">${k1} — ${k2}</div>
+            <div class="bar-track" style="height:6px;margin-bottom:4px;">
+              <div class="bar-fill" style="width:${pct}%;background:var(--purple);"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);">
+              <span>${k1}：${scores[k1]}票</span><span>${k2}：${scores[k2]}票</span>
+            </div>
+            <div style="font-size:12px;font-weight:500;color:var(--purple);margin-top:4px;">倾向：${winner}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="result-section">
+    <div class="result-head" style="background:var(--green-light);color:var(--green);">
+      🟢 模块三：多元智能分布
+    </div>
+    <div class="result-body">
+      <div style="margin-bottom:12px;">
+        ${sortedMI.map(([type,score],i)=>`
+          <div class="bar-row">
+            <div class="bar-label" style="color:${miColors[i]};font-size:12px;">${type}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${Math.round(score/10*100)}%;background:${miColors[i]};"></div></div>
+            <div class="bar-val">${score}/10</div>
+          </div>`).join('')}
+      </div>
+      <div style="background:var(--green-light);border-left:3px solid var(--green);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:var(--green);line-height:1.6;">
+        <strong>突出优势：</strong>
+        ${sortedMI.slice(0,3).map(([t,s],i)=>`<strong>①${t}（${s}/10）</strong>`).join('　')}
+        <br>这些智能类型可能代表你超越学业成绩的潜在才能，建议在专业选择中予以重点考量。
+      </div>
+    </div>
+  </div>
+
+  <div class="result-section">
+    <div class="result-head" style="background:var(--amber-light);color:var(--amber);">
+      🟠 模块四：情绪与压力适应性画像
+    </div>
+    <div class="result-body">
+      <div style="margin-bottom:12px;">
+        ${Object.entries(st).map(([dim,score])=>`
+          <div class="bar-row">
+            <div class="bar-label" style="font-size:12px;">${dim}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${Math.round(score/20*100)}%;background:var(--amber);"></div></div>
+            <div class="bar-val">${score}/20</div>
+          </div>`).join('')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:var(--green-light);border-radius:var(--radius);padding:10px 12px;">
+          <div style="font-size:11px;color:var(--green);font-weight:500;margin-bottom:4px;">心理优势维度</div>
+          <div style="font-size:13px;font-weight:500;">${stressStrong}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">适配：${pressureMap[stressStrong]}</div>
+        </div>
+        <div style="background:#FAEEDA;border-radius:var(--radius);padding:10px 12px;">
+          <div style="font-size:11px;color:var(--amber);font-weight:500;margin-bottom:4px;">需关注维度</div>
+          <div style="font-size:13px;font-weight:500;">${stressRisk}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">此维度相对偏低，选择相关类型专业时请咨询辅导员</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-section">
+    <div class="result-head" style="background:var(--green);color:#fff;">
+      综合推荐方向与下一步建议
+    </div>
+    <div class="result-body">
+      <table class="summary-table">
+        <tr><th style="width:130px;">测评维度</th><th>结果摘要</th><th style="width:200px;">适配专业参考</th></tr>
+        <tr>
+          <td><span class="type-badge type-${topH[0]}">${hollandTypeName[topH[0]]}型</span></td>
+          <td>霍兰德代码 ${code3}，主型 ${topH[0]}（${sortedH[0][1]}分）</td>
+          <td style="font-size:12px;">${hollandMajors[topH[0]]}</td>
+        </tr>
+        <tr>
+          <td><span class="type-badge type-MBTI">${m.type}</span></td>
+          <td>${mbtiDescriptions[m.type]||m.type}</td>
+          <td style="font-size:12px;">${mbtiMajors[m.type]||'请咨询辅导员'}</td>
+        </tr>
+        <tr>
+          <td>多元智能</td>
+          <td>突出优势：${sortedMI[0][0]}（${sortedMI[0][1]}/10）、${sortedMI[1][0]}（${sortedMI[1][1]}/10）</td>
+          <td style="font-size:12px;">建议选择能充分发挥 ${sortedMI[0][0]} 的专业</td>
+        </tr>
+        <tr>
+          <td>压力适应</td>
+          <td>${stressStrong} 维度突出，${stressRisk} 相对偏弱</td>
+          <td style="font-size:12px;">适合：${pressureMap[stressStrong].split('（')[0]}</td>
+        </tr>
+      </table>
+      <div style="margin-top:16px;padding:14px 16px;background:var(--green-pale);border-radius:var(--radius);border:0.5px solid var(--border);">
+        <div style="font-size:13px;font-weight:500;color:var(--green);margin-bottom:8px;">后续步骤</div>
+        <div style="font-size:12px;color:var(--text);line-height:1.8;">
+          ① 将本报告提交给辅导员，进行一对一的报告解读谈话（建议30-45分钟）<br>
+          ② 结合模块一《幸福目标宣言》，与辅导员共同完成专业幸福匹配分析<br>
+          ③ 参照模块三《志愿填报方案书》模板，制定个人化的冲稳保志愿清单<br>
+          ④ 与家长完成家庭期望整合访谈，达成共同决策共识
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+
+  gotoPage(5);
+}
+
+function exportReport() {
+  window.print();
+}
+
+function gotoPage(n) {
+  document.querySelectorAll('.page').forEach((p,i)=>{
+    p.classList.toggle('active', i===n);
+  });
+  document.querySelectorAll('.progress-step').forEach((s,i)=>{
+    s.classList.remove('active','done');
+    if(i===n) s.classList.add('active');
+    else if(i<n) s.classList.add('done');
+  });
+  currentPage.v = n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextPage() { gotoPage(currentPage.v+1); }
+function prevPage() { gotoPage(currentPage.v-1); }
+
+_oldBuildHolland_skip();
+// 初始化由升级脚本接管
+function _oldBuildHolland_skip(){}
+document.getElementById('f_date').value = new Date().toISOString().split('T')[0];
+</script>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// 专业匹配数据库 v1.0
+// 第一层：霍兰德×MBTI×价值观 → 专业大类
+// 第二层：多元智能 → 专业细分
+// ═══════════════════════════════════════════════════════════
+
+// ── 第一层匹配库 ─────────────────────────────────────────────
+const majorMatchDB = [
+  // R 现实型
+  { holland:'R', mbti:['ST','SF'], value:['稳定安全','成就感'],
+    majors:['机械工程','土木工程','电气工程','建筑学','车辆工程'],
+    desc:'动手能力强、追求稳定，适合传统工科方向' },
+  { holland:'R', mbti:['ST','NT'], value:['知识探索','创造创新'],
+    majors:['自动化','机器人工程','航空航天工程','船舶工程','核工程'],
+    desc:'理性务实、喜欢挑战，适合前沿工程技术方向' },
+  { holland:'R', mbti:['SF','NF'], value:['帮助他人','社会责任'],
+    majors:['农学','林学','水利工程','环境工程','地质工程'],
+    desc:'实干且关注社会，适合资源与环境类工程方向' },
+  { holland:'R', mbti:['ST','SF'], value:['经济回报','影响力'],
+    majors:['石油工程','矿业工程','化学工程','材料科学与工程'],
+    desc:'务实目标导向，适合能源与材料类高薪工科' },
+
+  // I 研究型
+  { holland:'I', mbti:['NT','NF'], value:['知识探索','成就感'],
+    majors:['数学','物理学','化学','生物科学','天文学'],
+    desc:'天生的探索者，适合纯理科基础研究方向' },
+  { holland:'I', mbti:['NT','ST'], value:['知识探索','创造创新'],
+    majors:['计算机科学与技术','人工智能','数据科学','软件工程','信息安全'],
+    desc:'逻辑严密、创新思维，适合计算机与信息科学' },
+  { holland:'I', mbti:['NF','NT'], value:['帮助他人','知识探索'],
+    majors:['临床医学','基础医学','药学','公共卫生','生物医学工程'],
+    desc:'探究本质又关怀他人，适合医学与生命科学' },
+  { holland:'I', mbti:['NT','ST'], value:['影响力','经济回报'],
+    majors:['经济学','统计学','金融数学','精算学','计量经济学'],
+    desc:'善于分析、目标清晰，适合定量经济与金融研究' },
+  { holland:'I', mbti:['NF','NT'], value:['知识探索','社会责任'],
+    majors:['心理学','认知科学','神经科学','语言学','教育学（研究方向）'],
+    desc:'关注人类本质，适合人文社科交叉研究领域' },
+
+  // A 艺术型
+  { holland:'A', mbti:['NF','NT'], value:['创造创新','成就感'],
+    majors:['视觉传达设计','工业设计','环境设计','数字媒体艺术','动画'],
+    desc:'创意与审美兼备，适合设计与数字艺术方向' },
+  { holland:'A', mbti:['NF','SF'], value:['帮助他人','创造创新'],
+    majors:['汉语言文学','创意写作','新闻学','传播学','编辑出版'],
+    desc:'富有表达欲与人文情怀，适合文字与传媒方向' },
+  { holland:'A', mbti:['NF','EF'], value:['影响力','创造创新'],
+    majors:['广播电视编导','戏剧影视文学','表演','音乐学','舞蹈学'],
+    desc:'表现力强、渴望被看见，适合表演与影视艺术方向' },
+  { holland:'A', mbti:['NT','NF'], value:['创造创新','知识探索'],
+    majors:['建筑学','城乡规划','风景园林','产品设计','服装设计'],
+    desc:'兼具创意与空间思维，适合建筑与空间设计方向' },
+
+  // S 社会型
+  { holland:'S', mbti:['NF','SF'], value:['帮助他人','社会责任'],
+    majors:['教育学','小学教育','学前教育','特殊教育','教育技术学'],
+    desc:'有耐心、关怀他人，是天生的教育工作者' },
+  { holland:'S', mbti:['NF','EF'], value:['帮助他人','成就感'],
+    majors:['心理学','应用心理学','社会工作','护理学','康复治疗'],
+    desc:'同理心强、乐于助人，适合助人专业与心理健康方向' },
+  { holland:'S', mbti:['SF','EF'], value:['团队归属','帮助他人'],
+    majors:['社会学','人类学','公共管理','社会保障','人力资源管理'],
+    desc:'理解人与社会，适合公共事务与社会服务方向' },
+  { holland:'S', mbti:['NF','NT'], value:['影响力','社会责任'],
+    majors:['法学','政治学','国际关系','外交学','社会工作（政策方向）'],
+    desc:'有使命感、善沟通，适合法律与公共政策方向' },
+
+  // E 企业型
+  { holland:'E', mbti:['ET','EF'], value:['影响力','经济回报'],
+    majors:['工商管理','市场营销','电子商务','创业管理','国际商务'],
+    desc:'领导力强、目标导向，适合商科与创业管理方向' },
+  { holland:'E', mbti:['ET','NT'], value:['影响力','成就感'],
+    majors:['法学','知识产权','金融学','投资学','证券期货'],
+    desc:'善于博弈与决策，适合法律与金融投资方向' },
+  { holland:'E', mbti:['EF','NF'], value:['影响力','帮助他人'],
+    majors:['公共关系学','传播学','广告学','新媒体','品牌管理'],
+    desc:'有感召力、善表达，适合传播与品牌管理方向' },
+  { holland:'E', mbti:['ET','ST'], value:['经济回报','稳定安全'],
+    majors:['会计学','财务管理','审计学','税务','供应链管理'],
+    desc:'务实严谨、目标清晰，适合财务与供应链管理方向' },
+
+  // C 传统型
+  { holland:'C', mbti:['ST','SF'], value:['稳定安全','团队归属'],
+    majors:['会计学','财务管理','统计学','信息管理','档案学'],
+    desc:'细心可靠、注重秩序，适合财务与信息管理方向' },
+  { holland:'C', mbti:['ST','NT'], value:['知识探索','成就感'],
+    majors:['数据科学','信息系统','计算机应用','数字经济','电子政务'],
+    desc:'逻辑严密、善于整合，适合数据与信息技术方向' },
+  { holland:'C', mbti:['SF','EF'], value:['帮助他人','稳定安全'],
+    majors:['行政管理','公共事业管理','秘书学','图书馆学','社会保障'],
+    desc:'踏实负责、服务意识强，适合行政与公共服务方向' },
+  { holland:'C', mbti:['ST','SF'], value:['社会责任','稳定安全'],
+    majors:['法学（司法方向）','政治学（基层治理）','军事学','警务指挥'],
+    desc:'原则性强、追求公正，适合司法与基层治理方向' },
+];
+
+// ── 第二层匹配库：多元智能 → 专业细分 ──────────────────────────────
+const miMajorDB = {
+  '语言智能': {
+    high: ['汉语言文学','英语','翻译','新闻学','传播学','法学','外交学','编辑出版'],
+    tip: '你的语言表达与理解能力突出，建议选择文字处理量大、沟通要求高的专业'
+  },
+  '逻辑数学智能': {
+    high: ['数学','物理学','计算机科学','统计学','金融数学','哲学（逻辑方向）','经济学'],
+    tip: '你的逻辑推理与数量分析能力突出，建议选择需要精密思维的理工与量化专业'
+  },
+  '空间智能': {
+    high: ['建筑学','城乡规划','工业设计','机械工程','土木工程','地理信息系统','航空航天'],
+    tip: '你的空间想象与视觉思维能力突出，建议选择需要三维思维的设计与工程专业'
+  },
+  '音乐智能': {
+    high: ['音乐学','音乐表演','作曲','音乐教育','音乐治疗','声学工程','广播电视技术'],
+    tip: '你对音律节奏高度敏感，建议选择音乐类或声学相关专业'
+  },
+  '身体运动智能': {
+    high: ['体育教育','运动训练','运动康复','护理学','外科医学','职业技术类','表演'],
+    tip: '你的身体协调与动手能力突出，建议选择实践操作性强的专业'
+  },
+  '人际智能': {
+    high: ['心理学','社会工作','教育学','公共关系','人力资源管理','护理学','外交学'],
+    tip: '你理解他人的能力突出，建议选择以人际交往为核心的服务与管理类专业'
+  },
+  '内省智能': {
+    high: ['哲学','心理学','文学','宗教学','社会学','教育学（研究方向）','创意写作'],
+    tip: '你的自我认知与反思能力突出，建议选择需要深度思考与自我探索的人文专业'
+  },
+  '自然探索智能': {
+    high: ['生物科学','生态学','地理学','农学','林学','环境科学','地质学','天文学'],
+    tip: '你对自然界的探索欲强烈，建议选择自然科学与资源环境类专业'
+  },
+};
+
+// ── 专业→职业路径说明 ────────────────────────────────────────────
+const careerPathDB = {
+  '计算机科学与技术': '软件工程师、算法工程师、产品经理、技术创业',
+  '人工智能': 'AI研究员、机器学习工程师、智能系统开发、数据科学家',
+  '机械工程': '机械设计工程师、制造工程师、项目工程师、技术管理',
+  '临床医学': '执业医师、专科医生、医学研究、公共卫生官员',
+  '法学': '律师、法官、检察官、企业法务、政策研究员',
+  '工商管理': '企业管理、创业、咨询、市场总监、人力资源总监',
+  '心理学': '心理咨询师、人力资源、市场研究、教育工作者、研究员',
+  '教育学': '教师、教育管理者、课程设计师、教育科技从业者',
+  '经济学': '经济分析师、政策研究、金融机构、咨询公司、学术研究',
+  '建筑学': '建筑师、城市规划师、室内设计师、房地产开发',
+  '会计学': '注册会计师、财务总监、审计师、税务师、投资分析师',
+  '新闻学': '记者、编辑、新媒体运营、公关、内容策划',
+  '社会工作': '社工、NGO、公益机构、社区管理、政府民政部门',
+  '护理学': '注册护士、护士长、社区健康、医疗管理',
+  '数学': '数学研究、精算师、数据分析、量化交易、教育',
+  '视觉传达设计': '平面设计师、UI/UX设计师、品牌设计、创意总监',
+};
+
+// ── 核心匹配函数 ─────────────────────────────────────────────────
+function getHollandMBTICode(mbtiType) {
+  // 提取MBTI的两位特征码用于匹配
+  var codes = [];
+  var ei = mbtiType[0]; // E or I
+  var sn = mbtiType[1]; // S or N
+  var tf = mbtiType[2]; // T or F
+  var jp = mbtiType[3]; // J or P
+  codes.push(sn + tf); // NT, NF, ST, SF
+  codes.push(ei + tf); // ET, EF, IT, IF
+  return codes;
+}
+
+function matchMajors(hollandTop, mbtiType, valueTop3, miTop3) {
+  var mbtiCodes = getHollandMBTICode(mbtiType);
+  var results = [];
+
+  // 第一层：霍兰德×MBTI×价值观匹配
+  majorMatchDB.forEach(function(rule) {
+    if(rule.holland !== hollandTop[0] && rule.holland !== hollandTop[1]) return;
+    var mbtiMatch = rule.mbti.some(function(m){ return mbtiCodes.indexOf(m) >= 0; });
+    if(!mbtiMatch) return;
+    var valueMatch = rule.value.some(function(v){ return valueTop3.indexOf(v) >= 0; });
+    var score = 0;
+    if(rule.holland === hollandTop[0]) score += 3;
+    else if(rule.holland === hollandTop[1]) score += 2;
+    if(mbtiMatch) score += 2;
+    if(valueMatch) score += 2;
+    results.push({ rule: rule, score: score });
+  });
+
+  results.sort(function(a,b){ return b.score - a.score; });
+
+  // 第二层：多元智能细分补充
+  var miMatches = [];
+  miTop3.forEach(function(miType) {
+    if(miMajorDB[miType]) {
+      miMatches = miMatches.concat(miMajorDB[miType].high.slice(0,3));
+    }
+  });
+
+  var result = {
+    primary: results.slice(0,3),
+    miSupplement: miMatches.slice(0,6),
+    miTips: miTop3.map(function(t){ return miMajorDB[t] ? miMajorDB[t].tip : ''; }).filter(Boolean)
+  };
+  window._lastMatchResult = result;
+  return result;
+}
+
+// ── 生成专业匹配报告段落 ──────────────────────────────────────────
+function renderMajorMatch(hollandTop, mbtiType, valueTop3, miTop3, sortedH) {
+  var match = matchMajors(hollandTop, mbtiType, valueTop3, miTop3);
+  var hollandColors = {R:'#185FA5',I:'#534AB7',A:'#993556',S:'#3B6D11',E:'#854F0B',C:'#5F5E5A'};
+
+  var html = '';
+  html += '<div class="result-section">';
+  html += '<div class="result-head" style="background:linear-gradient(135deg,#1F3864,#2E5F9E);color:#fff;">🎯 专业匹配推荐（综合五维度分析）</div>';
+  html += '<div class="result-body">';
+
+  // 匹配逻辑说明
+  html += '<div style="background:#F4F6F8;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#5F5E5A;line-height:1.8;">';
+  html += '本推荐综合你的<strong>霍兰德兴趣（'+hollandTop[0]+'型为主）</strong>、';
+  html += '<strong>MBTI性格（'+mbtiType+'）</strong>、';
+  html += '<strong>核心价值观（'+valueTop3.slice(0,2).join('、')+'）</strong>、';
+  html += '<strong>多元智能优势（'+miTop3.slice(0,2).join('、')+'）</strong>四个维度交叉分析得出。';
+  html += '</div>';
+
+  // 第一层推荐
+  html += '<div style="font-size:13px;font-weight:500;color:#1F3864;margin-bottom:10px;">▌ 第一层推荐：兴趣×性格×价值观匹配</div>';
+
+  if(match.primary.length === 0) {
+    html += '<div style="font-size:12px;color:#888;padding:10px;">暂无精确匹配，建议咨询辅导员进行一对一分析。</div>';
+  } else {
+    match.primary.forEach(function(item, idx) {
+      var rule = item.rule;
+      var hColor = hollandColors[rule.holland] || '#333';
+      var rank = ['🥇 首选方向','🥈 次选方向','🥉 备选方向'][idx] || '参考方向';
+      html += '<div style="border:0.5px solid #E0E0E0;border-radius:10px;padding:14px 16px;margin-bottom:10px;">';
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">';
+      html += '<span style="font-size:13px;font-weight:500;">'+rank+'</span>';
+      html += '<span style="background:'+hColor+'22;color:'+hColor+';font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;">'+rule.holland+'型适配</span>';
+      html += '</div>';
+      html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">';
+      rule.majors.forEach(function(m) {
+        var career = careerPathDB[m] ? ' → '+careerPathDB[m].split('、')[0]+'等' : '';
+        html += '<div style="background:#F4F6F8;border-radius:6px;padding:5px 10px;">';
+        html += '<div style="font-size:12px;font-weight:500;color:#1A1A2E;">'+m+'</div>';
+        if(career) html += '<div style="font-size:11px;color:#888;margin-top:1px;">'+career+'</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+      html += '<div style="font-size:12px;color:#666;background:#FAFAF8;padding:8px 10px;border-radius:6px;">💡 '+rule.desc+'</div>';
+      html += '</div>';
+    });
+  }
+
+  // 第二层推荐
+  html += '<div style="font-size:13px;font-weight:500;color:#1F3864;margin:14px 0 10px;">▌ 第二层推荐：多元智能优势细分</div>';
+  html += '<div style="background:#EAF3DE;border-radius:8px;padding:12px 16px;margin-bottom:10px;">';
+  html += '<div style="font-size:12px;color:#3B6D11;margin-bottom:8px;font-weight:500;">基于你的智能优势，以下专业可能让你如鱼得水：</div>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">';
+  var seen = {};
+  match.miSupplement.forEach(function(m) {
+    if(seen[m]) return; seen[m]=1;
+    html += '<span style="background:#fff;border:0.5px solid #639922;color:#3B6D11;font-size:12px;padding:4px 10px;border-radius:20px;">'+m+'</span>';
+  });
+  html += '</div>';
+  match.miTips.forEach(function(tip) {
+    html += '<div style="font-size:11px;color:#5A8A30;margin-top:4px;">• '+tip+'</div>';
+  });
+  html += '</div>';
+
+  // 志愿策略提示
+  html += '<div style="border-left:3px solid #2E5F9E;background:#E6F1FB;padding:12px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#0C447C;line-height:1.8;">';
+  html += '<strong>志愿填报三档策略：</strong><br>';
+  html += '🔴 <strong>冲：</strong>选最感兴趣的专业，报往年录取分数线高于自己10-20分的学校<br>';
+  html += '🟡 <strong>稳：</strong>选核心匹配专业，报往年录取分数线与自己持平的学校<br>';
+  html += '🟢 <strong>保：</strong>选适配专业中就业最稳定的，报往年录取分数线低于自己20-30分的学校<br>';
+  html += '<span style="color:#1A5FAA;font-size:11px;margin-top:4px;display:block;">建议携带此报告与升学顾问进行一对一深度解读，制定个性化志愿清单。</span>';
+  html += '</div>';
+  html += '</div></div>';
+
+  return html;
+}
+
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// GKWP 升级版 v2.0 — 新数据与函数定义
+// ═══════════════════════════════════════════════════════════
+
+const miData = [
+  { type:'语言智能', questions:[
+    '我喜欢阅读各种书籍，能长时间沉浸在文字世界里',
+    '写作或写日记对我来说是自然而然的事',
+    '我很容易记住诗词、歌词或精彩的句子',
+    '我善于用语言清晰表达复杂的想法',
+    '在辩论或讨论中我能快速找到有力的论点',
+    '我学外语相对比其他同学容易一些',
+    '我喜欢文字游戏、猜谜或填字游戏',
+  ]},
+  { type:'逻辑数学智能', questions:[
+    '我喜欢解数学题，尤其是有挑战性的推理题',
+    '我在脑海中能快速完成简单的数字运算',
+    '我喜欢发现规律并能预测下一步会发生什么',
+    '编程或逻辑推理类活动让我感到兴奋',
+    '我在做决定时习惯列出利弊清单进行分析',
+    '我对科学实验的过程和结果非常感兴趣',
+    '我解决问题时倾向于用系统化步骤化的方式',
+  ]},
+  { type:'空间智能', questions:[
+    '我能在脑海中清晰想象并旋转三维物体',
+    '我有很好的方向感在陌生地方不容易迷路',
+    '我喜欢画画设计或摆弄视觉相关的东西',
+    '看地图图纸或建筑平面图对我来说很容易',
+    '我能注意到别人忽略的视觉细节和色彩差异',
+    '我喜欢拍照视频剪辑或视觉艺术创作',
+    '在脑海中模拟事物运动或变化对我来说很自然',
+  ]},
+  { type:'音乐智能', questions:[
+    '我对音调和节奏非常敏感能很快发现跑调',
+    '我能轻松记住并哼唱听过的旋律',
+    '我喜欢演奏乐器或有强烈的意愿学习',
+    '听到音乐时我能感受到情绪的起伏变化',
+    '我能通过音乐表达自己的情感',
+    '背景音乐对我的情绪和学习效率影响很大',
+    '我喜欢探索不同风格的音乐对音乐有广泛兴趣',
+  ]},
+  { type:'身体运动智能', questions:[
+    '我学习新的运动动作比大多数同学快',
+    '动手操作如实验手工烹饪让我感到满足',
+    '我能通过身体感觉来判断动作是否正确',
+    '长时间坐着不动让我感到不舒服需要活动',
+    '我在运动或体育活动中找到很大的乐趣',
+    '用手做东西如搭建模型修理物品让我有成就感',
+    '我喜欢需要协调性和反应力的活动',
+  ]},
+  { type:'人际智能', questions:[
+    '我善于感受他人的情绪变化即使对方没有明说',
+    '朋友或同学遇到问题时经常来找我倾诉',
+    '我在团队中自然而然地担任协调或组织角色',
+    '我能在不同类型的人群中都感到自在',
+    '我擅长调解同学之间的矛盾和冲突',
+    '我能准确判断哪种方式与不同的人沟通最有效',
+    '与他人合作完成任务让我感到充实',
+  ]},
+  { type:'内省智能', questions:[
+    '我经常深入思考自己的行为动机和内心感受',
+    '我清楚地知道自己的优势在哪里弱点在哪里',
+    '我对自己的情绪变化很敏感能准确命名它们',
+    '独处时间对我来说是必要的用来整理思绪',
+    '我有明确的个人价值观并按照它来做决定',
+    '我喜欢写日记或进行自我反思',
+    '面对困难时我能冷静地分析自己的内心状态',
+  ]},
+  { type:'自然探索智能', questions:[
+    '我对大自然中的现象如天气动植物充满好奇',
+    '我喜欢户外活动在自然环境中感到放松',
+    '我善于观察并分类不同的动植物或自然事物',
+    '我对环境保护和生态问题有强烈的关注',
+    '我喜欢研究动物行为或植物生长规律',
+    '园艺养宠物野外探索让我感到满足',
+    '我能注意到自然界的细微变化如季节气候的规律',
+  ]},
+];
+
+const mbtiDataExtra = [
+  { dim:'EI', a:'课堂上我倾向于主动发言', b:'我通常等别人说完再表达自己的看法' },
+  { dim:'EI', a:'我在人多的地方更有活力', b:'人多的地方让我感到疲惫' },
+  { dim:'EI', a:'我喜欢在团队中集思广益', b:'我更喜欢独自思考后再与他人分享结果' },
+  { dim:'EI', a:'认识新朋友对我来说很容易', b:'与陌生人建立联系对我来说需要时间' },
+  { dim:'SN', a:'我学新事物时喜欢从具体例子开始', b:'我学新事物时喜欢先了解整体框架和原理' },
+  { dim:'SN', a:'我更喜欢做有明确答案的题目', b:'我更喜欢开放性没有标准答案的问题' },
+  { dim:'SN', a:'我关注当下正在发生的事', b:'我对未来可能发生的事更感兴趣' },
+  { dim:'SN', a:'我相信经验比理论更可靠', b:'我认为理论能帮助理解更多的经验' },
+  { dim:'TF', a:'遇到他人情绪化时我更想帮他们理清思路', b:'遇到他人情绪化时我更想给予情感上的支持' },
+  { dim:'TF', a:'我认为真相比感受更重要', b:'我认为照顾感受有时比坚持真相更重要' },
+  { dim:'TF', a:'我做判断时主要看事情是否合理', b:'我做判断时会考虑这样做是否会伤害别人' },
+  { dim:'TF', a:'批评行为不代表否定整个人我能区分', b:'即使针对行为的批评我也容易联系到对整个人的评价' },
+  { dim:'JP', a:'计划变动让我感到不安', b:'计划变动对我来说是正常的甚至有点刺激' },
+  { dim:'JP', a:'我喜欢把事情做完再开始新的任务', b:'我喜欢同时进行多件事交叉进行' },
+  { dim:'JP', a:'我对不守时的人感到不舒服', b:'我对时间的把握比较随意' },
+  { dim:'JP', a:'我做事前喜欢先收集足够信息再行动', b:'我更喜欢边做边学而不是花太多时间准备' },
+];
+
+const mbtiDataFull = _oldMbtiData.concat(mbtiDataExtra);
+
+const valueData = [
+  { key:'成就感', text:'工作中最重要的是能看到自己努力的成果并获得认可' },
+  { key:'帮助他人', text:'我认为职业最大的意义在于能帮助到别人改变他人的生活' },
+  { key:'创造创新', text:'我希望工作中有大量机会发挥创意而不是重复固定的流程' },
+  { key:'稳定安全', text:'有稳定的收入和工作保障对我来说比高薪但高风险更重要' },
+  { key:'独立自主', text:'我希望在工作中有较大的自主权不喜欢被过多约束和监督' },
+  { key:'影响力', text:'我希望自己的工作能影响更多人或在某个领域产生重要影响' },
+  { key:'知识探索', text:'持续学习和探索新知识是我工作动力的重要来源' },
+  { key:'团队归属', text:'在一个有凝聚力的团队中工作对我来说非常重要' },
+  { key:'经济回报', text:'高薪资和良好的物质回报是我选择职业的重要考量因素' },
+  { key:'社会责任', text:'我希望从事的职业对社会有积极贡献而不只是赚钱' },
+];
+
+function buildMI() {
+  var el = document.getElementById('mi_questions');
+  if(!el) return;
+  var flat = [];
+  miData.forEach(function(cat, ci) {
+    cat.questions.forEach(function(q, qi) {
+      flat.push({ text: q, key: 'mi_' + ci + '_' + qi, type: cat.type });
+    });
+  });
+  for(var i=flat.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=flat[i]; flat[i]=flat[j]; flat[j]=tmp;
+  }
+  window._miOrder = flat;
+  var h = '';
+  flat.forEach(function(q,i){
+    h += '<div class="q-block"><div class="q-text"><span class="q-num">Q'+(i+1)+'.</span>'+q.text+'</div>'+makeScaleRow(q.key,0)+'</div>';
+  });
+  el.innerHTML = h;
+}
+
+function buildMBTI() {
+  var el = document.getElementById('mbti_questions');
+  if(!el) return;
+  var flat = mbtiDataFull.map(function(q,i){ return {q:q, origIdx:i}; });
+  for(var i=flat.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=flat[i]; flat[i]=flat[j]; flat[j]=tmp;
+  }
+  el.innerHTML = flat.map(function(item,i){ return makeMbtiRow(item.origIdx, item.q, i+1); }).join('');
+}
+
+function calcMBTI() {
+  var dims = {EI:{E:0,I:0}, SN:{S:0,N:0}, TF:{T:0,F:0}, JP:{J:0,P:0}};
+  mbtiDataFull.forEach(function(q,i){
+    var val = document.querySelector('input[name="mbti_'+i+'"]:checked');
+    if(val) {
+      if(val.value==='A') dims[q.dim][Object.keys(dims[q.dim])[0]]++;
+      else dims[q.dim][Object.keys(dims[q.dim])[1]]++;
+    }
+  });
+  var type = '';
+  type += dims.EI.E >= dims.EI.I ? 'E':'I';
+  type += dims.SN.S >= dims.SN.N ? 'S':'N';
+  type += dims.TF.T >= dims.TF.F ? 'T':'F';
+  type += dims.JP.J >= dims.JP.P ? 'J':'P';
+  return { type: type, dims: dims };
+}
+
+function calcMI() {
+  var scores = {};
+  miData.forEach(function(cat){ scores[cat.type] = 0; });
+  (window._miOrder||[]).forEach(function(q){ scores[q.type] += getRadioVal(q.key); });
+  return scores;
+}
+
+function countMBTI() {
+  var n=0;
+  for(var i=0;i<48;i++){
+    if(document.querySelector('input[name="mbti_'+i+'"]:checked')) n++;
+  }
+  return n;
+}
+
+function countMI() {
+  var n=0;
+  (window._miOrder||[]).forEach(function(q){
+    if(document.querySelector('input[name="'+q.key+'"]:checked')) n++;
+  });
+  return n;
+}
+
+function buildValue() {
+  var el = document.getElementById('value_questions');
+  if(!el) return;
+  var h = '';
+  valueData.forEach(function(q,i){
+    h += '<div class="q-block"><div class="q-text"><span class="q-num">Q'+(i+1)+'.</span>'+q.text+'</div>'+makeScaleRow('val_'+i,0)+'</div>';
+  });
+  el.innerHTML = h;
+}
+
+function calcValue() {
+  var scores = {};
+  valueData.forEach(function(q,i){ scores[q.key] = getRadioVal('val_'+i); });
+  return scores;
+}
+
+function countValue() {
+  var n=0;
+  for(var i=0;i<10;i++){
+    if(document.querySelector('input[name="val_'+i+'"]:checked')) n++;
+  }
+  return n;
+}
+
+function generateReport() {
+  var hollandDone=0;
+  for(var i=0;i<48;i++){ if(document.querySelector('input[name="h_'+i+'"]:checked')) hollandDone++; }
+  var mbtiDone = countMBTI();
+  var miDone = countMI();
+  var totalMI = (window._miOrder||[]).length||56;
+  var stressDone=0, stressTotal=(window._stressOrder||[]).length||20;
+  for(var i=0;i<stressTotal;i++){ if(document.querySelector('input[name="st_'+i+'"]:checked')) stressDone++; }
+  var valueDone = countValue();
+
+  var errors=[];
+  if(hollandDone<48) errors.push('模块一（霍兰德）：还有'+(48-hollandDone)+'题未作答');
+  if(mbtiDone<48)    errors.push('模块二（MBTI）：还有'+(48-mbtiDone)+'题未作答');
+  if(miDone<totalMI) errors.push('模块三（多元智能）：还有'+(totalMI-miDone)+'题未作答');
+  if(stressDone<20)  errors.push('模块四（情绪压力）：还有'+(20-stressDone)+'题未作答');
+  if(valueDone<10)   errors.push('模块五（价值观）：还有'+(10-valueDone)+'题未作答');
+
+  var rc = document.getElementById('report_content');
+
+  if(errors.length>0){
+    var eh='<div style="background:var(--white);border:0.5px solid #E24B4A;border-radius:var(--radius-lg);padding:28px;text-align:center;">';
+    eh+='<div style="font-size:36px;margin-bottom:14px;">⚠️</div>';
+    eh+='<div style="font-size:17px;font-weight:500;color:#A32D2D;margin-bottom:10px;">还有题目未完成，无法生成报告</div>';
+    eh+='<div style="background:#FCEBEB;border-radius:var(--radius);padding:14px 20px;display:inline-block;text-align:left;margin-bottom:20px;">';
+    errors.forEach(function(e){ eh+='<div style="font-size:13px;color:#A32D2D;padding:3px 0;">✗ '+e+'</div>'; });
+    eh+='</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">';
+    if(hollandDone<48) eh+='<button class="btn btn-outline" onclick="gotoPage(1)">模块一</button>';
+    if(mbtiDone<48)    eh+='<button class="btn btn-outline" onclick="gotoPage(2)">模块二</button>';
+    if(miDone<totalMI) eh+='<button class="btn btn-outline" onclick="gotoPage(3)">模块三</button>';
+    if(stressDone<20)  eh+='<button class="btn btn-outline" onclick="gotoPage(4)">模块四</button>';
+    if(valueDone<10)   eh+='<button class="btn btn-outline" onclick="gotoPage(5)">模块五</button>';
+    eh+='</div></div>';
+    rc.innerHTML=eh;
+    gotoPage(6);
+    return;
+  }
+
+  var h=calcHolland(), m=calcMBTI(), mi=calcMI(), st=calcStress(), val=calcValue();
+  var sortedH=Object.entries(h).sort(function(a,b){return b[1]-a[1];});
+  var topH=sortedH.slice(0,3).map(function(x){return x[0];});
+  var code3=topH.join('');
+  var sortedMI=Object.entries(mi).sort(function(a,b){return b[1]-a[1];});
+  var sortedST=Object.entries(st).sort(function(a,b){return b[1]-a[1];});
+  var sortedVal=Object.entries(val).sort(function(a,b){return b[1]-a[1];});
+  var name=document.getElementById('f_name').value||'未填写';
+  var date=document.getElementById('f_date').value||new Date().toISOString().split('T')[0];
+  var score=document.getElementById('f_score').value||'——';
+  var decl=document.getElementById('f_declaration').value||'未填写';
+  var stressStrong=sortedST[0][0], stressRisk=sortedST[sortedST.length-1][0];
+  var maxH=Math.max.apply(null,Object.values(h));
+  var miColors=['#185FA5','#534AB7','#993556','#3B6D11','#854F0B','#5F5E5A','#0F6E56','#BA7517'];
+  var pressureMap={'稳定性':'高强度竞争类（医学、法学、金融）','感知':'持续评价类（艺术、传媒）','弹性':'长期耐心类（科研、教育）','表达':'人际情绪类（咨询、护理）','耐受':'目标导向类（研究、技术）'};
+
+  var rpt='';
+  rpt+='<div style="background:var(--green);color:#fff;border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:20px;">';
+  rpt+='<div style="font-size:12px;opacity:0.7;margin-bottom:6px;">GKWP · 个人幸福画像报告</div>';
+  rpt+='<div style="font-size:22px;font-weight:700;margin-bottom:4px;">'+name+' 的综合测评报告</div>';
+  rpt+='<div style="font-size:12px;opacity:0.8;">测评日期：'+date+' &nbsp; 预估分数：'+score+' &nbsp; 画像代码：'+code3+'-'+m.type+'</div>';
+  rpt+='<div style="margin-top:12px;font-size:13px;opacity:0.85;background:rgba(255,255,255,0.1);padding:10px;border-radius:8px;">幸福目标宣言：'+decl+'</div></div>';
+
+  // 霍兰德
+  rpt+='<div class="result-section"><div class="result-head" style="background:var(--blue-light);color:var(--blue);">🔵 模块一：霍兰德职业兴趣（RIASEC）</div><div class="result-body">';
+  rpt+='<div style="display:flex;gap:6px;margin-bottom:14px;align-items:center;"><span style="font-size:13px;color:var(--text-muted);">三位代码：</span>';
+  topH.forEach(function(t){ rpt+='<span class="type-badge type-'+t+'" style="font-size:14px;padding:4px 12px;">'+t+'（'+hollandTypeName[t]+'）</span>'; });
+  rpt+='</div><div class="riasec-grid" style="margin-bottom:14px;">';
+  sortedH.forEach(function(e){
+    var t=e[0],s=e[1];
+    rpt+='<div class="riasec-col"><div class="riasec-type" style="color:'+hollandColors[t]+';">'+t+'</div>';
+    rpt+='<div class="riasec-bar-wrap"><div class="riasec-bar" style="height:'+Math.round(s/maxH*76)+'px;background:'+hollandBg[t]+';border:1px solid '+hollandColors[t]+';"></div></div>';
+    rpt+='<div style="font-size:12px;font-weight:500;color:'+hollandColors[t]+';">'+s+'</div><div class="riasec-score">'+hollandTypeName[t]+'</div></div>';
+  });
+  rpt+='</div>';
+  topH.forEach(function(t){ rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong style="color:'+hollandColors[t]+';">'+hollandTypeName[t]+'适配专业：</strong>'+hollandMajors[t]+'</div>'; });
+  rpt+='</div></div>';
+
+  // MBTI
+  rpt+='<div class="result-section"><div class="result-head" style="background:var(--purple-light);color:var(--purple);">🟣 模块二：MBTI性格类型（48题）</div><div class="result-body">';
+  rpt+='<div style="display:flex;gap:14px;align-items:center;margin-bottom:12px;">';
+  rpt+='<div style="font-size:30px;font-weight:700;color:var(--purple);">'+m.type+'</div>';
+  rpt+='<div><div style="font-size:13px;font-weight:500;">'+(mbtiDescriptions[m.type]||m.type)+'</div><div style="font-size:12px;color:var(--text-muted);">适配专业：'+(mbtiMajors[m.type]||'请咨询')+'</div></div></div>';
+  rpt+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  Object.entries(m.dims).forEach(function(e){
+    var dim=e[0],sc=e[1],keys=Object.keys(sc);
+    var tot=sc[keys[0]]+sc[keys[1]]||1, pct=Math.round(sc[keys[0]]/tot*100);
+    var winner=sc[keys[0]]>=sc[keys[1]]?keys[0]:keys[1];
+    rpt+='<div style="background:var(--purple-light);border-radius:var(--radius);padding:10px;">';
+    rpt+='<div style="font-size:11px;color:var(--purple);font-weight:500;margin-bottom:5px;">'+keys[0]+' — '+keys[1]+'</div>';
+    rpt+='<div class="bar-track" style="height:5px;margin-bottom:4px;"><div class="bar-fill" style="width:'+pct+'%;background:var(--purple);"></div></div>';
+    rpt+='<div style="font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between;"><span>'+keys[0]+'：'+sc[keys[0]]+'</span><span>'+keys[1]+'：'+sc[keys[1]]+'</span></div>';
+    rpt+='<div style="font-size:12px;font-weight:500;color:var(--purple);margin-top:3px;">倾向：'+winner+'</div></div>';
+  });
+  rpt+='</div></div></div>';
+
+  // 多元智能
+  rpt+='<div class="result-section"><div class="result-head" style="background:var(--green-light);color:var(--green);">🟢 模块三：多元智能（56题）</div><div class="result-body">';
+  sortedMI.forEach(function(e,i){
+    rpt+='<div class="bar-row"><div class="bar-label" style="color:'+miColors[i]+';font-size:12px;">'+e[0]+'</div>';
+    rpt+='<div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/35*100)+'%;background:'+miColors[i]+';"></div></div>';
+    rpt+='<div class="bar-val">'+e[1]+'/35</div></div>';
+  });
+  rpt+='<div style="background:var(--green-light);border-left:3px solid var(--green);padding:10px;border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:var(--green);margin-top:10px;">';
+  rpt+='<strong>突出优势：</strong>'+sortedMI.slice(0,3).map(function(e){return '<strong>'+e[0]+'（'+e[1]+'/35）</strong>';}).join('　')+'</div>';
+  rpt+='</div></div>';
+
+  // 情绪压力
+  rpt+='<div class="result-section"><div class="result-head" style="background:var(--amber-light);color:var(--amber);">🟠 模块四：情绪与压力适应性</div><div class="result-body">';
+  Object.entries(st).forEach(function(e){
+    rpt+='<div class="bar-row"><div class="bar-label" style="font-size:12px;">'+e[0]+'</div>';
+    rpt+='<div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/20*100)+'%;background:var(--amber);"></div></div>';
+    rpt+='<div class="bar-val">'+e[1]+'/20</div></div>';
+  });
+  rpt+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">';
+  rpt+='<div style="background:var(--green-light);border-radius:var(--radius);padding:10px;"><div style="font-size:11px;color:var(--green);font-weight:500;">心理优势</div><div style="font-size:13px;font-weight:500;">'+stressStrong+'</div><div style="font-size:11px;color:var(--text-muted);">'+(pressureMap[stressStrong]||'')+'</div></div>';
+  rpt+='<div style="background:var(--amber-light);border-radius:var(--radius);padding:10px;"><div style="font-size:11px;color:var(--amber);font-weight:500;">需关注</div><div style="font-size:13px;font-weight:500;">'+stressRisk+'</div><div style="font-size:11px;color:var(--text-muted);">选择相关专业前请咨询辅导员</div></div>';
+  rpt+='</div></div></div>';
+
+  // 价值观
+  rpt+='<div class="result-section"><div class="result-head" style="background:var(--purple-light);color:var(--purple);">💎 模块五：职业价值观</div><div class="result-body">';
+  sortedVal.forEach(function(e){
+    rpt+='<div class="bar-row"><div class="bar-label" style="font-size:12px;">'+e[0]+'</div>';
+    rpt+='<div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/5*100)+'%;background:var(--purple);"></div></div>';
+    rpt+='<div class="bar-val">'+e[1]+'/5</div></div>';
+  });
+  rpt+='<div style="background:var(--purple-light);border-left:3px solid var(--purple);padding:10px;border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:var(--purple);margin-top:10px;">';
+  rpt+='<strong>核心取向：</strong>'+sortedVal.slice(0,3).map(function(e){return '<strong>'+e[0]+'（'+e[1]+'/5）</strong>';}).join('　');
+  rpt+='<br>职业价值观匹配度是长期幸福感最重要的预测因子，建议优先选择与核心价值观一致的专业方向。</div>';
+  rpt+='</div></div>';
+
+  // 综合推荐
+  rpt+='<div class="result-section"><div class="result-head" style="background:var(--green);color:#fff;">综合推荐方向与下一步建议</div><div class="result-body">';
+  rpt+='<table class="summary-table"><tr><th style="width:120px;">测评维度</th><th>结果摘要</th><th style="width:200px;">适配专业参考</th></tr>';
+  rpt+='<tr><td><span class="type-badge type-'+topH[0]+'">'+hollandTypeName[topH[0]]+'型</span></td><td>霍兰德代码 '+code3+'，主型 '+topH[0]+'</td><td style="font-size:12px;">'+hollandMajors[topH[0]]+'</td></tr>';
+  rpt+='<tr><td><span class="type-badge type-MBTI">'+m.type+'</span></td><td>'+(mbtiDescriptions[m.type]||m.type)+'</td><td style="font-size:12px;">'+(mbtiMajors[m.type]||'请咨询')+'</td></tr>';
+  rpt+='<tr><td>多元智能</td><td>突出：'+sortedMI[0][0]+'（'+sortedMI[0][1]+'/35）、'+sortedMI[1][0]+'（'+sortedMI[1][1]+'/35）</td><td style="font-size:12px;">建议发挥 '+sortedMI[0][0]+' 的专业</td></tr>';
+  rpt+='<tr><td>价值观</td><td>核心：'+sortedVal[0][0]+'、'+sortedVal[1][0]+'、'+sortedVal[2][0]+'</td><td style="font-size:12px;">与'+sortedVal[0][0]+'高度相关的方向</td></tr>';
+  rpt+='<tr><td>压力适应</td><td>'+stressStrong+' 突出，'+stressRisk+' 偏弱</td><td style="font-size:12px;">'+(pressureMap[stressStrong]||'').split('（')[0]+'</td></tr>';
+  rpt+='</table>';
+  rpt+='<div style="margin-top:14px;padding:12px;background:var(--green-pale);border-radius:var(--radius);border:0.5px solid var(--border);font-size:12px;line-height:1.8;">';
+  rpt+='<strong style="color:var(--green);">后续步骤：</strong><br>';
+  rpt+='① 将本报告交给辅导员，进行一对一解读谈话（建议30-45分钟）<br>';
+  rpt+='② 结合幸福目标宣言，与辅导员共同完成专业幸福匹配分析<br>';
+  rpt+='③ 参照志愿填报方案书模板，制定冲稳保志愿清单<br>';
+  rpt+='④ 与家长完成家庭期望整合访谈，达成共同决策共识</div>';
+  rpt+='</div></div>';
+
+  // 加入专业匹配推荐
+  var hollandTop3 = topH;
+  var mbtiTypeFull = m.type;
+  var valueTop3Names = sortedVal.slice(0,3).map(function(e){return e[0];});
+  var miTop3Names = sortedMI.slice(0,3).map(function(e){return e[0];});
+  rpt += renderMajorMatch(hollandTop3, mbtiTypeFull, valueTop3Names, miTop3Names, sortedH);
+
+  // 加入精准查询链接
+  var allRecommendedMajors = [];
+  if(window._lastMatchResult && window._lastMatchResult.primary) {
+    window._lastMatchResult.primary.forEach(function(item){
+      allRecommendedMajors = allRecommendedMajors.concat(item.rule.majors);
+    });
+  }
+  // 补充多元智能推荐专业
+  if(window._lastMatchResult && window._lastMatchResult.miSupplement) {
+    allRecommendedMajors = allRecommendedMajors.concat(window._lastMatchResult.miSupplement);
+  }
+  var userProvince = document.getElementById('f_province') ? document.getElementById('f_province').value : '';
+  var userScore = document.getElementById('f_score') ? document.getElementById('f_score').value : '';
+  rpt += renderQueryLinks(allRecommendedMajors, userProvince, userScore);
+
+  rc.innerHTML = rpt;
+  gotoPage(6);
+}
+
+// 重新初始化
+// 初始化由密码验证后的initApp()触发
+</script>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// 方案B：精准跳转链接生成器
+// 根据测评结果自动生成阳光高考查询链接
+// ═══════════════════════════════════════════════════════════
+
+// 省份代码表（阳光高考）
+const provCodeMap = {
+  '北京':'11','天津':'12','河北':'13','山西':'14','内蒙古':'15',
+  '辽宁':'21','吉林':'22','黑龙江':'23',
+  '上海':'31','江苏':'32','浙江':'33','安徽':'34','福建':'35','江西':'36','山东':'37',
+  '河南':'41','湖北':'42','湖南':'43','广东':'44','广西':'45','海南':'46',
+  '重庆':'50','四川':'51','贵州':'52','云南':'53','西藏':'54',
+  '陕西':'61','甘肃':'62','青海':'63','宁夏':'64','新疆':'65',
+};
+
+// 各省招办官网
+const provOfficeMap = {
+  '北京':'https://www.bjeea.cn/',
+  '天津':'https://www.tjzk.com.cn/',
+  '河北':'https://www.hebeea.edu.cn/',
+  '山西':'https://www.sxkszx.cn/',
+  '内蒙古':'https://www.nm.zsks.cn/',
+  '辽宁':'https://www.lnzsks.com/',
+  '吉林':'https://www.jleea.com.cn/',
+  '黑龙江':'https://www.lzk.hl.cn/',
+  '上海':'https://www.shmeea.edu.cn/',
+  '江苏':'https://www.jseea.cn/',
+  '浙江':'https://www.zjzs.net/',
+  '安徽':'https://www.ahzsw.com/',
+  '福建':'https://www.eeafj.cn/',
+  '江西':'https://www.jxeea.cn/',
+  '山东':'https://www.sdzk.cn/',
+  '河南':'https://www.haeea.cn/',
+  '湖北':'https://www.hbea.edu.cn/',
+  '湖南':'https://www.hneeb.cn/',
+  '广东':'https://eea.gd.gov.cn/',
+  '广西':'https://www.gxeea.cn/',
+  '海南':'https://ea.hainan.gov.cn/',
+  '重庆':'https://www.cqksy.cn/',
+  '四川':'https://www.sceea.cn/',
+  '贵州':'https://zsksy.guizhou.gov.cn/',
+  '云南':'https://www.ynzs.cn/',
+  '西藏':'https://zsks.edu.xizang.gov.cn/',
+  '陕西':'https://www.sneac.com/',
+  '甘肃':'https://www.ganseea.cn/',
+  '青海':'https://www.qheea.com/',
+  '宁夏':'https://www.nxjyks.cn/',
+  '新疆':'https://www.xjzsks.com/',
+};
+
+// 专业→阳光高考专业库编码（部分主要专业）
+const majorCodeMap = {
+  '计算机科学与技术':'080901',
+  '人工智能':'080717T',
+  '软件工程':'080902',
+  '数据科学与大数据技术':'080910T',
+  '信息安全':'080904K',
+  '自动化':'080801',
+  '机械工程':'080201',
+  '土木工程':'081001',
+  '建筑学':'082801',
+  '电气工程及其自动化':'080601',
+  '临床医学':'100201K',
+  '护理学':'101101',
+  '药学':'100701',
+  '生物科学':'071001',
+  '数学与应用数学':'070101',
+  '物理学':'070201',
+  '化学':'070301',
+  '汉语言文学':'050101',
+  '英语':'050201',
+  '新闻学':'050301',
+  '法学':'030101K',
+  '工商管理':'120201K',
+  '会计学':'120203K',
+  '市场营销':'120202',
+  '经济学':'020101',
+  '金融学':'020301K',
+  '心理学':'071101',
+  '教育学':'040101',
+  '社会工作':'030302',
+  '视觉传达设计':'130502',
+  '工业设计':'080205',
+};
+
+function encodeURIComponentCN(str) {
+  return encodeURIComponent(str);
+}
+
+// 生成阳光高考链接组（已验证的真实URL）
+function buildGaokaoLinks(majors, province, score) {
+  var base = 'https://gaokao.chsi.com.cn';
+  var links = [];
+
+  // 1. 阳光志愿智能推荐系统（按分数）
+  links.push({
+    label: '🎯 阳光志愿：按分数智能推荐院校和专业',
+    url: base + '/zyck/xtwh.html',
+    desc: score ? '登录后输入你的分数（约'+score+'分），系统自动推荐匹配的高校和专业' : '登录后输入你的分数，系统自动推荐匹配的高校和专业',
+    primary: true,
+    tag: '推荐首选',
+  });
+
+  // 2. 专业知识库搜索页（已验证可用）
+  // 搜索框可接受专业名，让用户在页面上搜索
+  links.push({
+    label: '📚 专业知识库：搜索你的目标专业',
+    url: base + '/zyk/zybk/',
+    desc: '进入后在搜索框输入专业名（如：' + (majors[0]||'计算机科学与技术') + '），查看课程、就业、开设院校',
+    primary: true,
+    tag: '重要',
+  });
+
+  // 3. 专业解读汇总（100+热门专业深度解读）
+  links.push({
+    label: '📖 热门专业深度解读（100+专业）',
+    url: base + '/zyk/zybk/zyjd/listPage',
+    desc: '阳光高考官方出品，含专业解析、就业方向、报考指南，权威详尽',
+    primary: false,
+  });
+
+  // 4. 院校库
+  links.push({
+    label: '🏫 全国院校库',
+    url: base + '/sch/search--ss-on,option-qg,searchType-1,start-0.dhtml',
+    desc: '按省份、类型、特色筛选院校，查看招生计划和历年分数线',
+    primary: false,
+  });
+
+  // 5. 省级招办官网（精确跳转）
+  if(province && provOfficeMap[province]) {
+    links.push({
+      label: '🏛️ ' + province + '教育考试院官网',
+      url: provOfficeMap[province],
+      desc: '查询' + province + '省2025年录取分数线、招生计划、志愿填报入口',
+      primary: false,
+    });
+  } else {
+    links.push({
+      label: '🏛️ 各省教育考试院官网导航',
+      url: base + '/gkxx/gedi/',
+      desc: '进入后选择你所在的省份，跳转至本省教育考试院官网',
+      primary: false,
+    });
+  }
+
+  // 6. 招生章程
+  links.push({
+    label: '📋 各高校招生章程查询',
+    url: base + '/zsgs/index.html',
+    desc: '填报志愿前必读！招生章程是唯一权威依据',
+    primary: false,
+  });
+
+  // 7. 批次线查询
+  links.push({
+    label: '📊 各省高考批次线查询',
+    url: base + '/gkxx/pcx/',
+    desc: '查询本省2025年本科线、专科线等各批次控制分数线',
+    primary: false,
+  });
+
+  return links;
+}
+
+// 渲染跳转链接模块
+function renderQueryLinks(majors, province, score) {
+  var links = buildGaokaoLinks(majors, province, score);
+
+  var html = '';
+  html += '<div class="result-section">';
+  html += '<div class="result-head" style="background:linear-gradient(135deg,#0F6E56,#1A9E7A);color:#fff;">🔗 精准查询入口（根据你的测评结果自动生成）</div>';
+  html += '<div class="result-body">';
+
+  // 数据说明
+  html += '<div style="background:#FFF8E6;border:0.5px solid #F0C040;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#7A5C00;line-height:1.8;">';
+  html += '⚠️ <strong>重要说明：</strong>以下链接跳转至教育部阳光高考平台及各省招办官网，';
+  html += '数据为<strong>2025年实时数据</strong>，权威准确。';
+  html += '分数线以各省招办当年公布为准，本测评结果仅供参考。';
+  html += '</div>';
+
+  // 主要链接（按分推荐）
+  var primary = links.filter(function(l){return l.primary;});
+  var secondary = links.filter(function(l){return !l.primary;});
+
+  if(primary.length > 0) {
+    html += '<div style="margin-bottom:12px;">';
+    primary.forEach(function(link) {
+      var tagHtml = link.tag ? '<span style="background:rgba(255,255,255,0.25);font-size:10px;padding:2px 7px;border-radius:20px;margin-left:6px;">'+link.tag+'</span>' : '';
+      html += '<a href="'+link.url+'" target="_blank" style="display:block;background:linear-gradient(135deg,#0F6E56,#1A9E7A);color:#fff;border-radius:10px;padding:14px 18px;text-decoration:none;margin-bottom:8px;">';
+      html += '<div style="font-size:14px;font-weight:500;margin-bottom:4px;">'+link.label+tagHtml+'</div>';
+      html += '<div style="font-size:12px;opacity:0.85;">'+link.desc+'</div>';
+      html += '</a>';
+    });
+    html += '</div>';
+  }
+
+  // 次要链接
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  secondary.forEach(function(link) {
+    html += '<a href="'+link.url+'" target="_blank" style="display:block;background:#F4F6F8;border:0.5px solid #D0D8E0;border-radius:8px;padding:10px 12px;text-decoration:none;color:inherit;">';
+    html += '<div style="font-size:12px;font-weight:500;color:#1A1A2E;margin-bottom:3px;">'+link.label+'</div>';
+    html += '<div style="font-size:11px;color:#666;line-height:1.5;">'+link.desc+'</div>';
+    html += '</a>';
+  });
+  html += '</div>';
+
+  // 查询步骤指引
+  // 本测评推荐的专业清单
+  html += '<div style="margin-top:14px;background:#F4F6F8;border-radius:8px;padding:12px 14px;">';
+  html += '<div style="font-size:12px;font-weight:500;color:#1A1A2E;margin-bottom:8px;">📝 本测评推荐专业（搜索时可直接复制专业名）：</div>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+  var seen = {}; var count = 0;
+  majors.forEach(function(m) {
+    if(seen[m] || count >= 10) return; seen[m]=1; count++;
+    html += '<span style="background:#fff;border:0.5px solid #C0D8E8;color:#1A1A2E;font-size:12px;padding:4px 10px;border-radius:20px;">'+m+'</span>';
+  });
+  html += '</div></div>';
+
+  html += '<div style="margin-top:10px;background:#E6F1FB;border-radius:8px;padding:12px 14px;font-size:12px;color:#0C447C;line-height:1.9;">';
+  html += '<strong>📖 建议查询步骤：</strong><br>';
+  html += '① 点击「阳光志愿」，登录后输入分数，获取初步院校专业推荐清单<br>';
+  html += '② 点击「专业知识库」，复制上方专业名到搜索框，了解课程和就业方向<br>';
+  html += '③ 点击「热门专业深度解读」，查看官方权威的专业分析<br>';
+  html += '④ 进入「省教育考试院官网」，查询本省2025年最新录取分数线<br>';
+  html += '⑤ 查阅目标院校「招生章程」，确认录取规则和加分政策<br>';
+  html += '⑥ 携带本报告与升学顾问进行一对一深度志愿规划';
+  html += '</div>';
+
+  html += '</div></div>';
+  return html;
+}
+</script>
+
+</div><!-- /main_app -->
+<script>
+// ═══════════════════════════════════════════════════════════
+// GKWP 题库翻倍 + 随机抽取 + 密码保护 v3.0
+// ═══════════════════════════════════════════════════════════
+
+// ── 密码保护 ─────────────────────────────────────────────────
+// 验证码验证由后台API处理
+
+function checkPassword() {
+  var input = document.getElementById("pwd_input").value.trim().toUpperCase();
+  if(!input) return;
+  var btn = document.getElementById("pwd_btn");
+  var errEl = document.getElementById("pwd_error");
+  btn.textContent = "验证中...";
+  btn.disabled = true;
+  errEl.style.display = "none";
+
+  fetch("/api/verify", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({code: input})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    if(data.success) {
+      document.getElementById("pwd_overlay").style.display = "none";
+      document.getElementById("main_app").style.display = "block";
+      initApp();
+    } else {
+      errEl.textContent = "❌ " + data.message;
+      errEl.style.display = "block";
+      document.getElementById("pwd_input").value = "";
+      document.getElementById("pwd_input").focus();
+      btn.textContent = "进入测评系统";
+      btn.disabled = false;
+    }
+  })
+  .catch(function() {
+    errEl.textContent = "❌ 网络错误，请检查连接后重试";
+    errEl.style.display = "block";
+    btn.textContent = "进入测评系统";
+    btn.disabled = false;
+  });
+}
+
+function initApp() {
+  buildHolland();
+  buildMBTI();
+  buildMI();
+  buildStress();
+  buildValue();
+  var fd = document.getElementById("f_date");
+  if(fd) fd.value = new Date().toISOString().split("T")[0];
+}
+
+// ── 霍兰德扩充题库 ──────────────────────────────────────────
+const hollandExtra = [
+  { type:"R", text:"我喜欢用工具或机器完成实际任务" },
+  { type:"R", text:"我享受修理或组装各种物品的过程" },
+  { type:"R", text:"我对机械原理和技术操作很感兴趣" },
+  { type:"R", text:"我更喜欢在户外或实验室工作而非办公室" },
+  { type:"R", text:"我愿意学习操作各种专业设备或仪器" },
+  { type:"R", text:"我觉得动手解决实际问题比讨论理论更有意思" },
+  { type:"R", text:"我对工程建造类的工作有浓厚兴趣" },
+  { type:"R", text:"我喜欢体育运动或需要体力的户外活动" },
+  { type:"I", text:"我对未解之谜充满好奇，喜欢深入探究" },
+  { type:"I", text:"我喜欢收集数据并从中发现规律" },
+  { type:"I", text:"我在图书馆或实验室能待很长时间而不觉得无聊" },
+  { type:"I", text:"我更倾向于独立研究问题而不是团队协作" },
+  { type:"I", text:"我对科学发现和新技术的新闻很感兴趣" },
+  { type:"I", text:"我喜欢用逻辑和证据来验证自己的想法" },
+  { type:"I", text:"我觉得分析复杂问题比与人社交更有意思" },
+  { type:"I", text:"我会主动阅读专业书籍来深化自己的理解" },
+  { type:"A", text:"我喜欢用创意方式表达自己的想法和情感" },
+  { type:"A", text:"我对音乐、绘画、写作等艺术形式充满热情" },
+  { type:"A", text:"我更喜欢开放性的工作环境而不是严格规范的环境" },
+  { type:"A", text:"我经常用与众不同的角度看待问题" },
+  { type:"A", text:"我喜欢参观博物馆、画廊或欣赏演出" },
+  { type:"A", text:"我在创作时能完全沉浸其中忘记时间" },
+  { type:"A", text:"我对美的事物非常敏感，注重生活中的审美细节" },
+  { type:"A", text:"我喜欢即兴发挥而不是按固定流程做事" },
+  { type:"S", text:"我在帮助别人解决问题时感到很满足" },
+  { type:"S", text:"我喜欢与不同背景的人交流和沟通" },
+  { type:"S", text:"我会主动关心身边人的情绪和需求" },
+  { type:"S", text:"我觉得团队合作比独自工作更有效率也更开心" },
+  { type:"S", text:"我在社交场合中能让周围的人感到轻松自在" },
+  { type:"S", text:"我对从事教育、培训、辅导类工作很感兴趣" },
+  { type:"S", text:"我愿意花时间倾听别人的烦恼和故事" },
+  { type:"S", text:"我觉得能改善他人生活质量的工作最有价值" },
+  { type:"E", text:"我喜欢说服别人接受我的观点或方案" },
+  { type:"E", text:"我在竞争环境中反而更有动力和活力" },
+  { type:"E", text:"我有很强的目标感，总是朝着结果去努力" },
+  { type:"E", text:"我喜欢组织活动或带领团队完成任务" },
+  { type:"E", text:"我对商业机会很敏感，善于发现市场需求" },
+  { type:"E", text:"我愿意承担风险来换取更大的成功机会" },
+  { type:"E", text:"我在公开场合发言或演讲时不会感到紧张" },
+  { type:"E", text:"我对管理职位和领导角色很感兴趣" },
+  { type:"C", text:"我喜欢按照明确的规则和程序完成工作" },
+  { type:"C", text:"我擅长整理和分类各种信息和文件" },
+  { type:"C", text:"我在处理数字和数据时感到得心应手" },
+  { type:"C", text:"我对工作精确度要求很高，不允许自己出错" },
+  { type:"C", text:"我喜欢有计划有条理地安排自己的时间和任务" },
+  { type:"C", text:"我对会计、行政、文秘类的工作感兴趣" },
+  { type:"C", text:"我喜欢在稳定可预测的环境中工作" },
+  { type:"C", text:"我能耐心地处理大量重复性但需要细心的工作" },
+];
+
+// ── MBTI扩充题库 ────────────────────────────────────────────
+const mbtiExtra2 = [
+  { dim:"EI", a:"我喜欢在课堂或会议上积极分享自己的看法", b:"我倾向于先把想法整理清楚再说出来" },
+  { dim:"EI", a:"和一大群人聚会让我感到充实和快乐", b:"我更享受和一两个好友的深度对话" },
+  { dim:"EI", a:"我很容易和陌生人打开话匣子", b:"我通常需要一段时间才能对新认识的人敞开心扉" },
+  { dim:"EI", a:"空闲时间我更喜欢约朋友出去玩", b:"空闲时间我更喜欢一个人待着做自己的事" },
+  { dim:"EI", a:"我在讨论中越说越有思路", b:"我在安静思考后才能形成清晰的想法" },
+  { dim:"EI", a:"我会主动打电话联系很久没见的朋友", b:"我更倾向于发消息而不是打电话" },
+  { dim:"EI", a:"我在热闹的环境中工作效率更高", b:"我需要安静的环境才能专注工作" },
+  { dim:"EI", a:"我喜欢同时认识很多人", b:"我更重视与少数人建立深厚稳定的关系" },
+  { dim:"EI", a:"参加派对或社交活动让我感到精力充沛", b:"参加派对或社交活动后我需要独处来恢复精力" },
+  { dim:"EI", a:"我倾向于先说出想法再进一步完善它", b:"我倾向于想清楚了再开口" },
+  { dim:"EI", a:"被孤立或长时间独处让我感到不安", b:"长时间无法独处让我感到焦虑" },
+  { dim:"EI", a:"我的朋友圈比较广泛多样", b:"我的朋友圈比较小但关系深厚" },
+  { dim:"SN", a:"我更信任经过实践验证的方法", b:"我对没有先例的新想法同样充满兴趣" },
+  { dim:"SN", a:"我注重事情的细节和具体步骤", b:"我更关注整体方向和长远可能性" },
+  { dim:"SN", a:"我倾向于按部就班地完成任务", b:"我喜欢在完成任务过程中随机应变" },
+  { dim:"SN", a:"我更擅长记住具体的事实和数据", b:"我更擅长把握抽象的概念和理论" },
+  { dim:"SN", a:"我相信眼前看得到的比未来的设想更重要", b:"我认为对未来的想象和规划同样重要甚至更重要" },
+  { dim:"SN", a:"我喜欢解决有明确答案的实际问题", b:"我喜欢探讨没有标准答案的假设性问题" },
+  { dim:"SN", a:"我学东西时喜欢先掌握基础再逐步深入", b:"我学东西时喜欢先了解全貌再补充细节" },
+  { dim:"SN", a:"我重视实用性，不太在意理论的优雅程度", b:"我欣赏一个理论框架的内在逻辑美感" },
+  { dim:"SN", a:"我做决定时主要参考过去的经验", b:"我做决定时会考虑未来的各种可能性" },
+  { dim:"SN", a:"我比较容易注意到环境中的具体变化", b:"我比较容易注意到事物之间的隐含联系" },
+  { dim:"SN", a:"我偏向于先收集足够的事实再下结论", b:"我偏向于凭直觉先有判断再寻找依据" },
+  { dim:"SN", a:"我对已经证明有效的方法充满信心", b:"我对改进现有方法或尝试全新方式充满热情" },
+  { dim:"TF", a:"做决定时我更看重客观逻辑而非感情因素", b:"做决定时我会充分考虑对相关人员的情感影响" },
+  { dim:"TF", a:"我认为批评和反馈应该直接客观不需要过多包装", b:"我认为反馈方式同样重要需要顾及对方感受" },
+  { dim:"TF", a:"我评价一个人主要看他的能力和成就", b:"我评价一个人更看重他的品格和待人方式" },
+  { dim:"TF", a:"讨论问题时我习惯先找出对方论点的漏洞", b:"讨论问题时我习惯先理解对方的立场和感受" },
+  { dim:"TF", a:"我更容易被有力的数据和逻辑说服", b:"我更容易被真诚的情感表达和故事打动" },
+  { dim:"TF", a:"我认为公平执行规则比照顾个别情况更重要", b:"我认为有时候需要灵活变通来照顾特殊情况" },
+  { dim:"TF", a:"我不太会因为别人的不认可而改变自己的判断", b:"他人的看法和感受会显著影响我的决定" },
+  { dim:"TF", a:"我觉得分析问题的根本原因比安慰情绪更有帮助", b:"我觉得先给予情感支持再分析原因更有帮助" },
+  { dim:"TF", a:"我对工作中的人际摩擦不太在意只关注结果", b:"工作中的人际关系和氛围对我来说非常重要" },
+  { dim:"TF", a:"我更欣赏逻辑严密的论述而非感情充沛的表达", b:"我更欣赏能引发共鸣的表达而非冷冰冰的逻辑" },
+  { dim:"TF", a:"当朋友向我诉苦时我倾向于给出解决方案", b:"当朋友向我诉苦时我倾向于先倾听和理解" },
+  { dim:"TF", a:"我认为感情用事是做好决策的障碍", b:"我认为情感直觉是做好决策的重要参考" },
+  { dim:"JP", a:"我喜欢在事情还有时间的时候就把它完成", b:"我常常在最后关头才进入最佳工作状态" },
+  { dim:"JP", a:"我的日程表通常是提前安排好的", b:"我的日程安排比较随性根据当天状态决定" },
+  { dim:"JP", a:"我不喜欢事情悬而未决希望尽快敲定", b:"我不介意事情保持开放状态直到更多信息出现" },
+  { dim:"JP", a:"我在开始一项工作前会先制定详细计划", b:"我更喜欢直接开始在过程中摸索方向" },
+  { dim:"JP", a:"我的桌面和工作空间通常保持整洁有序", b:"我的工作空间可能看起来乱但我知道东西在哪里" },
+  { dim:"JP", a:"我喜欢把大任务分解成小步骤逐一完成", b:"我喜欢整体推进同时处理多个部分" },
+  { dim:"JP", a:"临时改变计划让我感到不安和压力", b:"临时改变计划对我来说是正常甚至令人兴奋的" },
+  { dim:"JP", a:"我做完一件事才会开始下一件", b:"我喜欢同时推进多件事情并行处理" },
+  { dim:"JP", a:"我重视承诺和截止日期会严格遵守", b:"我认为截止日期是弹性的可以根据情况调整" },
+  { dim:"JP", a:"我喜欢生活有规律按时作息", b:"我的生活节奏比较随性不固定" },
+  { dim:"JP", a:"购物前我会先列好清单按需购买", b:"购物时我常常随心情买当时看中的东西" },
+  { dim:"JP", a:"我觉得有条理的人更值得信赖", b:"我觉得灵活应变的人更有创造力和魅力" },
+];
+
+// ── 情绪压力扩充题库 ────────────────────────────────────────
+const stressExtra = [
+  { dim:"稳定性", text:"在高压环境下我依然能保持清醒的判断力" },
+  { dim:"稳定性", text:"即使面对强烈批评我也不会失去自信" },
+  { dim:"稳定性", text:"我能在混乱的局面中保持内心的平静" },
+  { dim:"稳定性", text:"考试或重要场合前我能有效控制紧张情绪" },
+  { dim:"感知", text:"我能清楚地感受到自己情绪的细微变化" },
+  { dim:"感知", text:"我可以准确描述自己当下的心理状态" },
+  { dim:"感知", text:"我对他人的情绪变化非常敏感" },
+  { dim:"感知", text:"我能感受到环境氛围对自己心情的影响" },
+  { dim:"弹性", text:"经历失败后我能在短时间内重新振作" },
+  { dim:"弹性", text:"遇到挫折时我会主动寻找新的解决方法" },
+  { dim:"弹性", text:"我能从负面经历中找到值得学习的地方" },
+  { dim:"弹性", text:"环境变化对我的情绪影响不会持续太久" },
+  { dim:"表达", text:"我能用恰当的方式表达自己的不满或委屈" },
+  { dim:"表达", text:"我可以向信任的人分享自己的负面情绪" },
+  { dim:"表达", text:"我擅长用语言或文字疏导自己的情绪" },
+  { dim:"表达", text:"当我感到压力时会主动寻求他人的支持" },
+  { dim:"耐受", text:"长期面对单调重复的任务我也能保持耐心" },
+  { dim:"耐受", text:"在等待结果的不确定期间我能保持平和心态" },
+  { dim:"耐受", text:"即使长时间没有成果我也不会轻易放弃" },
+  { dim:"耐受", text:"我能在持续高压的环境中长期坚持下去" },
+];
+
+// ── 价值观扩充题库 ──────────────────────────────────────────
+const valueExtra = [
+  { key:"成就感", text:"我希望工作中有清晰的晋升路径和进步空间" },
+  { key:"帮助他人", text:"看到自己帮助的人取得进步是我最大的动力" },
+  { key:"创造创新", text:"我希望工作成果能反映出我独特的个人风格" },
+  { key:"稳定安全", text:"我更看重长期稳定的职业发展而非短期高收益" },
+  { key:"独立自主", text:"我希望能自己决定工作的方式和节奏" },
+  { key:"影响力", text:"我希望自己的工作成果能被广泛认可和传播" },
+  { key:"知识探索", text:"我愿意接受较低薪资换取更多学习成长的机会" },
+  { key:"团队归属", text:"我希望与志同道合的伙伴共同奋斗" },
+  { key:"经济回报", text:"我认为薪资水平是衡量职业成功的重要标准之一" },
+  { key:"社会责任", text:"我会拒绝对社会有负面影响的工作机会即使薪资很高" },
+];
+
+// ── 合并题库 ────────────────────────────────────────────────
+var hollandFull = hollandData.concat(hollandExtra);      // 96题
+var mbtiFull    = mbtiDataFull.concat(mbtiExtra2);       // 96题
+var stressFull  = stressData.concat(stressExtra);        // 40题
+var valueFull   = valueData.concat(valueExtra);          // 20题
+
+// ── 随机抽取函数 ─────────────────────────────────────────────
+function shuffle(arr) {
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+
+function sampleByGroup(fullData, groupKey, countPerGroup) {
+  var groups = {};
+  fullData.forEach(function(item) {
+    var k = item[groupKey];
+    if(!groups[k]) groups[k] = [];
+    groups[k].push(item);
+  });
+  var result = [];
+  Object.keys(groups).forEach(function(k) {
+    result = result.concat(shuffle(groups[k]).slice(0, countPerGroup));
+  });
+  return shuffle(result);
+}
+
+function sampleByDimPair(fullData, countPerDim) {
+  var dims = {};
+  fullData.forEach(function(item) {
+    if(!dims[item.dim]) dims[item.dim] = [];
+    dims[item.dim].push(item);
+  });
+  var result = [];
+  Object.keys(dims).forEach(function(d) {
+    result = result.concat(shuffle(dims[d]).slice(0, countPerDim));
+  });
+  return shuffle(result);
+}
+
+// ── 升级版buildHolland（随机抽48题，从96题中） ────────────────
+function buildHolland() {
+  var el = document.getElementById("holland_questions");
+  if(!el) return;
+  var sampled = sampleByGroup(hollandFull, "type", 8); // 每型抽8题=48题
+  window._hollandOrder = sampled;
+  var h = "";
+  sampled.forEach(function(q, i) {
+    h += "<div class='q-block'><div class='q-text'><span class='q-num'>Q"+(i+1)+".</span>"+q.text+"</div>"+makeScaleRow("h_"+i, 0)+"</div>";
+  });
+  el.innerHTML = h;
+}
+
+// ── 升级版buildMBTI（随机抽48题，从96题中）─────────────────────
+function buildMBTI() {
+  var el = document.getElementById("mbti_questions");
+  if(!el) return;
+  var sampled = sampleByDimPair(mbtiFull, 12); // 每维度抽12题=48题
+  window._mbtiOrder = sampled;
+  var h = "";
+  sampled.forEach(function(q, i) {
+    h += makeMbtiRow(i, q, i+1);
+  });
+  el.innerHTML = h;
+}
+
+// ── 升级版buildStress（随机抽20题，从40题中）────────────────────
+function buildStress() {
+  var el = document.getElementById("stress_questions");
+  if(!el) return;
+  var sampled = sampleByGroup(stressFull, "dim", 4); // 每维度抽4题=20题
+  window._stressOrder = sampled;
+  var h = "";
+  sampled.forEach(function(q, i) {
+    h += "<div class='q-block'><div class='q-text'><span class='q-num'>Q"+(i+1)+".</span>"+q.text+"</div>"+makeScaleRow("st_"+i, 0)+"</div>";
+  });
+  el.innerHTML = h;
+}
+
+// ── 升级版buildValue（随机抽10题，从20题中）─────────────────────
+function buildValue() {
+  var el = document.getElementById("value_questions");
+  if(!el) return;
+  var sampled = sampleByGroup(valueFull, "key", 1); // 每类抽1题=10题
+  window._valueOrder = sampled;
+  var h = "";
+  sampled.forEach(function(q, i) {
+    h += "<div class='q-block'><div class='q-text'><span class='q-num'>Q"+(i+1)+".</span>"+q.text+"</div>"+makeScaleRow("val_"+i, 0)+"</div>";
+  });
+  el.innerHTML = h;
+}
+
+// ── 升级版calcHolland ─────────────────────────────────────────
+function calcHolland() {
+  var scores = {R:0,I:0,A:0,S:0,E:0,C:0};
+  (window._hollandOrder||[]).forEach(function(q,i){
+    scores[q.type] += getRadioVal("h_"+i);
+  });
+  return scores;
+}
+
+// ── 升级版calcMBTI ────────────────────────────────────────────
+function calcMBTI() {
+  var dims = {EI:{E:0,I:0},SN:{S:0,N:0},TF:{T:0,F:0},JP:{J:0,P:0}};
+  (window._mbtiOrder||[]).forEach(function(q,i){
+    var val = document.querySelector("input[name='mbti_"+i+"']:checked");
+    if(val){
+      if(val.value==="A") dims[q.dim][Object.keys(dims[q.dim])[0]]++;
+      else dims[q.dim][Object.keys(dims[q.dim])[1]]++;
+    }
+  });
+  var type="";
+  type += dims.EI.E>=dims.EI.I?"E":"I";
+  type += dims.SN.S>=dims.SN.N?"S":"N";
+  type += dims.TF.T>=dims.TF.F?"T":"F";
+  type += dims.JP.J>=dims.JP.P?"J":"P";
+  return {type:type, dims:dims};
+}
+
+// ── 升级版calcStress ──────────────────────────────────────────
+function calcStress() {
+  var dims = {稳定性:0,感知:0,弹性:0,表达:0,耐受:0};
+  (window._stressOrder||[]).forEach(function(q,i){
+    dims[q.dim] += getRadioVal("st_"+i);
+  });
+  return dims;
+}
+
+// ── 升级版calcValue ───────────────────────────────────────────
+function calcValue() {
+  var scores = {};
+  (window._valueOrder||[]).forEach(function(q,i){
+    scores[q.key] = getRadioVal("val_"+i);
+  });
+  return scores;
+}
+
+// ── 升级版countHolland/MBTI/Stress/Value ─────────────────────
+function countHolland() {
+  var n=0;
+  for(var i=0;i<48;i++){ if(document.querySelector("input[name='h_"+i+"']:checked")) n++; }
+  return n;
+}
+function countMBTI() {
+  var n=0;
+  for(var i=0;i<48;i++){ if(document.querySelector("input[name='mbti_"+i+"']:checked")) n++; }
+  return n;
+}
+function countMI() {
+  var n=0;
+  (window._miOrder||[]).forEach(function(q){
+    if(document.querySelector("input[name='"+q.key+"']:checked")) n++;
+  });
+  return n;
+}
+function countStress() {
+  var n=0;
+  for(var i=0;i<20;i++){ if(document.querySelector("input[name='st_"+i+"']:checked")) n++; }
+  return n;
+}
+function countValue() {
+  var n=0;
+  for(var i=0;i<10;i++){ if(document.querySelector("input[name='val_"+i+"']:checked")) n++; }
+  return n;
+}
+</script>
+</body>
+</html>
