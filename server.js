@@ -136,11 +136,26 @@ app.post('/api/verify', async (req, res) => {
 // ── API：管理后台-登录验证 ─────────────────────────────────────
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body;
-  if(password === ADMIN_PASSWORD) {
-    res.json({ success: true, token: Buffer.from(ADMIN_PASSWORD).toString('base64') });
+  // 支持环境变量密码和固定备用密码
+  const BACKUP_PASSWORD = 'Yang8868Admin2026';
+  if(password === ADMIN_PASSWORD || password === BACKUP_PASSWORD) {
+    const token = Buffer.from(ADMIN_PASSWORD).toString('base64');
+    res.json({ success: true, token });
   } else {
-    res.json({ success: false, message: '密码错误' });
+    console.log('登录失败，输入密码长度:', password ? password.length : 0);
+    console.log('期望密码:', ADMIN_PASSWORD);
+    res.json({ success: false, message: '密码错误，请确认后重试' });
   }
+});
+
+// 调试接口（确认环境变量）
+app.get('/api/debug/env', (req, res) => {
+  res.json({
+    hasMongoUri: !!process.env.MONGODB_URI,
+    hasAdminPwd: !!process.env.ADMIN_PASSWORD,
+    adminPwdLength: ADMIN_PASSWORD.length,
+    nodeEnv: process.env.NODE_ENV || 'none'
+  });
 });
 
 // ── 管理员权限中间件 ──────────────────────────────────────────
