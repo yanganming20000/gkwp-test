@@ -468,47 +468,6 @@ body {
 }
 
 
-/* 强制手机端覆盖（!important确保覆盖行内样式）*/
-@media (max-width: 768px) {
-  /* 基本信息表单 */
-  #page0 .form-section > div[style*="grid"] {
-    grid-template-columns: 1fr !important;
-  }
-  /* 模块说明卡片 */
-  #page0 > div > div[style*="grid"] {
-    grid-template-columns: 1fr !important;
-  }
-  /* 报告内所有grid */
-  #result-container div[style*="grid"],
-  #page6 div[style*="grid"] {
-    grid-template-columns: 1fr !important;
-  }
-  /* 通用：所有行内grid都改单列 */
-  div[style*="grid-template-columns"] {
-    grid-template-columns: 1fr !important;
-  }
-  /* 但统计卡片保留两列 */
-  .stats, .grid-6, .grid-4 {
-    grid-template-columns: repeat(2,1fr) !important;
-  }
-  /* 按钮不换行 */
-  button {
-    white-space: nowrap !important;
-    font-size: 13px !important;
-  }
-  /* 导航按钮区 */
-  .nav-row, [style*="justify-content:space-between"] {
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-  }
-  /* 输入框全宽 */
-  input, select, textarea {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    font-size: 14px !important;
-  }
-}
-
 </style>
 
 <!-- 落地页 -->
@@ -3092,67 +3051,52 @@ function countValue() {
 }
 </script>
 
+
 <script>
-// ═══════════════════════════════════════════════
-// 手机端自适应修复
-// ═══════════════════════════════════════════════
-function isMobile() {
-  return window.innerWidth <= 768;
-}
+// 手机端精准修复：只处理测评内部页面，不影响落地页
+(function() {
+  function isMobile() { return window.innerWidth <= 768; }
 
-function fixMobileLayout() {
-  if (!isMobile()) return;
+  function fixPage(pageEl) {
+    if (!pageEl || !isMobile()) return;
+    // 只处理当前显示的测评页面内的grid
+    pageEl.querySelectorAll('[style*="grid-template-columns"]').forEach(function(el) {
+      var cols = el.style.gridTemplateColumns || '';
+      // 跳过已经是单列的
+      if (cols === '1fr' || cols === '1fr !important') return;
+      el.style.gridTemplateColumns = '1fr';
+      el.style.gap = '10px';
+    });
+    // 按钮不换行
+    pageEl.querySelectorAll('button').forEach(function(btn) {
+      btn.style.whiteSpace = 'nowrap';
+    });
+  }
 
-  // 修复所有grid布局
-  document.querySelectorAll('[style]').forEach(function(el) {
-    var s = el.style;
-    // 多列grid改单列
-    if (s.gridTemplateColumns &&
-        s.gridTemplateColumns !== '1fr' &&
-        !s.gridTemplateColumns.includes('!important')) {
-      // 判断是否是表单行（保留两列）或内容卡片
-      var cols = s.gridTemplateColumns;
-      if (cols.includes('1fr 1fr 1fr') || cols.includes('repeat(3') ||
-          cols.includes('repeat(4') || cols.includes('repeat(6') ||
-          cols.includes('auto-fill') || cols.includes('auto-fit')) {
-        el.style.gridTemplateColumns = '1fr';
-      } else if (cols.includes('1fr 1fr') || cols.includes('repeat(2')) {
-        el.style.gridTemplateColumns = '1fr';
-      }
+  // 监听gotoPage调用，每次翻页后修复
+  var origGoto = window.gotoPage;
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof gotoPage === 'function') {
+      var orig = gotoPage;
+      window.gotoPage = function(n) {
+        orig(n);
+        if (isMobile()) {
+          setTimeout(function() {
+            var page = document.getElementById('page' + n);
+            if (page) fixPage(page);
+          }, 50);
+        }
+      };
     }
-    // 修复flex不换行导致溢出
-    if (s.display === 'flex' && s.flexWrap === 'nowrap') {
-      el.style.flexWrap = 'wrap';
-    }
-  });
-
-  // 修复按钮文字换行
-  document.querySelectorAll('button').forEach(function(btn) {
-    btn.style.whiteSpace = 'nowrap';
-    btn.style.fontSize = '13px';
-  });
-
-  // 修复MBTI题目选项
-  document.querySelectorAll('.mbti-row, [class*="mbti"]').forEach(function(el) {
-    el.style.flexDirection = 'column';
-  });
-}
-
-// 页面加载后执行
-document.addEventListener('DOMContentLoaded', function() {
-  fixMobileLayout();
-
-  // 监听DOM变化（处理动态渲染的内容）
-  var observer = new MutationObserver(function(mutations) {
+    // 初始修复第0页
     if (isMobile()) {
-      setTimeout(fixMobileLayout, 100);
+      setTimeout(function() {
+        var p0 = document.getElementById('page0');
+        if (p0) fixPage(p0);
+      }, 200);
     }
   });
-  observer.observe(document.body, { childList: true, subtree: true });
-});
-
-// 窗口大小变化时重新执行
-window.addEventListener('resize', fixMobileLayout);
+})();
 </script>
 
 </body>
