@@ -174,7 +174,7 @@ body {
 .check-label { font-size: 13px; color: var(--text); }
 
 .info-row {
-  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 20px 24px;
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 12px; padding: 20px 24px;
 }
 .info-field label {
   display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;
@@ -212,7 +212,7 @@ body {
 .btn-export:hover { background: #1a6fba; }
 
 .score-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fill,minmax(120px,1fr)); gap: 10px;
   padding: 16px 24px;
 }
 .score-card {
@@ -262,7 +262,7 @@ body {
 .bar-val { font-size: 12px; color: var(--text-muted); min-width: 28px; }
 
 .riasec-grid {
-  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+  display: grid; grid-template-columns: repeat(auto-fill,minmax(100px,1fr)); gap: 8px;
 }
 .riasec-col {
   text-align: center;
@@ -299,7 +299,7 @@ body {
 .welcome-hero p { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 480px; margin: 0 auto 24px; }
 
 .module-cards {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 12px; margin-bottom: 24px;
 }
 .module-card {
   border: 0.5px solid var(--border-gray);
@@ -323,223 +323,150 @@ body {
 }
 
 /* ═══════════════════════════════════════════════
-   手机端响应式样式
+   手机端响应式样式（完整版）
 ═══════════════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* 落地页 */
-  .lp-hero { padding: 40px 16px 24px; }
-  .lp-title { font-size: 26px !important; line-height: 1.4; }
-  .lp-sub { font-size: 13px; padding: 0 8px; }
+  /* ── 落地页 ── */
+  .lp-hero { padding: 36px 16px 20px; }
+  .lp-title { font-size: 24px !important; line-height: 1.4; }
+  .lp-sub { font-size: 13px; padding: 0 8px; margin-bottom: 24px; }
   .lp-badge { font-size: 11px; padding: 5px 14px; }
 
-  /* 三大模块卡片：手机上改为单列 */
   .lp-cards {
     grid-template-columns: 1fr !important;
     padding: 0 16px !important;
     gap: 10px !important;
+    margin-bottom: 24px;
   }
   .lp-card { padding: 16px 14px; }
-  .lp-card-icon { font-size: 22px; margin-bottom: 8px; }
-  .lp-card-title { font-size: 14px; }
-  .lp-card-desc { font-size: 12px; }
 
-  /* 购买区域 */
-  .lp-buy {
-    padding: 24px 16px !important;
-    margin: 0 16px !important;
-    border-radius: 14px;
-  }
-  .lp-price { font-size: 40px !important; }
+  .lp-buy { padding: 20px 14px !important; margin: 0 16px !important; }
+  .lp-price { font-size: 38px !important; }
   .lp-price sup { font-size: 18px !important; }
-  .lp-price-note { font-size: 12px; }
   .lp-buy-btn { font-size: 15px !important; padding: 14px !important; }
-
-  /* 验证码输入区 */
   .lp-code-row { flex-direction: column; gap: 8px; }
   .lp-code-input { font-size: 14px; padding: 12px; }
-  .lp-code-btn { padding: 12px; width: 100%; font-size: 14px; }
-
-  /* 产品特点 */
-  .lp-features { padding: 24px 16px 32px; }
-  .lp-features h3 { font-size: 16px; }
+  .lp-code-btn { padding: 13px; width: 100%; font-size: 14px; border-radius: 10px; }
+  .lp-features { padding: 20px 16px 28px; }
   .lp-feature-text { font-size: 12px; line-height: 1.7; }
 
-  /* 页脚 */
-  .lp-footer { font-size: 11px; padding: 16px; }
+  /* ── 进度条 ── */
+  .progress-bar-wrap {
+    padding: 8px 10px;
+    gap: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .progress-step { padding: 3px 4px; flex: 0 0 auto; }
+  .step-label { display: none !important; }
+  .step-num { width: 22px; height: 22px; font-size: 10px; }
+  .step-sep { width: 12px; }
+
+  /* ── 基本信息表单（第一张图问题）── */
+  /* 把三列网格改为单列 */
+  #page0 .form-section { padding: 14px 14px; }
+  #page0 [style*="display:grid"],
+  #page0 [style*="display: grid"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  /* 覆盖行内样式的grid */
+  .form-grid-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  /* ── 模块说明卡片（第二张图问题）── */
+  /* 把双列改为单列 */
+  .module-cards-grid,
+  [class*="module-card"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* 针对行内style的双列grid */
+  #page0 > div,
+  .info-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── 测评内容区 ── */
+  .q-block { padding: 12px 12px; margin-bottom: 8px; border-radius: 10px; }
+  .q-text { font-size: 13px !important; line-height: 1.75; }
+  .q-num { font-size: 12px; }
+
+  /* MBTI题目 */
+  .mbti-row { flex-direction: column !important; gap: 8px !important; }
+  .mbti-opt { width: 100% !important; font-size: 12px !important; padding: 10px 12px !important; }
+  .mbti-label { font-size: 11px !important; }
+
+  /* 量表 */
+  .scale-wrap { gap: 6px !important; }
+  .scale-dot { width: 32px !important; height: 32px !important; font-size: 12px !important; }
+  .scale-label { font-size: 10px !important; }
+
+  /* 多元智能 */
+  .mi-item { flex-direction: column; gap: 8px; }
+
+  /* ── 报告页（第三张图问题）── */
+  .result-section { margin-bottom: 12px; }
+  .result-head { font-size: 13px !important; padding: 12px 14px; }
+  .result-body { padding: 12px 12px; }
+
+  /* 报告底部按钮 */
+  .nav-btns,
+  [style*="display:flex"][style*="justify-content:space-between"] {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  /* 修改答案 / 导出报告 按钮 */
+  button[onclick*="gotoPage"],
+  button[onclick*="export"],
+  button[onclick*="print"],
+  .btn-prev, .btn-next, .btn-submit {
+    padding: 11px 16px !important;
+    font-size: 13px !important;
+    white-space: nowrap;
+  }
+
+  /* 报告中的专业卡片双列→单列 */
+  .result-body [style*="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"],
+  .result-body [style*="grid-template-columns: repeat(auto-fit,minmax(150px,1fr))"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 查询链接双列→单列 */
+  [style*="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"] {
+    grid-template-columns: 1fr !important;
+  }
 
   /* 模块一 */
-  .m1-content { padding: 20px 14px; }
-  .m1-title { font-size: 20px !important; }
-  .m1-body { font-size: 14px !important; line-height: 1.85; }
-  .m1-quote { font-size: 12px; padding: 12px 14px; }
-  .m1-question-label { font-size: 12px; }
+  .m1-content { padding: 16px 14px; }
+  .m1-title { font-size: 20px !important; margin-bottom: 14px; }
+  .m1-body { font-size: 13px !important; line-height: 1.85; margin-bottom: 16px; }
+  .m1-quote { font-size: 12px; padding: 10px 12px; }
   .m1-question-text { font-size: 13px; }
+  .m1-textarea { font-size: 13px; min-height: 70px; }
   .m1-btn-start { font-size: 15px; padding: 13px; }
+  .m1-dimension-card { padding: 12px 12px; gap: 10px; }
+  .m1-dim-icon { width: 38px; height: 38px; font-size: 18px; flex-shrink: 0; }
   .m1-dim-title { font-size: 13px; }
   .m1-dim-desc { font-size: 11px; }
-
-  /* 测评主体 */
-  .progress-bar-wrap { padding: 10px 12px; overflow-x: auto; }
-  .progress-step { padding: 3px 6px; }
-  .step-label { font-size: 10px; display: none; }
-  .step-num { width: 22px; height: 22px; font-size: 11px; }
-
-  /* 测评问题区 */
-  .q-block { padding: 12px 14px; margin-bottom: 10px; }
-  .q-text { font-size: 13px; line-height: 1.7; }
-  .q-num { font-size: 12px; }
-  .scale-row { gap: 4px; flex-wrap: wrap; }
-  .scale-label { font-size: 10px; }
-
-  /* 报告区 */
-  .result-head { font-size: 14px; padding: 12px 14px; }
-  .result-body { padding: 14px; }
-  .result-section { margin-bottom: 14px; }
-
-  /* 个人信息表单 */
-  #page0 { padding: 16px; }
-  .form-section { padding: 16px; }
-  input[type=text], input[type=date], select, textarea {
-    font-size: 14px !important;
-  }
-
-  /* 通用按钮 */
-  .btn-next, .btn-prev, .btn-submit {
-    padding: 12px 20px;
-    font-size: 14px;
-  }
-
-  /* 报告内专业卡片 */
-  .result-body > div[style*="grid-template-columns:1fr 1fr"] {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* 查询链接区域 */
-  div[style*="grid-template-columns:1fr 1fr"] {
-    grid-template-columns: 1fr !important;
-  }
+  .m1-dots { gap: 4px; }
+  .m1-dot { width: 6px; height: 6px; }
+  .m1-btn-prev, .m1-btn-next { padding: 9px 16px; font-size: 13px; }
 }
 
 @media (max-width: 400px) {
-  .lp-title { font-size: 22px !important; }
-  .lp-price { font-size: 36px !important; }
-  .m1-title { font-size: 18px !important; }
-  .m1-body { font-size: 13px !important; }
+  .lp-title { font-size: 20px !important; }
+  .lp-price { font-size: 34px !important; }
+  .m1-title { font-size: 17px !important; }
+  .m1-body { font-size: 12px !important; }
+  .q-text { font-size: 12px !important; }
+  .scale-dot { width: 28px !important; height: 28px !important; font-size: 11px !important; }
 }
 
-</style>
-</head>
-<body>
-
-<!-- ══════════════════════════════════════════════════════════
-     产品落地页 (page 0)
-══════════════════════════════════════════════════════════ -->
-<style>
-/* 落地页样式 */
-#landing-page {
-  display:none; min-height:100vh;
-  background:linear-gradient(160deg,#0D2137 0%,#1F3864 50%,#2E5F9E 100%);
-  color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-}
-.lp-hero { text-align:center; padding:60px 24px 40px; }
-.lp-badge { display:inline-block; background:rgba(255,255,255,0.15);
-  border:1px solid rgba(255,255,255,0.3); border-radius:20px;
-  padding:6px 18px; font-size:12px; margin-bottom:20px; letter-spacing:0.05em; }
-.lp-title { font-size:32px; font-weight:800; line-height:1.3; margin-bottom:12px; }
-.lp-title span { color:#64C8FF; }
-.lp-sub { font-size:15px; opacity:0.8; line-height:1.8; max-width:500px; margin:0 auto 32px; }
-.lp-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
-  max-width:800px; margin:0 auto 40px; padding:0 20px; }
-.lp-card { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
-  border-radius:14px; padding:20px 16px; text-align:center; }
-.lp-card-icon { font-size:28px; margin-bottom:10px; }
-.lp-card-title { font-size:14px; font-weight:600; margin-bottom:6px; }
-.lp-card-desc { font-size:12px; opacity:0.7; line-height:1.6; }
-.lp-card-badge { display:inline-block; background:rgba(100,200,255,0.2);
-  border:1px solid rgba(100,200,255,0.4); border-radius:20px;
-  padding:3px 10px; font-size:11px; color:#64C8FF; margin-top:8px; }
-.lp-buy { background:rgba(255,255,255,0.06); border-radius:20px;
-  padding:32px 24px; max-width:500px; margin:0 auto; text-align:center; }
-.lp-price { font-size:48px; font-weight:800; color:#FFD700; }
-.lp-price sup { font-size:22px; vertical-align:top; margin-top:10px; display:inline-block; }
-.lp-price-note { font-size:13px; opacity:0.6; margin-bottom:20px; }
-.lp-buy-btn { display:block; background:linear-gradient(135deg,#FFD700,#FFA500);
-  color:#1A1A00; font-weight:700; font-size:17px; padding:16px;
-  border-radius:12px; border:none; cursor:pointer; width:100%; margin-bottom:12px; }
-.lp-buy-btn:hover { opacity:0.92; }
-.lp-code-row { display:flex; gap:8px; }
-.lp-code-input { flex:1; padding:13px 14px; border:1.5px solid rgba(255,255,255,0.25);
-  border-radius:10px; background:rgba(255,255,255,0.08); color:#fff;
-  font-size:15px; outline:none; letter-spacing:2px; text-transform:uppercase; }
-.lp-code-input::placeholder { color:rgba(255,255,255,0.4); letter-spacing:0; }
-.lp-code-input:focus { border-color:rgba(255,255,255,0.5); }
-.lp-code-btn { padding:13px 20px; background:#2E5F9E; color:#fff;
-  border:none; border-radius:10px; cursor:pointer; font-size:14px; font-weight:500; }
-.lp-code-btn:hover { background:#3A72B5; }
-.lp-err { color:#FF6B6B; font-size:13px; margin-top:8px; display:none; text-align:left; }
-.lp-divider { text-align:center; opacity:0.4; margin:14px 0; font-size:12px; }
-.lp-features { max-width:700px; margin:0 auto; padding:32px 20px 40px; }
-.lp-features h3 { text-align:center; font-size:18px; margin-bottom:20px; opacity:0.9; }
-.lp-feature-row { display:flex; gap:12px; margin-bottom:14px; align-items:flex-start; }
-.lp-feature-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
-.lp-feature-text { font-size:13px; line-height:1.7; opacity:0.85; }
-.lp-feature-text strong { color:#64C8FF; }
-.lp-footer { text-align:center; padding:20px; opacity:0.4; font-size:12px;
-  border-top:1px solid rgba(255,255,255,0.1); }
-
-/* 模块一样式 */
-#module1-page {
-  display:none; min-height:100vh;
-  background:#F8F9FB; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-}
-.m1-header { background:linear-gradient(135deg,#1F3864,#2E5F9E);
-  color:#fff; padding:20px 24px; }
-.m1-header-top { display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:12px; }
-.m1-logo { font-size:14px; font-weight:600; opacity:0.9; }
-.m1-step { font-size:12px; opacity:0.6; }
-.m1-progress { height:4px; background:rgba(255,255,255,0.2); border-radius:2px; }
-.m1-progress-fill { height:100%; background:#64C8FF; border-radius:2px; transition:width 0.4s; }
-.m1-content { max-width:680px; margin:0 auto; padding:32px 20px; }
-.m1-slide { display:none; animation:slideIn 0.3s ease; }
-.m1-slide.active { display:block; }
-@keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-.m1-badge { display:inline-block; padding:4px 14px; border-radius:20px;
-  font-size:12px; font-weight:600; margin-bottom:14px; color:#fff; }
-.m1-title { font-size:26px; font-weight:800; color:#1F3864; margin-bottom:20px; line-height:1.3; }
-.m1-body { font-size:15px; line-height:1.9; color:#333; margin-bottom:24px; }
-.m1-body strong { color:#1F3864; }
-.m1-quote { background:#F0F4F8; border-left:4px solid #2E5F9E;
-  padding:14px 18px; border-radius:0 10px 10px 0;
-  font-size:13px; color:#555; font-style:italic; margin-bottom:24px; line-height:1.7; }
-.m1-question-box { background:#fff; border:1.5px solid #D0D8E8;
-  border-radius:14px; padding:20px; margin-bottom:28px; }
-.m1-question-label { font-size:13px; font-weight:600; color:#2E5F9E; margin-bottom:10px; }
-.m1-question-text { font-size:14px; color:#333; margin-bottom:12px; line-height:1.7; }
-.m1-textarea { width:100%; padding:12px; border:1.5px solid #E0E8F0;
-  border-radius:8px; font-size:14px; resize:vertical; min-height:80px;
-  outline:none; font-family:inherit; color:#333; }
-.m1-textarea:focus { border-color:#2E5F9E; }
-.m1-nav { display:flex; justify-content:space-between; align-items:center;
-  padding:16px 0; border-top:1px solid #E8EDF2; }
-.m1-dots { display:flex; gap:6px; }
-.m1-dot { width:8px; height:8px; border-radius:50%; background:#D0D8E8; transition:all 0.2s; }
-.m1-dot.active { background:#2E5F9E; width:20px; border-radius:4px; }
-.m1-btn-prev { padding:10px 20px; background:#E8EDF2; color:#444;
-  border:none; border-radius:8px; cursor:pointer; font-size:14px; }
-.m1-btn-next { padding:10px 24px; background:#2E5F9E; color:#fff;
-  border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:500; }
-.m1-btn-start { padding:14px 32px; background:linear-gradient(135deg,#0F6E56,#1A9E7A);
-  color:#fff; border:none; border-radius:10px; cursor:pointer;
-  font-size:16px; font-weight:600; display:block; width:100%; margin-top:8px; }
-.m1-note { font-size:12px; color:#888; text-align:center; margin-top:8px; }
-.m1-dimension-card { background:#fff; border-radius:14px; padding:16px;
-  margin-bottom:12px; border:1.5px solid #E8EDF2; display:flex; gap:14px; align-items:center; }
-.m1-dim-icon { width:44px; height:44px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
-.m1-dim-title { font-size:14px; font-weight:600; color:#1F3864; margin-bottom:3px; }
-.m1-dim-desc { font-size:12px; color:#666; line-height:1.6; }
 </style>
 
 <!-- 落地页 -->
@@ -1381,7 +1308,7 @@ function makeMbtiRow(idx, item, displayNum) {
   const num = displayNum !== undefined ? displayNum : idx+1;
   return `<div class="q-block">
     <div class="q-text"><span class="q-num">Q${num}.</span>以下两项描述，哪项更符合你的真实状态？</div>
-    <div class="checkbox-grid" style="grid-template-columns:1fr 1fr;">
+    <div class="checkbox-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));">
       <label class="check-item" onclick="selectMbti(this,'mbti_${idx}','A')">
         <input type="radio" name="mbti_${idx}" value="A">
         <div class="check-box"><span class="check-mark"></span></div>
@@ -1712,7 +1639,7 @@ function _oldGenerateReport() {
           <div style="font-size:12px;color:var(--text-muted);">适配专业参考：${mbtiMajors[m.type]||'请咨询辅导员'}</div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
         ${Object.entries(m.dims).map(([dim,scores])=>{
           const [k1,k2] = Object.keys(scores);
           const total = scores[k1]+scores[k2]||1;
@@ -1767,7 +1694,7 @@ function _oldGenerateReport() {
             <div class="bar-val">${score}/20</div>
           </div>`).join('')}
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
         <div style="background:var(--green-light);border-radius:var(--radius);padding:10px 12px;">
           <div style="font-size:11px;color:var(--green);font-weight:500;margin-bottom:4px;">心理优势维度</div>
           <div style="font-size:13px;font-weight:500;">${stressStrong}</div>
@@ -2424,7 +2351,7 @@ function generateReport() {
   rpt+='<div style="display:flex;gap:14px;align-items:center;margin-bottom:12px;">';
   rpt+='<div style="font-size:30px;font-weight:700;color:var(--purple);">'+m.type+'</div>';
   rpt+='<div><div style="font-size:13px;font-weight:500;">'+(mbtiDescriptions[m.type]||m.type)+'</div><div style="font-size:12px;color:var(--text-muted);">适配专业：'+(mbtiMajors[m.type]||'请咨询')+'</div></div></div>';
-  rpt+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  rpt+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">';
   Object.entries(m.dims).forEach(function(e){
     var dim=e[0],sc=e[1],keys=Object.keys(sc);
     var tot=sc[keys[0]]+sc[keys[1]]||1, pct=Math.round(sc[keys[0]]/tot*100);
@@ -2455,7 +2382,7 @@ function generateReport() {
     rpt+='<div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/20*100)+'%;background:var(--amber);"></div></div>';
     rpt+='<div class="bar-val">'+e[1]+'/20</div></div>';
   });
-  rpt+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">';
+  rpt+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px;">';
   rpt+='<div style="background:var(--green-light);border-radius:var(--radius);padding:10px;"><div style="font-size:11px;color:var(--green);font-weight:500;">心理优势</div><div style="font-size:13px;font-weight:500;">'+stressStrong+'</div><div style="font-size:11px;color:var(--text-muted);">'+(pressureMap[stressStrong]||'')+'</div></div>';
   rpt+='<div style="background:var(--amber-light);border-radius:var(--radius);padding:10px;"><div style="font-size:11px;color:var(--amber);font-weight:500;">需关注</div><div style="font-size:13px;font-weight:500;">'+stressRisk+'</div><div style="font-size:11px;color:var(--text-muted);">选择相关专业前请咨询辅导员</div></div>';
   rpt+='</div></div></div>';
@@ -2719,7 +2646,7 @@ function renderQueryLinks(majors, province, score) {
   }
 
   // 次要链接
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">';
   secondary.forEach(function(link) {
     html += '<a href="'+link.url+'" target="_blank" style="display:block;background:#F4F6F8;border:0.5px solid #D0D8E0;border-radius:8px;padding:10px 12px;text-decoration:none;color:inherit;">';
     html += '<div style="font-size:12px;font-weight:500;color:#1A1A2E;margin-bottom:3px;">'+link.label+'</div>';
