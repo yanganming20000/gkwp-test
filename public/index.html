@@ -321,6 +321,113 @@ body {
   .page { display: block !important; }
   .section-card, .result-section { break-inside: avoid; }
 }
+
+/* ═══════════════════════════════════════════════
+   手机端响应式样式
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* 落地页 */
+  .lp-hero { padding: 40px 16px 24px; }
+  .lp-title { font-size: 26px !important; line-height: 1.4; }
+  .lp-sub { font-size: 13px; padding: 0 8px; }
+  .lp-badge { font-size: 11px; padding: 5px 14px; }
+
+  /* 三大模块卡片：手机上改为单列 */
+  .lp-cards {
+    grid-template-columns: 1fr !important;
+    padding: 0 16px !important;
+    gap: 10px !important;
+  }
+  .lp-card { padding: 16px 14px; }
+  .lp-card-icon { font-size: 22px; margin-bottom: 8px; }
+  .lp-card-title { font-size: 14px; }
+  .lp-card-desc { font-size: 12px; }
+
+  /* 购买区域 */
+  .lp-buy {
+    padding: 24px 16px !important;
+    margin: 0 16px !important;
+    border-radius: 14px;
+  }
+  .lp-price { font-size: 40px !important; }
+  .lp-price sup { font-size: 18px !important; }
+  .lp-price-note { font-size: 12px; }
+  .lp-buy-btn { font-size: 15px !important; padding: 14px !important; }
+
+  /* 验证码输入区 */
+  .lp-code-row { flex-direction: column; gap: 8px; }
+  .lp-code-input { font-size: 14px; padding: 12px; }
+  .lp-code-btn { padding: 12px; width: 100%; font-size: 14px; }
+
+  /* 产品特点 */
+  .lp-features { padding: 24px 16px 32px; }
+  .lp-features h3 { font-size: 16px; }
+  .lp-feature-text { font-size: 12px; line-height: 1.7; }
+
+  /* 页脚 */
+  .lp-footer { font-size: 11px; padding: 16px; }
+
+  /* 模块一 */
+  .m1-content { padding: 20px 14px; }
+  .m1-title { font-size: 20px !important; }
+  .m1-body { font-size: 14px !important; line-height: 1.85; }
+  .m1-quote { font-size: 12px; padding: 12px 14px; }
+  .m1-question-label { font-size: 12px; }
+  .m1-question-text { font-size: 13px; }
+  .m1-btn-start { font-size: 15px; padding: 13px; }
+  .m1-dim-title { font-size: 13px; }
+  .m1-dim-desc { font-size: 11px; }
+
+  /* 测评主体 */
+  .progress-bar-wrap { padding: 10px 12px; overflow-x: auto; }
+  .progress-step { padding: 3px 6px; }
+  .step-label { font-size: 10px; display: none; }
+  .step-num { width: 22px; height: 22px; font-size: 11px; }
+
+  /* 测评问题区 */
+  .q-block { padding: 12px 14px; margin-bottom: 10px; }
+  .q-text { font-size: 13px; line-height: 1.7; }
+  .q-num { font-size: 12px; }
+  .scale-row { gap: 4px; flex-wrap: wrap; }
+  .scale-label { font-size: 10px; }
+
+  /* 报告区 */
+  .result-head { font-size: 14px; padding: 12px 14px; }
+  .result-body { padding: 14px; }
+  .result-section { margin-bottom: 14px; }
+
+  /* 个人信息表单 */
+  #page0 { padding: 16px; }
+  .form-section { padding: 16px; }
+  input[type=text], input[type=date], select, textarea {
+    font-size: 14px !important;
+  }
+
+  /* 通用按钮 */
+  .btn-next, .btn-prev, .btn-submit {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  /* 报告内专业卡片 */
+  .result-body > div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 查询链接区域 */
+  div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .lp-title { font-size: 22px !important; }
+  .lp-price { font-size: 36px !important; }
+  .m1-title { font-size: 18px !important; }
+  .m1-body { font-size: 13px !important; }
+}
+
 </style>
 </head>
 <body>
