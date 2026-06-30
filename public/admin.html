@@ -343,7 +343,7 @@ tr:hover td{background:#FAFAFA}
         <div style="background:#F4F6F8;border-radius:8px;padding:16px;font-size:13px;line-height:2;color:#333">
           亲爱的同学/家长，感谢你的信任和支持！🎉<br>
           你的 GKWP 幸福测评专属验证码是：<strong style="color:#1F3864;font-size:15px" id="sampleCode">【验证码】</strong><br>
-          测评网址：<span style="color:#2E5F9E">【你的网站地址】</span><br><br>
+          测评网址：<span style="color:#2E5F9E">https://gkwp-test.onrender.com/</span><br><br>
           📌 温馨提示：<br>
           · 验证码为一次性专属码，请勿转发给他人<br>
           · 首次使用后48小时内可多次进入，建议尽快完成测评<br>
@@ -475,7 +475,7 @@ tr:hover td{background:#FAFAFA}
           </div>
           <div class="form-group" style="margin-bottom:14px">
             <label>网站地址(用于话术模板)</label>
-            <input class="form-input" type="text" id="siteUrl" placeholder="如：https://gkwp.onrender.com">
+            <input class="form-input" type="text" id="siteUrl" value="https://gkwp-test.onrender.com/" readonly>
           </div>
           <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
         </div>
@@ -505,7 +505,8 @@ tr:hover td{background:#FAFAFA}
 
 <script>
 var TOKEN = '';
-var settings = { defaultDays:30, contact:'杨叔8868', price:19.9, siteUrl:'' };
+var FIXED_SITE_URL = 'https://gkwp-test.onrender.com/';
+var settings = { defaultDays:30, contact:'杨叔8868', price:19.9, siteUrl:FIXED_SITE_URL };
 
 // ── 登录 ─────────────────────────────────────────────────────
 function adminLogin() {
@@ -715,7 +716,7 @@ function copyAllCodes(codes){
 }
 function copyTemplate(){
   var code=document.getElementById('sampleCode').textContent;
-  var url=document.getElementById('siteUrl').value||'【网站地址】';
+  var url=FIXED_SITE_URL;
   var contact=document.getElementById('contactInfo').value||'杨叔8868';
   var tpl='亲爱的同学/家长，感谢你的信任和支持！🎉\n你的 GKWP 幸福测评专属验证码是：'+code+'\n测评网址：'+url+'\n\n📌 温馨提示：\n· 验证码为一次性专属码，请勿转发给他人\n· 首次使用后48小时内可多次进入，建议尽快完成测评\n· 打开网页时如出现安全提示，请放心使用，这是浏览器对外部链接的常规提醒\n· 测评约需90分钟，建议在安静环境中独立作答\n· 完成后可截图保存报告，如需一对一解读请私信'+contact;
   navigator.clipboard&&navigator.clipboard.writeText(tpl).then(()=>alert('话术已复制，可直接粘贴发送给用户'));
@@ -815,7 +816,8 @@ function loadAnalysis(){
 function saveSettings(){
   settings.contact=document.getElementById('contactInfo').value;
   settings.price=parseFloat(document.getElementById('priceConfig').value)||19.9;
-  settings.siteUrl=document.getElementById('siteUrl').value;
+  settings.siteUrl=FIXED_SITE_URL;
+  document.getElementById('siteUrl').value=FIXED_SITE_URL;
   document.getElementById('sampleCode').textContent='【验证码】';
   alert('设置已保存(本地)');
 }
