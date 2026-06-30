@@ -347,6 +347,7 @@ tr:hover td{background:#FAFAFA}
           📌 温馨提示：<br>
           · 验证码为一次性专属码，请勿转发给他人<br>
           · 首次使用后48小时内可多次进入，建议尽快完成测评<br>
+          · 打开网页时如出现安全提示，请放心使用，这是浏览器对外部链接的常规提醒<br>
           · 测评约需90分钟，建议在安静环境中独立作答<br>
           · 完成后可截图保存报告，如需一对一解读请私信杨叔8868
         </div>
@@ -716,7 +717,7 @@ function copyTemplate(){
   var code=document.getElementById('sampleCode').textContent;
   var url=document.getElementById('siteUrl').value||'【网站地址】';
   var contact=document.getElementById('contactInfo').value||'杨叔8868';
-  var tpl='亲爱的同学/家长，感谢你的信任和支持！🎉\n你的 GKWP 幸福测评专属验证码是：'+code+'\n测评网址：'+url+'\n\n📌 温馨提示：\n· 验证码为一次性专属码，请勿转发给他人\n· 首次使用后48小时内可多次进入，建议尽快完成测评\n· 测评约需90分钟，建议在安静环境中独立作答\n· 完成后可截图保存报告，如需一对一解读请私信'+contact;
+  var tpl='亲爱的同学/家长，感谢你的信任和支持！🎉\n你的 GKWP 幸福测评专属验证码是：'+code+'\n测评网址：'+url+'\n\n📌 温馨提示：\n· 验证码为一次性专属码，请勿转发给他人\n· 首次使用后48小时内可多次进入，建议尽快完成测评\n· 打开网页时如出现安全提示，请放心使用，这是浏览器对外部链接的常规提醒\n· 测评约需90分钟，建议在安静环境中独立作答\n· 完成后可截图保存报告，如需一对一解读请私信'+contact;
   navigator.clipboard&&navigator.clipboard.writeText(tpl).then(()=>alert('话术已复制，可直接粘贴发送给用户'));
 }
 
