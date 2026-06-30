@@ -3169,75 +3169,68 @@ function encodeURIComponentCN(str) {
   return encodeURIComponent(str);
 }
 
-// 生成阳光高考链接组（使用稳定入口，避免旧路径 404）
+// 生成阳光高考链接组（统一使用用户确认可打开的稳定入口，避免子页面 404）
 function buildGaokaoLinks(majors, province, score) {
-  var base = 'https://gaokao.chsi.com.cn';
+  var zyckUrl = 'https://gaokao.chsi.com.cn/zyck/';
   var links = [];
 
-  // 1. 阳光高考首页（最稳定入口）
   links.push({
-    label: '🎯 阳光高考官网首页',
-    url: base + '/index.jsp',
-    desc: score ? '进入官网后，可查询招生章程、院校信息、专业库和分数线；你的预估分数约为 '+score+' 分' : '进入官网后，可查询招生章程、院校信息、专业库和分数线',
+    label: '🎯 阳光高考志愿参考入口',
+    url: zyckUrl,
+    desc: score ? '进入阳光高考志愿参考入口后，再按页面提示查询院校、专业和志愿信息；你的预估分数约为 '+score+' 分' : '进入阳光高考志愿参考入口后，再按页面提示查询院校、专业和志愿信息',
     primary: true,
     tag: '稳定入口',
   });
 
-  // 2. 专业知识库搜索页
   links.push({
-    label: '📚 专业知识库：搜索你的目标专业',
-    url: base + '/zyk/zybk/',
-    desc: '进入后在搜索框输入专业名（如：' + (majors[0]||'计算机科学与技术') + '），查看课程、就业、开设院校',
+    label: '📚 复制推荐专业后到阳光高考查询',
+    url: zyckUrl,
+    desc: '进入后可复制下方推荐专业名（如：' + (majors[0]||'计算机科学与技术') + '）进行查询',
     primary: true,
-    tag: '重要',
+    tag: '推荐',
   });
 
-  // 3. 专业解读汇总（100+热门专业深度解读）
   links.push({
-    label: '📖 热门专业深度解读（100+专业）',
-    url: base + '/zyk/zybk/zyjd/listPage',
-    desc: '阳光高考官方出品，含专业解析、就业方向、报考指南，权威详尽',
+    label: '📖 阳光高考专业与志愿信息',
+    url: zyckUrl,
+    desc: '从阳光高考志愿参考入口进入专业、院校和志愿相关栏目',
     primary: false,
   });
 
-  // 4. 院校库
   links.push({
-    label: '🏫 全国院校库',
-    url: base + '/sch/search--ss-on,option-qg,searchType-1,start-0.dhtml',
-    desc: '按省份、类型、特色筛选院校，查看招生计划和历年分数线',
+    label: '🏫 阳光高考院校信息',
+    url: zyckUrl,
+    desc: '进入后根据省份、分数和专业方向继续筛选院校',
     primary: false,
   });
 
-  // 5. 省级招办官网（精确跳转）
   if(province && provOfficeMap[province]) {
     links.push({
       label: '🏛️ ' + province + '教育考试院官网',
       url: provOfficeMap[province],
-      desc: '查询' + province + '省2025年录取分数线、招生计划、志愿填报入口',
+      desc: '查询' + province + '省录取分数线、招生计划、志愿填报入口',
       primary: false,
     });
   } else {
     links.push({
-      label: '🏛️ 省招办最新消息',
-      url: base + '/gkxx/zc/ss/?start=0',
-      desc: '进入后查找本省录取控制线、成绩分段、志愿填报通知等官方信息',
+      label: '🏛️ 阳光高考省份信息入口',
+      url: zyckUrl,
+      desc: '进入后再结合所在省份查询志愿填报和录取信息',
       primary: false,
     });
   }
 
-  // 6. 招生章程
   links.push({
-    label: '📋 各高校招生章程查询',
-    url: base + '/zsgs/zhangcheng/listVerifedZszc--method-index,lb-1.dhtml',
-    desc: '填报志愿前必读！招生章程是唯一权威依据',
+    label: '📋 招生章程查询入口',
+    url: zyckUrl,
+    desc: '进入阳光高考后查询目标高校招生章程，填报前务必核对录取规则',
     primary: false,
   });
 
-  // 7. 省招办分数线与志愿消息
   links.push({
-    label: '📊 省招办分数线与志愿消息',
-    url: base + '/gkxx/zc/ss/?start=0',
-    desc: '查询各省录取控制分数线、一分一段表、志愿填报通知等最新消息',
+    label: '📊 分数线与志愿消息入口',
+    url: zyckUrl,
+    desc: '进入阳光高考后结合本省官方信息查询分数线、一分一段表和志愿通知',
     primary: false,
   });
 
