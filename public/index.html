@@ -1079,7 +1079,7 @@ body.module1-mode .header {
     </div>
     <div class="lp-feature-row">
       <div class="lp-feature-icon">📊</div>
-      <div class="lp-feature-text"><strong>综合报告一键生成</strong>：完成测评后自动生成六大模块综合报告，包含专业方向推荐、职业路径说明、阳光高考精准查询链接</div>
+      <div class="lp-feature-text"><strong>综合报告一键生成</strong>：完成测评后自动生成六大模块综合报告，包含专业方向推荐、职业路径说明、阳光高考稳定查询入口</div>
     </div>
     <div class="lp-feature-row">
       <div class="lp-feature-icon">👨‍🏫</div>
@@ -2297,6 +2297,36 @@ function _oldGenerateReport() {
   gotoPage(5);
 }
 
+function isWeChatBrowser() {
+  return /MicroMessenger/i.test(navigator.userAgent || '');
+}
+
+function getReportPlainText() {
+  var report = document.getElementById('report_content');
+  return report ? report.innerText.replace(/\n{3,}/g, '\n\n').trim() : '';
+}
+
+function showWeChatDownloadGuide(fileName) {
+  var text = getReportPlainText();
+  var guide = '检测到你正在微信里打开网页。微信内置浏览器通常不允许网页直接下载文件，所以不会真正保存报告。\n\n'
+    + '请按以下步骤操作：\n'
+    + '1. 点击右上角“…”\n'
+    + '2. 选择“在浏览器打开”\n'
+    + '3. 回到报告页后再点击“下载报告（HTML）”\n\n'
+    + '文件名：' + fileName + '\n\n'
+    + '我会同时尝试把报告文字复制到剪贴板，作为备用保存方式。';
+
+  if(navigator.clipboard && text) {
+    navigator.clipboard.writeText(text).then(function() {
+      alert(guide + '\n\n备用：报告文字已复制，可粘贴到微信、备忘录或文档中保存。');
+    }).catch(function() {
+      alert(guide + '\n\n如果不能复制，请先用手机自带浏览器打开本页面。');
+    });
+  } else {
+    alert(guide + '\n\n如果不能复制，请先用手机自带浏览器打开本页面。');
+  }
+}
+
 function exportReport() {
   const report = document.getElementById('report_content');
   if(!report || !report.innerHTML.trim()) {
@@ -2308,6 +2338,12 @@ function exportReport() {
   const date = new Date().toISOString().slice(0, 10);
   const safeName = name.replace(/[\\/:*?"<>|]/g, '');
   const fileName = `GKWP测评报告_${safeName}_${date}.html`;
+
+  if(isWeChatBrowser()) {
+    showWeChatDownloadGuide(fileName);
+    return;
+  }
+
   const styles = Array.from(document.querySelectorAll('style'))
     .map(style => style.textContent)
     .join('\n');
@@ -3133,22 +3169,21 @@ function encodeURIComponentCN(str) {
   return encodeURIComponent(str);
 }
 
-// 生成阳光高考链接组（已验证的真实URL）
+// 生成阳光高考链接组（使用稳定入口，避免旧路径 404）
 function buildGaokaoLinks(majors, province, score) {
   var base = 'https://gaokao.chsi.com.cn';
   var links = [];
 
-  // 1. 阳光志愿智能推荐系统（按分数）
+  // 1. 阳光高考首页（最稳定入口）
   links.push({
-    label: '🎯 阳光志愿：按分数智能推荐院校和专业',
-    url: base + '/zyck/xtwh.html',
-    desc: score ? '登录后输入你的分数（约'+score+'分），系统自动推荐匹配的高校和专业' : '登录后输入你的分数，系统自动推荐匹配的高校和专业',
+    label: '🎯 阳光高考官网首页',
+    url: base + '/index.jsp',
+    desc: score ? '进入官网后，可查询招生章程、院校信息、专业库和分数线；你的预估分数约为 '+score+' 分' : '进入官网后，可查询招生章程、院校信息、专业库和分数线',
     primary: true,
-    tag: '推荐首选',
+    tag: '稳定入口',
   });
 
-  // 2. 专业知识库搜索页（已验证可用）
-  // 搜索框可接受专业名，让用户在页面上搜索
+  // 2. 专业知识库搜索页
   links.push({
     label: '📚 专业知识库：搜索你的目标专业',
     url: base + '/zyk/zybk/',
@@ -3183,9 +3218,9 @@ function buildGaokaoLinks(majors, province, score) {
     });
   } else {
     links.push({
-      label: '🏛️ 各省教育考试院官网导航',
-      url: base + '/gkxx/gedi/',
-      desc: '进入后选择你所在的省份，跳转至本省教育考试院官网',
+      label: '🏛️ 省招办最新消息',
+      url: base + '/gkxx/zc/ss/?start=0',
+      desc: '进入后查找本省录取控制线、成绩分段、志愿填报通知等官方信息',
       primary: false,
     });
   }
@@ -3193,16 +3228,16 @@ function buildGaokaoLinks(majors, province, score) {
   // 6. 招生章程
   links.push({
     label: '📋 各高校招生章程查询',
-    url: base + '/zsgs/index.html',
+    url: base + '/zsgs/zhangcheng/listVerifedZszc--method-index,lb-1.dhtml',
     desc: '填报志愿前必读！招生章程是唯一权威依据',
     primary: false,
   });
 
-  // 7. 批次线查询
+  // 7. 省招办分数线与志愿消息
   links.push({
-    label: '📊 各省高考批次线查询',
-    url: base + '/gkxx/pcx/',
-    desc: '查询本省2025年本科线、专科线等各批次控制分数线',
+    label: '📊 省招办分数线与志愿消息',
+    url: base + '/gkxx/zc/ss/?start=0',
+    desc: '查询各省录取控制分数线、一分一段表、志愿填报通知等最新消息',
     primary: false,
   });
 
@@ -3215,13 +3250,13 @@ function renderQueryLinks(majors, province, score) {
 
   var html = '';
   html += '<div class="result-section">';
-  html += '<div class="result-head" style="background:linear-gradient(135deg,#0F6E56,#1A9E7A);color:#fff;">🔗 精准查询入口（根据你的测评结果自动生成）</div>';
+  html += '<div class="result-head" style="background:linear-gradient(135deg,#0F6E56,#1A9E7A);color:#fff;">🔗 官方查询入口（根据你的测评结果整理）</div>';
   html += '<div class="result-body">';
 
   // 数据说明
   html += '<div style="background:#FFF8E6;border:0.5px solid #F0C040;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#7A5C00;line-height:1.8;">';
   html += '⚠️ <strong>重要说明：</strong>以下链接跳转至教育部阳光高考平台及各省招办官网，';
-  html += '数据为<strong>2025年实时数据</strong>，权威准确。';
+  html += '如手机微信内打开不完整，建议点击右上角“…”选择“在浏览器打开”。';
   html += '分数线以各省招办当年公布为准，本测评结果仅供参考。';
   html += '</div>';
 
@@ -3265,7 +3300,7 @@ function renderQueryLinks(majors, province, score) {
 
   html += '<div style="margin-top:10px;background:#E6F1FB;border-radius:8px;padding:12px 14px;font-size:12px;color:#0C447C;line-height:1.9;">';
   html += '<strong>📖 建议查询步骤：</strong><br>';
-  html += '① 点击「阳光志愿」，登录后输入分数，获取初步院校专业推荐清单<br>';
+  html += '① 点击「阳光高考官网首页」，进入官方平台查找招生章程、院校库、专业库<br>';
   html += '② 点击「专业知识库」，复制上方专业名到搜索框，了解课程和就业方向<br>';
   html += '③ 点击「热门专业深度解读」，查看官方权威的专业分析<br>';
   html += '④ 进入「省教育考试院官网」，查询本省2025年最新录取分数线<br>';
