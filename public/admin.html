@@ -319,8 +319,8 @@ tr:hover td{background:#FAFAFA}
           </div>
           <div class="form-group" style="margin-bottom:14px">
             <label>有效天数(0 = 永久不过期)</label>
-            <input class="form-input" type="number" id="genDays" value="30" min="0">
-            <div style="font-size:11px;color:#888;margin-top:3px">建议设30天，防止长期未使用的码被滥用</div>
+            <input class="form-input" type="number" id="genDays" value="2" min="0">
+            <div style="font-size:11px;color:#888;margin-top:3px">默认2天，防止长期未使用的码被滥用</div>
           </div>
           <button class="btn btn-green btn-full" onclick="generateCodes()">✨ 立即生成验证码</button>
         </div>
@@ -452,7 +452,7 @@ tr:hover td{background:#FAFAFA}
           <div class="info-box">修改后仅对新生成的验证码生效，已有验证码不受影响。</div>
           <div class="form-group" style="margin-bottom:14px">
             <label>默认有效天数</label>
-            <input class="form-input" type="number" id="defaultDays" value="30">
+            <input class="form-input" type="number" id="defaultDays" value="2">
           </div>
           <div class="form-group" style="margin-bottom:14px">
             <label>48小时窗口说明</label>
@@ -508,7 +508,7 @@ tr:hover td{background:#FAFAFA}
 <script>
 var TOKEN = '';
 var FIXED_SITE_URL = 'https://gkwp-test.onrender.com/';
-var settings = { defaultDays:30, contact:'杨叔8868', price:19.9, siteUrl:FIXED_SITE_URL };
+var settings = { defaultDays:2, contact:'杨叔8868', price:19.9, siteUrl:FIXED_SITE_URL };
 
 // ── 登录 ─────────────────────────────────────────────────────
 function adminLogin() {
