@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GKHYP 管理后台</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0F4F8;color:#1A1A2E;font-size:14px}
+
+/* 登录 */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1F3864,#2E5F9E)}
+.login-box{background:#fff;border-radius:20px;padding:44px 40px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.25);text-align:center}
+.login-logo{font-size:48px;margin-bottom:12px}
+.login-box h2{color:#1F3864;font-size:22px;margin-bottom:6px}
+.login-box p{color:#888;font-size:13px;margin-bottom:28px}
+.login-box input{width:100%;padding:13px 16px;border:1.5px solid #D0D8E8;border-radius:10px;font-size:15px;margin-bottom:12px;outline:none}
+.login-box input:focus{border-color:#2E5F9E}
+
+/* 布局 */
+.layout{display:none;min-height:100vh}
+.sidebar{width:220px;background:#1F3864;position:fixed;top:0;left:0;height:100%;display:flex;flex-direction:column}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.sidebar-logo .logo-title{color:#fff;font-size:16px;font-weight:700;margin-top:8px}
+.sidebar-logo .logo-sub{color:rgba(255,255,255,0.5);font-size:12px;margin-top:3px}
+.nav-item{padding:12px 20px;color:rgba(255,255,255,0.7);cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.15s;font-size:13px}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff}
+.nav-item.active{background:rgba(255,255,255,0.15);color:#fff;border-right:3px solid #64B5F6}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.nav-section{padding:12px 20px 6px;color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;margin-top:8px}
+.sidebar-footer{margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.1)}
+.logout-btn{color:rgba(255,255,255,0.5);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px}
+.logout-btn:hover{color:#fff}
+
+.main-content{margin-left:220px;padding:24px;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.page-title{font-size:20px;font-weight:700;color:#1F3864}
+.page-sub{font-size:13px;color:#888;margin-top:3px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.time-badge{background:#fff;padding:6px 12px;border-radius:8px;font-size:12px;color:#666;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+/* 通用组件 */
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:20px}
+.card-title{font-size:15px;font-weight:600;color:#1F3864;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.grid-6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+
+/* 统计卡片 */
+.stat-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;right:-10px;top:-10px;width:60px;height:60px;border-radius:50%;opacity:0.08}
+.stat-icon{font-size:24px;margin-bottom:10px}
+.stat-num{font-size:32px;font-weight:700;line-height:1}
+.stat-label{font-size:12px;color:#888;margin-top:6px}
+.stat-trend{font-size:11px;margin-top:8px}
+.trend-up{color:#0F6E56}
+.trend-down{color:#E24B4A}
+
+/* 按钮 */
+.btn{padding:9px 18px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:opacity 0.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{opacity:0.88}
+.btn-primary{background:#2E5F9E;color:#fff}
+.btn-green{background:#0F6E56;color:#fff}
+.btn-red{background:#E24B4A;color:#fff;padding:5px 10px;font-size:12px}
+.btn-gray{background:#E8EDF2;color:#444}
+.btn-orange{background:#E65100;color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-full{width:100%;justify-content:center}
+
+/* 表单 */
+.form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:12px;color:#666;font-weight:500}
+.form-input{padding:9px 12px;border:1.5px solid #D0D8E8;border-radius:8px;font-size:13px;outline:none;width:100%}
+.form-input:focus{border-color:#2E5F9E}
+
+/* 表格 */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:#F4F6F8;padding:10px 12px;text-align:left;font-weight:500;color:#555;font-size:12px;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #F0F0F0;font-size:13px;vertical-align:middle}
+tr:hover td{background:#FAFAFA}
+
+/* 徽章 */
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge-unused{background:#E1F5EE;color:#085041}
+.badge-active{background:#FFF3E0;color:#854F0B}
+.badge-used{background:#E6F1FB;color:#0C447C}
+.badge-expired{background:#F4F4F4;color:#888}
+.badge-success{background:#E1F5EE;color:#085041}
+.badge-fail{background:#FAECEA;color:#A32D2D}
+.badge-reenter{background:#E8EAF6;color:#3949AB}
+.badge-warn{background:#FFF3E0;color:#854F0B}
+
+/* 页面切换 */
+.page-section{display:none}
+.page-section.active{display:block}
+
+/* 图表占位 */
+.chart-bar-wrap{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px}
+.chart-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar{width:100%;background:#2E5F9E;border-radius:4px 4px 0 0;min-height:4px;transition:height 0.3s}
+.chart-bar-label{font-size:10px;color:#888}
+.chart-bar-val{font-size:10px;color:#1F3864;font-weight:500}
+
+/* 消息 */
+.msg{padding:10px 14px;border-radius:8px;font-size:13px;margin-top:10px;display:none}
+.msg-ok{background:#E1F5EE;color:#085041;display:block}
+.msg-err{background:#FAECEA;color:#A32D2D;display:block}
+
+/* 代码块 */
+.code-block{background:#F4F6F8;border-radius:8px;padding:14px;font-family:monospace;font-size:13px;word-break:break-all;line-height:2;max-height:220px;overflow-y:auto}
+.code-tag{background:#fff;border:1px solid #D0D8E8;border-radius:4px;padding:2px 8px;margin:2px;display:inline-block;cursor:pointer}
+.code-tag:hover{border-color:#2E5F9E;color:#2E5F9E}
+
+/* 空状态 */
+.empty-state{text-align:center;padding:40px;color:#888}
+.empty-icon{font-size:40px;margin-bottom:10px}
+
+/* 进度条 */
+.prog-bar{height:8px;background:#E8EDF2;border-radius:4px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:4px;transition:width 0.3s}
+
+/* 提示信息 */
+.info-box{background:#E6F1FB;border-left:3px solid #2E5F9E;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#0C447C;line-height:1.7;margin-bottom:14px}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div class="login-wrap" id="loginPage">
+  <div class="login-box">
+    <div class="login-logo">🔐</div>
+    <h2>GKHYP 管理后台</h2>
+    <p>杨叔8868 · 幸福测评系统内部管理</p>
+    <input type="password" id="adminPwd" placeholder="请输入管理员密码"
+      onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="btn btn-primary btn-full" onclick="adminLogin()">登录管理后台</button>
+    <div id="loginErr" style="color:#E24B4A;font-size:13px;margin-top:10px;display:none">❌ 密码错误，请重试</div>
+  </div>
+</div>
+
+<!-- 主界面 -->
+<div class="layout" id="mainLayout">
+
+  <!-- 侧边栏 -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div style="font-size:28px">📊</div>
+      <div class="logo-title">GKHYP 管理后台</div>
+      <div class="logo-sub">幸福测评系统</div>
+    </div>
+    <div class="nav-section">主要功能</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">🏠</span>数据总览</div>
+    <div class="nav-item" onclick="showPage('codes',this)"><span class="nav-icon">🎫</span>验证码管理</div>
+    <div class="nav-item" onclick="showPage('generate',this)"><span class="nav-icon">✨</span>生成验证码</div>
+    <div class="nav-item" onclick="showPage('logs',this)"><span class="nav-icon">📋</span>使用记录</div>
+    <div class="nav-section">分析</div>
+    <div class="nav-item" onclick="showPage('analysis',this)"><span class="nav-icon">📈</span>数据分析</div>
+    <div class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span>系统设置</div>
+    <div class="sidebar-footer">
+      <div class="logout-btn" onclick="logout()">🚪 退出登录</div>
+    </div>
+  </div>
+
+  <!-- 主内容区 -->
+  <div class="main-content">
+
+    <!-- 数据总览 -->
+    <div class="page-section active" id="page-dashboard">
+      <div class="topbar">
+        <div><div class="page-title">数据总览</div><div class="page-sub">实时掌握系统运营状况</div></div>
+        <div class="topbar-right">
+          <div class="time-badge" id="currentTime"></div>
+          <button class="btn btn-gray btn-sm" onclick="refreshAll()">🔄 刷新</button>
+        </div>
+      </div>
+
+      <!-- 核心指标 -->
+      <div class="grid-6" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-icon">🎫</div>
+          <div class="stat-num" id="d_total" style="color:#1F3864">-</div>
+          <div class="stat-label">验证码总数</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🟢</div>
+          <div class="stat-num" id="d_unused" style="color:#085041">-</div>
+          <div class="stat-label">未使用</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🟠</div>
+          <div class="stat-num" id="d_active" style="color:#854F0B">-</div>
+          <div class="stat-label">使用中(48h)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-num" id="d_used" style="color:#0C447C">-</div>
+          <div class="stat-label">已完成</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">❌</div>
+          <div class="stat-num" id="d_expired" style="color:#888">-</div>
+          <div class="stat-label">已过期/作废</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-num" id="d_today" style="color:#2E5F9E">-</div>
+          <div class="stat-label">今日进入次数</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- 最近7天趋势 -->
+        <div class="card">
+          <div class="card-title">📈 最近7天使用趋势</div>
+          <div class="chart-bar-wrap" id="trendChart"></div>
+        </div>
+
+        <!-- 使用率 -->
+        <div class="card">
+          <div class="card-title">📊 验证码使用率</div>
+          <div id="usageRate" style="padding:10px 0"></div>
+        </div>
+      </div>
+
+      <!-- 最近活动 -->
+      <div class="card">
+        <div class="card-title">🕐 最近活动记录
+          <button class="btn btn-gray btn-sm" style="margin-left:auto" onclick="loadLogs(5)">查看全部</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>验证码</th><th>操作</th><th>IP地址</th><th>时间</th></tr></thead>
+            <tbody id="recentLogs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 活跃验证码(48h内) -->
+      <div class="card">
+        <div class="card-title">🟠 当前活跃验证码(48小时窗口内)</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>验证码</th><th>备注</th><th>首次进入</th><th>窗口截止</th><th>剩余时间</th><th>进入次数</th></tr></thead>
+            <tbody id="activeCodes"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 验证码管理 -->
+    <div class="page-section" id="page-codes">
+      <div class="topbar">
+        <div><div class="page-title">验证码管理</div><div class="page-sub">查询、筛选、作废验证码</div></div>
+        <div class="topbar-right">
+          <button class="btn btn-green" onclick="showPage('generate',document.querySelector('[onclick*=generate]'))">✨ 生成新验证码</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <!-- 筛选 -->
+        <div class="form-row" style="margin-bottom:16px">
+          <div class="form-group">
+            <label>状态筛选</label>
+            <select class="form-input" id="filterStatus" onchange="loadCodes()" style="width:130px">
+              <option value="">全部</option>
+              <option value="unused">未使用</option>
+              <option value="active">使用中</option>
+              <option value="used">已完成</option>
+              <option value="expired">已过期/作废</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>搜索验证码/备注</label>
+            <input class="form-input" id="searchCode" placeholder="输入验证码或备注关键词" style="width:220px"
+              oninput="loadCodes()">
+          </div>
+          <div class="form-group" style="margin-top:auto">
+            <button class="btn btn-gray" onclick="document.getElementById('filterStatus').value='';document.getElementById('searchCode').value='';loadCodes()">重置</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>验证码</th><th>状态</th><th>备注</th><th>进入次数</th>
+              <th>创建时间</th><th>首次进入</th><th>窗口截止</th><th>IP地址</th><th>操作</th>
+            </tr></thead>
+            <tbody id="codeTableBody"></tbody>
+          </table>
+        </div>
+        <div style="font-size:12px;color:#888;margin-top:10px" id="codeCount"></div>
+      </div>
+    </div>
+
+    <!-- 生成验证码 -->
+    <div class="page-section" id="page-generate">
+      <div class="topbar">
+        <div><div class="page-title">生成验证码</div><div class="page-sub">为付款用户生成专属一次性验证码</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">✨ 快速生成</div>
+          <div class="info-box">
+            💡 每个验证码独立且唯一，用户首次使用后进入48小时有效窗口，窗口内可多次进入，窗口结束后自动失效。
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>生成数量(最多100个)</label>
+            <input class="form-input" type="number" id="genCount" value="1" min="1" max="100">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>备注(付款人信息，便于追溯)</label>
+            <input class="form-input" type="text" id="genNote" placeholder="如：微信昵称、手机尾号、订单号">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>有效天数(0 = 永久不过期)</label>
+            <input class="form-input" type="number" id="genDays" value="30" min="0">
+            <div style="font-size:11px;color:#888;margin-top:3px">建议设30天，防止长期未使用的码被滥用</div>
+          </div>
+          <button class="btn btn-green btn-full" onclick="generateCodes()">✨ 立即生成验证码</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 生成结果</div>
+          <div id="genResultArea">
+            <div class="empty-state">
+              <div class="empty-icon">🎫</div>
+              <div>点击左侧按钮生成验证码</div>
+            </div>
+          </div>
+          <div id="genMsg"></div>
+        </div>
+      </div>
+
+      <!-- 发送模板 -->
+      <div class="card">
+        <div class="card-title">💬 发送话术模板</div>
+        <div style="background:#F4F6F8;border-radius:8px;padding:16px;font-size:13px;line-height:2;color:#333">
+          亲爱的同学/家长，感谢你的信任和支持！🎉<br>
+          你的 GKHYP 幸福测评专属验证码是：<strong style="color:#1F3864;font-size:15px" id="sampleCode">【验证码】</strong><br>
+          测评网址：<span style="color:#2E5F9E">https://gkwp-test.onrender.com/</span><br><br>
+          📌 温馨提示：<br>
+          · 验证码为一次性专属码，请勿转发给他人<br>
+          · 首次使用后48小时内可多次进入，建议尽快完成测评<br>
+          · 请尽量点击右上角“…”选择“在浏览器打开”后再开始测评，便于后续正常下载报告<br>
+          · 打开网页时如出现安全提示，请放心使用，这是浏览器对外部链接的常规提醒<br>
+          · 系统不会保存你的测评答案和最终报告内容，请放心使用<br>
+          · 测评约需90分钟，建议在安静环境中独立作答<br>
+          · 完成后可截图保存报告，如需一对一解读请私信杨叔8868
+        </div>
+        <button class="btn btn-gray btn-sm" style="margin-top:10px" onclick="copyTemplate()">📋 复制话术</button>
+      </div>
+    </div>
+
+    <!-- 使用记录 -->
+    <div class="page-section" id="page-logs">
+      <div class="topbar">
+        <div><div class="page-title">使用记录</div><div class="page-sub">所有验证码的使用日志</div></div>
+        <div class="topbar-right">
+          <button class="btn btn-gray btn-sm" onclick="loadLogsPage()">🔄 刷新</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="form-row" style="margin-bottom:16px">
+          <div class="form-group">
+            <label>操作类型</label>
+            <select class="form-input" id="logFilter" onchange="loadLogsPage()" style="width:150px">
+              <option value="">全部操作</option>
+              <option value="verify_success">首次验证成功</option>
+              <option value="verify_reenter">重复进入</option>
+              <option value="verify_fail">验证失败</option>
+              <option value="verify_used_expired">窗口已过</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>验证码搜索</label>
+            <input class="form-input" id="logSearch" placeholder="输入验证码" style="width:160px" oninput="loadLogsPage()">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>验证码</th><th>操作类型</th><th>IP地址</th>
+              <th>设备信息</th><th>时间</th>
+            </tr></thead>
+            <tbody id="logTableBody"></tbody>
+          </table>
+        </div>
+        <div style="font-size:12px;color:#888;margin-top:10px" id="logCount"></div>
+      </div>
+    </div>
+
+    <!-- 数据分析 -->
+    <div class="page-section" id="page-analysis">
+      <div class="topbar">
+        <div><div class="page-title">数据分析</div><div class="page-sub">深入了解用户行为和系统表现</div></div>
+        <button class="btn btn-gray btn-sm" onclick="loadAnalysis()">🔄 刷新</button>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title">💰 收入估算</div>
+          <div id="revenueStats" style="padding:6px 0"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🔄 验证码使用率</div>
+          <div id="usageStats" style="padding:6px 0"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">⚡ 今日活跃</div>
+          <div id="todayStats" style="padding:6px 0"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📊 用户进入时段分布</div>
+          <div id="hourChart" style="padding:10px 0"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🗓️ 最近30天每日新增</div>
+          <div id="dailyChart" style="padding:10px 0"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🌐 访问IP统计(Top 10)</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>IP地址</th><th>访问次数</th><th>最后访问</th><th>占比</th></tr></thead>
+            <tbody id="ipStats"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 系统设置 -->
+    <div class="page-section" id="page-settings">
+      <div class="topbar">
+        <div><div class="page-title">系统设置</div><div class="page-sub">配置系统参数和使用说明</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">⚙️ 验证码设置</div>
+          <div class="info-box">修改后仅对新生成的验证码生效，已有验证码不受影响。</div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>默认有效天数</label>
+            <input class="form-input" type="number" id="defaultDays" value="30">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>48小时窗口说明</label>
+            <div style="font-size:12px;color:#666;background:#F4F6F8;padding:10px;border-radius:8px;line-height:1.8">
+              ✅ 用户首次输入验证码后，开启48小时有效窗口<br>
+              ✅ 窗口内用户可多次进入测评(防止网页崩溃丢失进度)<br>
+              ✅ 48小时后验证码自动失效，无法再次进入<br>
+              ✅ 如有特殊情况，可在验证码管理中手动作废旧码并重新生成
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📱 联系信息设置</div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>微信号 / 联系方式</label>
+            <input class="form-input" type="text" id="contactInfo" value="杨叔8868">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>测评价格(元)</label>
+            <input class="form-input" type="number" id="priceConfig" value="19.9" step="0.1">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>网站地址(用于话术模板)</label>
+            <input class="form-input" type="text" id="siteUrl" value="https://gkwp-test.onrender.com/" readonly>
+          </div>
+          <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🚀 部署信息</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+          <div style="background:#F4F6F8;border-radius:8px;padding:14px">
+            <div style="font-size:12px;color:#888;margin-bottom:6px">数据库状态</div>
+            <div style="font-size:14px;font-weight:500;color:#085041">🟢 正常连接</div>
+          </div>
+          <div style="background:#F4F6F8;border-radius:8px;padding:14px">
+            <div style="font-size:12px;color:#888;margin-bottom:6px">服务器平台</div>
+            <div style="font-size:14px;font-weight:500">Render.com(免费版)</div>
+          </div>
+          <div style="background:#F4F6F8;border-radius:8px;padding:14px">
+            <div style="font-size:12px;color:#888;margin-bottom:6px">免费版说明</div>
+            <div style="font-size:12px;color:#666;line-height:1.7">15分钟无访问会休眠<br>首次访问约10-30秒启动</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /layout -->
+
+<script>
+var TOKEN = '';
+var FIXED_SITE_URL = 'https://gkwp-test.onrender.com/';
+var settings = { defaultDays:30, contact:'杨叔8868', price:19.9, siteUrl:FIXED_SITE_URL };
+
+// ── 登录 ─────────────────────────────────────────────────────
+function adminLogin() {
+  var pwd = document.getElementById('adminPwd').value;
+  if(!pwd){ alert('请输入密码'); return; }
+  var btn = document.querySelector('.btn-primary');
+  btn.textContent = '验证中...';
+  btn.disabled = true;
+  fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})})
+  .then(r=>r.json()).then(d=>{
+    btn.textContent = '登录管理后台';
+    btn.disabled = false;
+    if(d.success){
+      TOKEN = d.token;
+      document.getElementById('loginPage').style.display='none';
+      document.getElementById('mainLayout').style.display='flex';
+      refreshAll();
+      startClock();
+    } else {
+      var e=document.getElementById('loginErr');
+      e.textContent = '❌ ' + (d.message || '密码错误，请重试');
+      e.style.display='block';
+      setTimeout(()=>e.style.display='none',3000);
+    }
+  }).catch(function(err){
+    btn.textContent = '登录管理后台';
+    btn.disabled = false;
+    alert('网络错误：' + err.message + '\n请检查网络连接后重试');
+  });
+}
+
+function logout(){
+  TOKEN='';
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('mainLayout').style.display='none';
+}
+
+function H(){ return {'Content-Type':'application/json','x-admin-token':TOKEN}; }
+
+// ── 页面切换 ─────────────────────────────────────────────────
+function showPage(name, el) {
+  document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+  if(name==='codes') loadCodes();
+  if(name==='logs') loadLogsPage();
+  if(name==='analysis') loadAnalysis();
+}
+
+// ── 时钟 ─────────────────────────────────────────────────────
+function startClock(){
+  function tick(){
+    var d=new Date();
+    document.getElementById('currentTime').textContent =
+      d.toLocaleDateString('zh-CN')+' '+d.toLocaleTimeString('zh-CN');
+  }
+  tick(); setInterval(tick,1000);
+}
+
+// ── 刷新全部 ─────────────────────────────────────────────────
+function refreshAll(){ loadStats(); loadRecentLogs(); loadActiveCodes(); }
+
+// ── 统计数据 ─────────────────────────────────────────────────
+function loadStats(){
+  fetch('/api/admin/stats',{headers:H()}).then(r=>r.json()).then(d=>{
+    if(!d.success) return;
+    var s=d.stats;
+    ['total','unused','active','used','expired','today'].forEach(k=>{
+      var el=document.getElementById('d_'+k);
+      if(el) el.textContent=s[k]||0;
+    });
+    // 使用率进度
+    var total=s.total||1;
+    var usedPct=Math.round((s.used||0)/total*100);
+    var activePct=Math.round((s.active||0)/total*100);
+    document.getElementById('usageRate').innerHTML=
+      '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>已完成</span><span style="font-weight:500;color:#0C447C">'+usedPct+'%</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+usedPct+'%;background:#2E5F9E"></div></div></div>'+
+      '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>使用中(48h)</span><span style="font-weight:500;color:#854F0B">'+activePct+'%</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+activePct+'%;background:#E65100"></div></div></div>'+
+      '<div style="font-size:12px;color:#888;margin-top:8px">共 '+total+' 个验证码，已销售约 '+(s.used||0)+(s.active||0)?' <strong style="color:#1F3864">'+(+(s.used||0)+(s.active||0))+'</strong> 份':'0'+'</div>';
+    // 趋势图(使用logs数据)
+    loadTrend();
+  });
+}
+
+// ── 趋势图 ───────────────────────────────────────────────────
+function loadTrend(){
+  fetch('/api/admin/trend',{headers:H()}).then(r=>r.json()).then(d=>{
+    if(!d.success) return;
+    var days=d.data||[];
+    var max=Math.max(...days.map(x=>x.count),1);
+    var html=days.map(item=>{
+      var h=Math.max(4,Math.round(item.count/max*100));
+      return '<div class="chart-bar-col"><div class="chart-bar-val">'+item.count+'</div><div class="chart-bar" style="height:'+h+'px"></div><div class="chart-bar-label">'+item.label+'</div></div>';
+    }).join('');
+    document.getElementById('trendChart').innerHTML=html;
+  }).catch(()=>{
+    document.getElementById('trendChart').innerHTML='<div style="color:#888;font-size:12px;width:100%;text-align:center">暂无趋势数据</div>';
+  });
+}
+
+// ── 最近活动 ─────────────────────────────────────────────────
+function loadRecentLogs(){
+  fetch('/api/admin/logs?limit=8',{headers:H()}).then(r=>r.json()).then(d=>{
+    if(!d.success) return;
+    var actionMap={
+      verify_success:'<span class="badge badge-success">首次验证✅</span>',
+      verify_reenter:'<span class="badge badge-reenter">再次进入🔄</span>',
+      verify_fail:'<span class="badge badge-fail">验证失败❌</span>',
+      verify_used_expired:'<span class="badge badge-warn">窗口已过⚠️</span>',
+      verify_window_expired:'<span class="badge badge-warn">窗口到期⏰</span>',
+    };
+    document.getElementById('recentLogs').innerHTML=d.logs.map(l=>
+      '<tr><td><code style="font-weight:600">'+l.code+'</code></td>'+
+      '<td>'+(actionMap[l.action]||l.action)+'</td>'+
+      '<td style="color:#888;font-size:12px">'+(l.ip||'-')+'</td>'+
+      '<td style="font-size:12px">'+fmtDate(l.timestamp)+'</td></tr>'
+    ).join('') || '<tr><td colspan="4" class="empty-state">暂无记录</td></tr>';
+  });
+}
+
+// ── 活跃验证码 ───────────────────────────────────────────────
+function loadActiveCodes(){
+  fetch('/api/admin/codes?status=active',{headers:H()}).then(r=>r.json()).then(d=>{
+    if(!d.success) return;
+    document.getElementById('activeCodes').innerHTML=d.codes.length?d.codes.map(c=>{
+      var now=Date.now();
+      var until=new Date(c.activeUntil);
+      var hrs=Math.max(0,Math.ceil((until-now)/3600000));
+      var color=hrs<6?'#E24B4A':hrs<24?'#854F0B':'#085041';
+      return '<tr>'+
+        '<td><code style="font-weight:600;font-size:14px">'+c.code+'</code></td>'+
+        '<td style="color:#666">'+(c.note||'-')+'</td>'+
+        '<td style="font-size:12px">'+fmtDate(c.firstUsedAt)+'</td>'+
+        '<td style="font-size:12px">'+fmtDate(c.activeUntil)+'</td>'+
+        '<td><span style="color:'+color+';font-weight:600">剩 '+hrs+' 小时</span></td>'+
+        '<td style="text-align:center">'+(c.useCount||1)+'次</td>'+
+      '</tr>';
+    }).join('') : '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">当前没有活跃中的验证码</td></tr>';
+  });
+}
+
+// ── 验证码列表 ───────────────────────────────────────────────
+function loadCodes(){
+  var status=document.getElementById('filterStatus').value;
+  var search=document.getElementById('searchCode').value;
+  var url='/api/admin/codes'+(status?'?status='+status:'');
+  fetch(url,{headers:H()}).then(r=>r.json()).then(d=>{
+    if(!d.success) return;
+    var codes=d.codes;
+    if(search) codes=codes.filter(c=>c.code.includes(search.toUpperCase())||(c.note&&c.note.includes(search)));
+    var badgeMap={unused:'badge-unused',active:'badge-active',used:'badge-used',expired:'badge-expired'};
+    var textMap={unused:'未使用',active:'使用中',used:'已完成',expired:'已过期/作废'};
+    document.getElementById('codeTableBody').innerHTML=codes.map(c=>{
+      var now=Date.now();
+      var hrs=c.activeUntil?Math.max(0,Math.ceil((new Date(c.activeUntil)-now)/3600000)):'-';
+      var expireBtn=c.status==='unused'||c.status==='active'?
+        '<button class="btn btn-red btn-sm" onclick="expireCode(\''+c.code+'\')">作废</button>':'-';
+      return '<tr>'+
+        '<td><code style="font-size:14px;font-weight:600;letter-spacing:1px">'+c.code+'</code></td>'+
+        '<td><span class="badge '+badgeMap[c.status]+'">'+textMap[c.status]+'</span></td>'+
+        '<td style="color:#666;font-size:12px">'+(c.note||'-')+'</td>'+
+        '<td style="text-align:center">'+(c.useCount||0)+'</td>'+
+        '<td style="font-size:12px">'+fmtDate(c.createdAt)+'</td>'+
+        '<td style="font-size:12px">'+(c.firstUsedAt?fmtDate(c.firstUsedAt):'-')+'</td>'+
+        '<td style="font-size:12px">'+(c.activeUntil?fmtDate(c.activeUntil)+(c.status==='active'?' <span style="color:#854F0B">(剩'+hrs+'h)</span>':''):'-')+'</td>'+
+        '<td style="font-size:12px;color:#888">'+(c.usedIP||'-')+'</td>'+
+        '<td>'+expireBtn+'</td>'+
+      '</tr>';
+    }).join('') || '<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">暂无数据</td></tr>';
+    document.getElementById('codeCount').textContent='共 '+codes.length+' 条记录';
+  });
+}
+
+// ── 作废验证码 ───────────────────────────────────────────────
+function expireCode(code){
+  if(!confirm('确定作废验证码 '+code+' 吗？\n作废后用户将无法再使用此验证码。')) return;
+  fetch('/api/admin/expire',{method:'POST',headers:H(),body:JSON.stringify({code})})
+  .then(r=>r.json()).then(()=>{ loadCodes(); loadStats(); loadActiveCodes(); });
+}
+
+// ── 生成验证码 ───────────────────────────────────────────────
+function generateCodes(){
+  var count=parseInt(document.getElementById('genCount').value)||1;
+  var note=document.getElementById('genNote').value;
+  var days=parseInt(document.getElementById('genDays').value)||0;
+  fetch('/api/admin/generate',{method:'POST',headers:H(),body:JSON.stringify({count,note,days})})
+  .then(r=>r.json()).then(d=>{
+    if(d.success){
+      var firstCode=d.codes[0]||'';
+      document.getElementById('sampleCode').textContent=firstCode;
+      document.getElementById('genResultArea').innerHTML=
+        '<div style="margin-bottom:10px;font-size:13px;color:#085041;font-weight:500">✅ 成功生成 '+d.total+' 个验证码</div>'+
+        '<div class="code-block">'+d.codes.map(c=>'<span class="code-tag" onclick="copyCode(\''+c+'\')">'+c+'</span>').join('')+'</div>'+
+        '<div style="font-size:12px;color:#888;margin-top:8px">👆 点击验证码可单独复制</div>'+
+        '<button class="btn btn-gray btn-sm" style="margin-top:10px" onclick="copyAllCodes('+JSON.stringify(d.codes)+')">📋 复制全部验证码</button>';
+      loadStats();
+    }
+  });
+}
+
+function copyCode(code){
+  navigator.clipboard&&navigator.clipboard.writeText(code).then(()=>alert('已复制：'+code));
+}
+function copyAllCodes(codes){
+  navigator.clipboard&&navigator.clipboard.writeText(codes.join('\n')).then(()=>alert('已复制 '+codes.length+' 个验证码'));
+}
+function copyTemplate(){
+  var code=document.getElementById('sampleCode').textContent;
+  var url=FIXED_SITE_URL;
+  var contact=document.getElementById('contactInfo').value||'杨叔8868';
+  var tpl='亲爱的同学/家长，感谢你的信任和支持！🎉\n你的 GKHYP 幸福测评专属验证码是：'+code+'\n测评网址：'+url+'\n\n📌 温馨提示：\n· 验证码为一次性专属码，请勿转发给他人\n· 首次使用后48小时内可多次进入，建议尽快完成测评\n· 请尽量点击右上角“…”选择“在浏览器打开”后再开始测评，便于后续正常下载报告\n· 打开网页时如出现安全提示，请放心使用，这是浏览器对外部链接的常规提醒\n· 系统不会保存你的测评答案和最终报告内容，请放心使用\n· 测评约需90分钟，建议在安静环境中独立作答\n· 完成后可截图保存报告，如需一对一解读请私信'+contact;
+  navigator.clipboard&&navigator.clipboard.writeText(tpl).then(()=>alert('话术已复制，可直接粘贴发送给用户'));
+}
+
+// ── 使用记录 ─────────────────────────────────────────────────
+function loadLogsPage(){
+  var filter=document.getElementById('logFilter').value;
+  var search=document.getElementById('logSearch').value;
+  var url='/api/admin/logs?limit=100'+(filter?'&action='+filter:'');
+  fetch(url,{headers:H()}).then(r=>r.json()).then(d=>{
+    if(!d.success) return;
+    var logs=d.logs;
+    if(search) logs=logs.filter(l=>l.code&&l.code.includes(search.toUpperCase()));
+    var actionMap={
+      verify_success:'<span class="badge badge-success">首次验证成功</span>',
+      verify_reenter:'<span class="badge badge-reenter">再次进入(窗口内)</span>',
+      verify_fail:'<span class="badge badge-fail">验证失败</span>',
+      verify_used_expired:'<span class="badge badge-warn">窗口已结束</span>',
+      verify_window_expired:'<span class="badge badge-warn">窗口到期</span>',
+    };
+    document.getElementById('logTableBody').innerHTML=logs.map(l=>{
+      var ua=l.userAgent||'';
+      var device=ua.includes('iPhone')||ua.includes('iPad')?'📱 iOS':
+                 ua.includes('Android')?'📱 Android':
+                 ua.includes('Windows')?'💻 Windows':
+                 ua.includes('Mac')?'💻 Mac':'🖥️ 其他';
+      return '<tr>'+
+        '<td><code style="font-weight:600">'+(l.code||'-')+'</code></td>'+
+        '<td>'+(actionMap[l.action]||l.action)+'</td>'+
+        '<td style="font-size:12px;color:#888">'+(l.ip||'-')+'</td>'+
+        '<td style="font-size:12px">'+device+'</td>'+
+        '<td style="font-size:12px">'+fmtDate(l.timestamp)+'</td>'+
+      '</tr>';
+    }).join('') || '<tr><td colspan="5" style="text-align:center;color:#888;padding:20px">暂无记录</td></tr>';
+    document.getElementById('logCount').textContent='共 '+logs.length+' 条记录';
+  });
+}
+
+// ── 数据分析 ─────────────────────────────────────────────────
+function loadAnalysis(){
+  fetch('/api/admin/stats',{headers:H()}).then(r=>r.json()).then(d=>{
+    if(!d.success) return;
+    var s=d.stats;
+    var sold=(s.used||0)+(s.active||0);
+    var revenue=(sold*19.9).toFixed(1);
+    document.getElementById('revenueStats').innerHTML=
+      '<div class="stat-num" style="color:#0F6E56;font-size:28px">¥'+revenue+'</div>'+
+      '<div class="stat-label">估算总收入('+sold+' 份 × ¥19.9)</div>'+
+      '<div style="font-size:11px;color:#888;margin-top:6px">实际收入以微信/支付宝记录为准</div>';
+    var total=s.total||1;
+    var usedPct=Math.round(sold/total*100);
+    document.getElementById('usageStats').innerHTML=
+      '<div class="stat-num" style="color:#2E5F9E;font-size:28px">'+usedPct+'%</div>'+
+      '<div class="stat-label">已激活率('+sold+'/'+total+')</div>'+
+      '<div class="prog-bar" style="margin-top:10px"><div class="prog-fill" style="width:'+usedPct+'%;background:#2E5F9E"></div></div>';
+    document.getElementById('todayStats').innerHTML=
+      '<div class="stat-num" style="color:#854F0B;font-size:28px">'+(s.today||0)+'</div>'+
+      '<div class="stat-label">次进入(今日)</div>'+
+      '<div style="font-size:11px;color:#888;margin-top:6px">包含首次验证和重复进入</div>';
+  });
+  // IP统计
+  fetch('/api/admin/logs?limit=500',{headers:H()}).then(r=>r.json()).then(d=>{
+    if(!d.success) return;
+    var ipCount={};
+    var ipLast={};
+    d.logs.forEach(l=>{
+      if(!l.ip) return;
+      ipCount[l.ip]=(ipCount[l.ip]||0)+1;
+      if(!ipLast[l.ip]||new Date(l.timestamp)>new Date(ipLast[l.ip])) ipLast[l.ip]=l.timestamp;
+    });
+    var sorted=Object.entries(ipCount).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    var total=d.logs.length||1;
+    document.getElementById('ipStats').innerHTML=sorted.map(([ip,cnt])=>
+      '<tr><td style="font-family:monospace">'+ip+'</td>'+
+      '<td style="font-weight:600">'+cnt+' 次</td>'+
+      '<td style="font-size:12px">'+fmtDate(ipLast[ip])+'</td>'+
+      '<td><div class="prog-bar" style="width:120px;display:inline-block"><div class="prog-fill" style="width:'+Math.round(cnt/total*100)+'%;background:#2E5F9E"></div></div> <span style="font-size:12px;color:#888">'+Math.round(cnt/total*100)+'%</span></td>'+
+      '</tr>'
+    ).join('') || '<tr><td colspan="4" style="text-align:center;color:#888;padding:20px">暂无数据</td></tr>';
+    // 时段分布
+    var hourCount=new Array(24).fill(0);
+    d.logs.filter(l=>l.action==='verify_success'||l.action==='verify_reenter').forEach(l=>{
+      var h=new Date(l.timestamp).getHours();
+      hourCount[h]++;
+    });
+    var maxH=Math.max(...hourCount,1);
+    document.getElementById('hourChart').innerHTML=
+      '<div style="display:flex;align-items:flex-end;gap:3px;height:80px">'+
+      hourCount.map((cnt,h)=>'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">'+
+        '<div style="width:100%;background:#2E5F9E;border-radius:2px 2px 0 0;height:'+Math.max(2,Math.round(cnt/maxH*60))+'px;opacity:'+(cnt?1:0.2)+'"></div>'+
+        '<div style="font-size:9px;color:#888">'+(h%6===0?h+'时':'')+'</div></div>'
+      ).join('')+'</div>';
+  });
+}
+
+function saveSettings(){
+  settings.contact=document.getElementById('contactInfo').value;
+  settings.price=parseFloat(document.getElementById('priceConfig').value)||19.9;
+  settings.siteUrl=FIXED_SITE_URL;
+  document.getElementById('siteUrl').value=FIXED_SITE_URL;
+  document.getElementById('sampleCode').textContent='【验证码】';
+  alert('设置已保存(本地)');
+}
+
+// ── 工具函数 ─────────────────────────────────────────────────
+function fmtDate(d){
+  if(!d) return '-';
+  var dt=new Date(d);
+  return dt.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'})+' '+
+         dt.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+}
+
+function loadLogs(n){ showPage('logs', document.querySelector('[onclick*=logs]')); }
+</script>
+</body>
+</html>
