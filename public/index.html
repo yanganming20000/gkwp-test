@@ -2599,12 +2599,13 @@ function _oldGenerateReport() {
   document.getElementById('report_content').innerHTML = `
   <div style="background:var(--green);color:#fff;border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:20px;">
     <div style="font-size:12px;opacity:0.7;margin-bottom:6px;">GKHYP 金钥匙幸福青少年计划 · 个人幸福画像报告</div>
-    <div style="font-size:22px;font-family:'Noto Serif SC',serif;font-weight:700;margin-bottom:4px;">${name} 的综合测评报告</div>
+    <div style="font-size:22px;font-family:'Noto Serif SC',serif;font-weight:700;margin-bottom:4px;">《${name} 的志愿填报综合测评报告》</div>
     <div style="display:flex;gap:20px;font-size:12px;opacity:0.8;flex-wrap:wrap;">
       <span>测评日期：${date}</span>
       <span>预估分数：${score}</span>
       <span>画像代码：${code3}-${m.type}</span>
     </div>
+    <div style="margin-top:8px;font-size:11px;opacity:0.82;line-height:1.6;">免责声明：本报告基于测评作答生成，仅作为高考志愿填报的参考依据，不构成录取或专业选择的唯一建议；最终决策请结合高考分数、本省位次、招生计划、院校专业录取规则、身体条件、家庭情况与个人真实意愿综合判断。</div>
     <div style="margin-top:14px;font-size:13px;opacity:0.85;background:rgba(255,255,255,0.1);padding:10px 14px;border-radius:8px;line-height:1.6;">
       幸福目标宣言：${decl}
     </div>
@@ -2638,7 +2639,7 @@ function _oldGenerateReport() {
       </div>
       <div style="background:var(--blue-light);border-left:3px solid var(--blue);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:#0C447C;line-height:1.6;">
         <strong>综合解读：</strong>你的主型为 <strong>${hollandTypeName[topH[0]]}（${topH[0]}）</strong>，兼具 ${hollandTypeName[topH[1]]}（${topH[1]}）和 ${hollandTypeName[topH[2]]}（${topH[2]}）特质。
-        建议优先考虑能同时调用这三种兴趣的专业方向，可与辅导员进一步探讨具体院校推荐。
+        建议优先考虑能同时调用这三种兴趣的专业方向，可与升学顾问进一步探讨具体院校推荐。
       </div>
     </div>
   </div>
@@ -2652,7 +2653,7 @@ function _oldGenerateReport() {
         <div style="font-size:32px;font-weight:700;color:var(--purple);font-family:'Noto Serif SC',serif;">${m.type}</div>
         <div>
           <div style="font-size:14px;font-weight:500;margin-bottom:3px;">${mbtiDescriptions[m.type]||m.type}</div>
-          <div style="font-size:12px;color:var(--text-muted);">适配专业参考：${mbtiMajors[m.type]||'请咨询辅导员'}</div>
+          <div style="font-size:12px;color:var(--text-muted);">适配专业参考：${mbtiMajors[m.type]||'请咨询升学顾问'}</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
@@ -2719,7 +2720,7 @@ function _oldGenerateReport() {
         <div style="background:#FAEEDA;border-radius:var(--radius);padding:10px 12px;">
           <div style="font-size:11px;color:var(--amber);font-weight:500;margin-bottom:4px;">需关注维度</div>
           <div style="font-size:13px;font-weight:500;">${stressRisk}</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">此维度相对偏低，选择相关类型专业时请咨询辅导员</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">此维度相对偏低，选择相关类型专业时请咨询升学顾问</div>
         </div>
       </div>
     </div>
@@ -2740,7 +2741,7 @@ function _oldGenerateReport() {
         <tr>
           <td><span class="type-badge type-MBTI">${m.type}</span></td>
           <td>${mbtiDescriptions[m.type]||m.type}</td>
-          <td style="font-size:12px;">${mbtiMajors[m.type]||'请咨询辅导员'}</td>
+          <td style="font-size:12px;">${mbtiMajors[m.type]||'请咨询升学顾问'}</td>
         </tr>
         <tr>
           <td>多元智能</td>
@@ -2756,8 +2757,8 @@ function _oldGenerateReport() {
       <div style="margin-top:16px;padding:14px 16px;background:var(--green-pale);border-radius:var(--radius);border:0.5px solid var(--border);">
         <div style="font-size:13px;font-weight:500;color:var(--green);margin-bottom:8px;">后续步骤</div>
         <div style="font-size:12px;color:var(--text);line-height:1.8;">
-          ① 将本报告提交给辅导员，进行一对一的报告解读谈话（建议30-45分钟）<br>
-          ② 结合模块一《幸福目标宣言》，与辅导员共同完成专业幸福匹配分析<br>
+          ① 将本报告提交给升学顾问，进行一对一的报告解读谈话（建议30-45分钟）<br>
+          ② 结合模块一《幸福目标宣言》，与升学顾问共同完成专业幸福匹配分析<br>
           ③ 参照模块三《志愿填报方案书》模板，制定个人化的冲稳保志愿清单<br>
           ④ 与家长完成家庭期望整合访谈，达成共同决策共识
         </div>
@@ -3109,7 +3110,7 @@ function renderMajorMatch(hollandTop, mbtiType, valueTop3, miTop3, sortedH) {
   html += '<div style="font-size:13px;font-weight:500;color:#1F3864;margin-bottom:10px;">▌ 第一层推荐：兴趣×性格×价值观匹配</div>';
 
   if(match.primary.length === 0) {
-    html += '<div style="font-size:12px;color:#888;padding:10px;">暂无精确匹配，建议咨询辅导员进行一对一分析。</div>';
+    html += '<div style="font-size:12px;color:#888;padding:10px;">暂无精确匹配，建议咨询升学顾问进行一对一分析。</div>';
   } else {
     match.primary.forEach(function(item, idx) {
       var rule = item.rule;
@@ -3431,8 +3432,9 @@ function generateReport() {
   var rpt='';
   rpt+='<div style="background:var(--green);color:#fff;border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:20px;">';
   rpt+='<div style="font-size:12px;opacity:0.7;margin-bottom:6px;">GKHYP · 个人幸福画像报告</div>';
-  rpt+='<div style="font-size:22px;font-weight:700;margin-bottom:4px;">'+name+' 的综合测评报告</div>';
+  rpt+='<div style="font-size:22px;font-weight:700;margin-bottom:4px;">《'+name+' 的志愿填报综合测评报告》</div>';
   rpt+='<div style="font-size:12px;opacity:0.8;">测评日期：'+date+' &nbsp; 预估分数：'+score+' &nbsp; 画像代码：'+code3+'-'+m.type+'</div>';
+  rpt+='<div style="margin-top:8px;font-size:11px;opacity:0.82;line-height:1.6;">免责声明：本报告基于测评作答生成，仅作为高考志愿填报的参考依据，不构成录取或专业选择的唯一建议；最终决策请结合高考分数、本省位次、招生计划、院校专业录取规则、身体条件、家庭情况与个人真实意愿综合判断。</div>';
   rpt+='<div style="margin-top:12px;font-size:13px;opacity:0.85;background:rgba(255,255,255,0.1);padding:10px;border-radius:8px;">幸福目标宣言：'+decl+'</div></div>';
 
   // 幸福五维校准结果
@@ -3522,7 +3524,7 @@ function generateReport() {
   });
   rpt+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px;">';
   rpt+='<div style="background:var(--green-light);border-radius:var(--radius);padding:10px;"><div style="font-size:11px;color:var(--green);font-weight:500;">心理优势</div><div style="font-size:13px;font-weight:500;">'+stressStrong+'</div><div style="font-size:11px;color:var(--text-muted);">'+(pressureMap[stressStrong]||'')+'</div></div>';
-  rpt+='<div style="background:var(--amber-light);border-radius:var(--radius);padding:10px;"><div style="font-size:11px;color:var(--amber);font-weight:500;">需关注</div><div style="font-size:13px;font-weight:500;">'+stressRisk+'</div><div style="font-size:11px;color:var(--text-muted);">选择相关专业前请咨询辅导员</div></div>';
+  rpt+='<div style="background:var(--amber-light);border-radius:var(--radius);padding:10px;"><div style="font-size:11px;color:var(--amber);font-weight:500;">需关注</div><div style="font-size:13px;font-weight:500;">'+stressRisk+'</div><div style="font-size:11px;color:var(--text-muted);">选择相关专业前请咨询升学顾问</div></div>';
   rpt+='</div></div></div>';
 
   // 价值观
@@ -3548,8 +3550,8 @@ function generateReport() {
   rpt+='</table>';
   rpt+='<div style="margin-top:14px;padding:12px;background:var(--green-pale);border-radius:var(--radius);border:0.5px solid var(--border);font-size:12px;line-height:1.8;">';
   rpt+='<strong style="color:var(--green);">后续步骤：</strong><br>';
-  rpt+='① 将本报告交给辅导员，进行一对一解读谈话（建议30-45分钟）<br>';
-  rpt+='② 结合幸福目标宣言，与辅导员共同完成专业幸福匹配分析<br>';
+  rpt+='① 将本报告交给升学顾问，进行一对一解读谈话（建议30-45分钟）<br>';
+  rpt+='② 结合幸福目标宣言，与升学顾问共同完成专业幸福匹配分析<br>';
   rpt+='③ 参照志愿填报方案书模板，制定冲稳保志愿清单<br>';
   rpt+='④ 与家长完成家庭期望整合访谈，达成共同决策共识</div>';
   rpt+='</div></div>';
@@ -3804,7 +3806,7 @@ function renderQueryLinks(majors, province, score) {
   html += '③ 点击「热门专业深度解读」，查看官方权威的专业分析<br>';
   html += '④ 进入「省教育考试院官网」，查询本省2025年最新录取分数线<br>';
   html += '⑤ 查阅目标院校「招生章程」，确认录取规则和加分政策<br>';
-  html += '⑥ 携带本报告与升学顾问进行一对一深度志愿规划';
+  html += '⑥ 携带本报告与升学顾问进行一对一深度志愿规划（另行付费咨询，微信见测评主题）';
   html += '</div>';
 
   html += '</div></div>';
