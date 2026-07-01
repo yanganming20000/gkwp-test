@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GKWP 高考志愿幸福测评系统</title>
+<title>GKHYP 高考志愿幸福测评系统</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1034,7 +1034,7 @@ body.module1-mode .header {
     <strong>使用提示：</strong>建议点击右上角“…”选择“在浏览器打开”后再开始测评，便于后续正常下载报告。系统不会保存你的测评答案和报告内容，请放心使用。
   </div>
   <div class="lp-hero">
-    <div class="lp-badge">📚 金钥匙全民幸福计划 · GKWP</div>
+    <div class="lp-badge">📚 金钥匙幸福青少年计划 · GKHYP</div>
     <div class="lp-title">填志愿前<br>先<span>了解真实的自己</span></div>
     <div class="lp-sub">基于盖洛普幸福五维度理论 × 霍兰德职业兴趣 × MBTI性格 × 多元智能<br>帮高中生找到最匹配幸福的专业方向</div>
   </div>
@@ -1051,6 +1051,7 @@ body.module1-mode .header {
       <div class="lp-card-icon">🧠</div>
       <div class="lp-card-title">模块二：性格与兴趣测评</div>
       <div class="lp-card-desc">五维度综合测评，生成你的专属性格画像和专业匹配报告</div>
+      <div class="lp-card-desc" style="margin-top:6px;color:#3B6D11;font-weight:500;">所有测评题目从专业库中随机抽取</div>
       <div class="lp-card-badge">约90分钟测评</div>
     </div>
     <div class="lp-card">
@@ -1066,7 +1067,7 @@ body.module1-mode .header {
     <div class="lp-buy">
       <div style="font-size:13px;opacity:0.7;margin-bottom:6px">完整三模块系统</div>
       <div class="lp-price"><sup>¥</sup>19.9</div>
-      <div class="lp-price-note">一次付费 · 终身使用 · 专属验证码 · 48小时有效窗口</div>
+      <div class="lp-price-note">一次付费 · 专属验证码 · 48小时有效窗口</div>
       <button class="lp-buy-btn" onclick="document.getElementById('qr-section').scrollIntoView({behavior:'smooth'})">
         🛒 立即购买，获取验证码
       </button>
@@ -1095,14 +1096,14 @@ body.module1-mode .header {
 
   <!-- 产品特点 -->
   <div class="lp-features">
-    <h3>为什么选择 GKWP 测评系统？</h3>
+    <h3>为什么选择 GKHYP 测评系统？</h3>
     <div class="lp-feature-row">
       <div class="lp-feature-icon">🔬</div>
       <div class="lp-feature-text"><strong>科学理论支撑</strong>：整合盖洛普幸福五维度、霍兰德职业兴趣RIASEC、MBTI性格、加德纳多元智能四大权威理论，不是随机测测，是真正的多维度交叉分析</div>
     </div>
     <div class="lp-feature-row">
       <div class="lp-feature-icon">🎲</div>
-      <div class="lp-feature-text"><strong>动态题库，每人不同</strong>：系统从超过200道题目中随机抽取，每个人看到的题目组合都不同，保证测评的真实性和可信度</div>
+      <div class="lp-feature-text"><strong>动态题库，每人不同</strong>：系统从近1000道题目中随机抽取，每个人看到的题目组合都不同，保证测评的真实性和可信度</div>
     </div>
     <div class="lp-feature-row">
       <div class="lp-feature-icon">📊</div>
@@ -1119,7 +1120,7 @@ body.module1-mode .header {
   </div>
 
   <div class="lp-footer">
-    深圳市元启中和科技有限公司 · 杨叔8868 · GKWP 金钥匙全民幸福计划
+    深圳市元启中和科技有限公司 · 杨叔8868 · GKHYP 金钥匙幸福青少年计划
   </div>
 </div>
 
@@ -1127,7 +1128,7 @@ body.module1-mode .header {
 <div id="module1-page">
   <div class="m1-header">
     <div class="m1-header-top">
-      <div class="m1-logo">📚 GKWP · 模块一：幸福观念建立</div>
+      <div class="m1-logo">📚 GKHYP · 模块一：幸福观念建立</div>
       <div class="m1-step" id="m1-step-label">第 1 页 / 共 7 页</div>
     </div>
     <div class="m1-progress"><div class="m1-progress-fill" id="m1-progress" style="width:14%"></div></div>
@@ -1420,7 +1421,7 @@ function startAssessment() {
 }
 
 function showOpenInBrowserNotice() {
-  var key = 'gkwp_browser_open_notice_seen';
+  var key = 'gkhyp_browser_open_notice_seen';
   try {
     if(sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, '1');
@@ -1485,8 +1486,8 @@ function checkPassword() { lpVerify(); }
 <div id="pwd_overlay">
   <div id="pwd_box">
     <div id="pwd_logo">🔐</div>
-    <div id="pwd_title">GKWP 幸福测评系统</div>
-    <div id="pwd_sub">金钥匙全民幸福计划<br>请输入专属验证码进入测评</div>
+    <div id="pwd_title">GKHYP 幸福测评系统</div>
+    <div id="pwd_sub">金钥匙幸福青少年计划<br>请输入专属验证码进入测评</div>
     <input type="text" id="pwd_input" placeholder="请输入验证码（如：ABC12345）"
       style="text-transform:uppercase;letter-spacing:3px"
       onkeydown="if(event.key==='Enter')checkPassword()" maxlength="8">
@@ -1501,8 +1502,9 @@ function checkPassword() { lpVerify(); }
   <div class="header-brand">
     <div class="header-logo">金</div>
     <div class="header-title">
-      <h1>GKWP 高考志愿幸福测评系统</h1>
-      <p>金钥匙全民幸福计划 · 幸福少年报考计划</p>
+      <h1>GKHYP 高考志愿幸福测评系统</h1>
+      <p>金钥匙幸福青少年计划 · 幸福青少年报考计划</p>
+      <p style="margin-top:6px;color:#3B6D11;font-weight:500;">所有测评题目从专业库中随机抽取</p>
     </div>
   </div>
   <div class="header-badge">深圳市元启中和科技有限公司 版权所有</div>
@@ -1607,6 +1609,7 @@ function checkPassword() { lpVerify(); }
       <div class="section-icon" style="background:#EAF3DE;">📋</div>
       <div class="section-head-text">
         <h2>测评说明</h2>
+        <p>所有测评题目从专业库中随机抽取</p>
         <p>本系统包含五个测评模块，约需90-120分钟完成，请在安静环境中独立作答</p>
       </div>
     </div>
@@ -2167,7 +2170,7 @@ function _oldGenerateReport() {
 
   document.getElementById('report_content').innerHTML = `
   <div style="background:var(--green);color:#fff;border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:20px;">
-    <div style="font-size:12px;opacity:0.7;margin-bottom:6px;">GKWP 金钥匙全民幸福计划 · 个人幸福画像报告</div>
+    <div style="font-size:12px;opacity:0.7;margin-bottom:6px;">GKHYP 金钥匙幸福青少年计划 · 个人幸福画像报告</div>
     <div style="font-size:22px;font-family:'Noto Serif SC',serif;font-weight:700;margin-bottom:4px;">${name} 的综合测评报告</div>
     <div style="display:flex;gap:20px;font-size:12px;opacity:0.8;flex-wrap:wrap;">
       <span>测评日期：${date}</span>
@@ -2378,7 +2381,7 @@ function exportReport() {
   const name = (document.getElementById('f_name')?.value || '学生').trim() || '学生';
   const date = new Date().toISOString().slice(0, 10);
   const safeName = name.replace(/[\\/:*?"<>|]/g, '');
-  const fileName = `GKWP测评报告_${safeName}_${date}.html`;
+  const fileName = `GKHYP测评报告_${safeName}_${date}.html`;
 
   if(isWeChatBrowser()) {
     showWeChatDownloadGuide(fileName);
@@ -2411,7 +2414,7 @@ body { background: #fafaf8; padding: 24px; }
 </head>
 <body>
 <div class="report-download-wrap">
-  <div class="report-download-note">这是 GKWP 高考志愿幸福测评报告。电脑端可按 Ctrl+P 另存为 PDF；手机端可在浏览器下载记录或“文件/下载”中找到本 HTML 文件。</div>
+  <div class="report-download-note">这是 GKHYP 高考志愿幸福测评报告。电脑端可按 Ctrl+P 另存为 PDF；手机端可在浏览器下载记录或“文件/下载”中找到本 HTML 文件。</div>
   ${report.innerHTML}
 </div>
 </body>
@@ -2736,7 +2739,7 @@ function renderMajorMatch(hollandTop, mbtiType, valueTop3, miTop3, sortedH) {
 
 <script>
 // ═══════════════════════════════════════════════════════════
-// GKWP 升级版 v2.0 — 新数据与函数定义
+// GKHYP 升级版 v2.0 — 新数据与函数定义
 // ═══════════════════════════════════════════════════════════
 
 const miData = [
@@ -2999,7 +3002,7 @@ function generateReport() {
 
   var rpt='';
   rpt+='<div style="background:var(--green);color:#fff;border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:20px;">';
-  rpt+='<div style="font-size:12px;opacity:0.7;margin-bottom:6px;">GKWP · 个人幸福画像报告</div>';
+  rpt+='<div style="font-size:12px;opacity:0.7;margin-bottom:6px;">GKHYP · 个人幸福画像报告</div>';
   rpt+='<div style="font-size:22px;font-weight:700;margin-bottom:4px;">'+name+' 的综合测评报告</div>';
   rpt+='<div style="font-size:12px;opacity:0.8;">测评日期：'+date+' &nbsp; 预估分数：'+score+' &nbsp; 画像代码：'+code3+'-'+m.type+'</div>';
   rpt+='<div style="margin-top:12px;font-size:13px;opacity:0.85;background:rgba(255,255,255,0.1);padding:10px;border-radius:8px;">幸福目标宣言：'+decl+'</div></div>';
@@ -3350,7 +3353,7 @@ function renderQueryLinks(majors, province, score) {
 </div><!-- /main_app -->
 <script>
 // ═══════════════════════════════════════════════════════════
-// GKWP 题库翻倍 + 随机抽取 + 密码保护 v3.0
+// GKHYP 题库翻倍 + 随机抽取 + 密码保护 v3.0
 // ═══════════════════════════════════════════════════════════
 
 // ── 密码保护 ─────────────────────────────────────────────────
