@@ -1001,11 +1001,38 @@ body.module1-mode .header {
   .scale-dot { width: 28px !important; height: 28px !important; font-size: 11px !important; }
 }
 
+.browser-open-tip {
+  max-width: 860px;
+  margin: 18px auto 0;
+  padding: 12px 16px;
+  border: 1px solid rgba(59, 109, 17, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #3b4a2f;
+  font-size: 13px;
+  line-height: 1.8;
+  box-shadow: 0 10px 30px rgba(59, 109, 17, 0.08);
+}
+
+.browser-open-tip strong {
+  color: var(--green);
+}
+
+@media (max-width: 768px) {
+  .browser-open-tip {
+    margin: 12px 14px 0;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}
 
 </style>
 
 <!-- 落地页 -->
 <div id="landing-page">
+  <div class="browser-open-tip">
+    <strong>使用提示：</strong>建议点击右上角“…”选择“在浏览器打开”后再开始测评，便于后续正常下载报告。系统不会保存你的测评答案和报告内容，请放心使用。
+  </div>
   <div class="lp-hero">
     <div class="lp-badge">📚 金钥匙全民幸福计划 · GKWP</div>
     <div class="lp-title">填志愿前<br>先<span>了解真实的自己</span></div>
@@ -1392,6 +1419,19 @@ function startAssessment() {
   window.scrollTo(0,0);
 }
 
+function showOpenInBrowserNotice() {
+  var key = 'gkwp_browser_open_notice_seen';
+  try {
+    if(sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+  } catch(e) {}
+
+  var msg = '重要提示：为保证后续报告能正常下载，请尽量点击右上角“…”选择“在浏览器打开”后再开始测评。\n\n'
+    + '如果你现在是在微信里打开，微信内置浏览器可能无法真正下载报告文件。\n\n'
+    + '请放心：系统不会保存你的测评答案和最终报告内容。';
+  alert(msg);
+}
+
 // ── 覆盖原来的checkPassword，改为先进入落地页 ─────────────────
 // 页面加载时显示落地页（如果有后台API则走API，如果是本地测试直接进模块一）
 window.addEventListener('DOMContentLoaded', function() {
@@ -1400,6 +1440,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if(pwdOverlay) pwdOverlay.style.display = 'none';
   // 显示落地页
   showLanding();
+  showOpenInBrowserNotice();
 });
 
 // 覆盖checkPassword（兼容旧逻辑）
