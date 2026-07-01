@@ -1845,13 +1845,13 @@ function checkPassword() { lpVerify(); }
     </div>
   </div>
 
-  <!-- 现实约束采集（选填） -->
+  <!-- 志愿决策偏好校准（选填） -->
   <div class="section-card" style="margin-top:20px;">
     <div class="section-head">
       <div class="section-icon" style="background:#FAEEDA;">📋</div>
       <div class="section-head-text">
-        <h2>现实约束信息采集（选填）</h2>
-        <p>以下信息将帮助系统生成更精准的专业推荐，全部选填，不填也能出报告</p>
+        <h2>志愿决策偏好校准（选填）</h2>
+        <p>以下内容不会原样出现在报告中，只用于调整推荐排序、生成风险提醒和沟通建议；全部选填，不填也能出报告</p>
       </div>
     </div>
     <div style="padding:0 24px 20px;">
@@ -1872,7 +1872,7 @@ function checkPassword() { lpVerify(); }
           <option>历史+地理+化学</option>
           <option>历史+地理+生物</option>
           <option>历史+化学+生物</option>
-          <option>其他</option>
+          <option>其他（3+3模式）</option>
           <option>未分科（高一）</option>
         </select>
       </div>
@@ -2428,6 +2428,72 @@ function collectRealityConstraints() {
   if(personalNo) { data.personalNo = personalNo; data.hasData = true; }
 
   return data;
+}
+
+function renderDecisionCalibrationAdvice(rcData) {
+  var priority = [];
+  var caution = [];
+  var communication = [];
+  var query = [];
+
+  function has(field, keyword) {
+    return rcData[field] && rcData[field].indexOf(keyword) >= 0;
+  }
+
+  if(has('parentExpect','稳定就业') || has('parentExpect','高收入') || has('workAvoid','收入不稳定') || has('parentWorry','毕业后找不到工作')) {
+    priority.push('推荐排序中会适当提高就业稳定性较强、行业需求持续存在、成长路径清晰的专业方向优先级。');
+    caution.push('对收入波动大、强依赖个人资源积累或就业路径不够清晰的方向，建议先做充分调研后再决定。');
+    query.push('查询专业时重点关注就业方向、开设院校层次、近年招生计划和培养方案中的实践课程比例。');
+  }
+
+  if(has('workAvoid','长期加班') || has('workAvoid','频繁出差') || has('workAvoid','人际复杂') || has('workAvoid','重复枯燥')) {
+    caution.push('如果某些专业未来常见岗位与“高强度加班、频繁出差、复杂人际或重复性工作”高度相关，建议谨慎作为第一志愿方向。');
+    priority.push('建议优先关注工作方式更可持续、节奏更稳定、个人边界更清晰的专业与职业路径。');
+  }
+
+  if(has('parentOppose','艺术类') || has('parentOppose','冷门专业') || has('parentOppose','就业不稳定')) {
+    communication.push('如果测评结果显示你对创意表达、冷门探索或非传统路径兴趣较强，和家长沟通时不要只谈“喜欢”，建议准备就业路径、院校选择、作品/能力要求和保底方案。');
+  }
+
+  if(has('tuitionChoice','学费') || has('parentOppose','学费太高') || has('parentWorry','学费负担重')) {
+    caution.push('涉及民办、中外合作、高收费或需要长期深造的方向，建议先确认学费、住宿费、培养年限和家庭承受方式。');
+    query.push('查看阳光高考或院校招生章程时，重点核对收费标准、专业备注、中外合作办学说明和转专业限制。');
+  }
+
+  if(has('cityPrefer','离家越近越好') || has('cityPrefer','本省即可') || has('parentExpect','离家近')) {
+    priority.push('在院校筛选时，地域适配性应作为重要条件，建议优先比较本省、省会及交通便利城市的相关专业。');
+  } else if(has('cityPrefer','北上广深') || has('cityPrefer','新一线城市')) {
+    priority.push('如果分数和家庭条件允许，可优先关注产业资源丰富的大城市或新一线城市，这类地区更利于实习、见识和职业探索。');
+  }
+
+  if(has('personalNo','医学') || has('personalNo','教师') || has('personalNo','法律') || has('personalNo','金融') || has('personalNo','计算机') || has('personalNo','销售') || has('personalNo','体制内')) {
+    caution.push('个人明确排斥的方向不建议仅因“热门、稳定或家长期待”而优先选择，否则后续学习投入和职业幸福感可能下降。');
+    communication.push('与家长沟通时，可以把“不想选某类专业”转化为“我更适合这些替代方向”，用替代方案降低冲突。');
+  }
+
+  if(rcData.subjectCombo) {
+    query.push('后续查询专业时要特别核对选科要求，避免兴趣匹配但选科不满足导致无法填报。');
+  }
+
+  if(priority.length === 0) priority.push('当前未填写明显限制条件，专业排序主要依据兴趣、性格、能力、压力适应和价值观结果生成。');
+  if(caution.length === 0) caution.push('当前现实约束冲突较少，但仍建议在最终填报前核对专业选科要求、收费标准和就业路径。');
+  if(communication.length === 0) communication.push('建议把本报告中的兴趣优势、专业方向和现实条件一起与家长讨论，避免只围绕分数或热门专业做决定。');
+  if(query.length === 0) query.push('查询阳光高考或院校官网时，重点看专业培养目标、核心课程、招生计划、学费和录取规则。');
+
+  function renderList(items) {
+    return items.slice(0, 3).map(function(item){ return '<li style="margin-bottom:6px;">'+item+'</li>'; }).join('');
+  }
+
+  var html = '';
+  html += '<div class="result-section"><div class="result-head" style="background:var(--amber-light);color:var(--amber);">📋 志愿决策适配提醒</div><div class="result-body">';
+  html += '<div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.7;">以下内容根据你选填的志愿决策偏好自动生成，只呈现综合建议，不展示原始勾选答案。</div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;">';
+  html += '<div style="background:#F8FBF2;border-radius:10px;padding:12px;"><div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:8px;">推荐排序修正</div><ul style="padding-left:18px;margin:0;font-size:12px;line-height:1.7;color:var(--text);">'+renderList(priority)+'</ul></div>';
+  html += '<div style="background:#FFF8EC;border-radius:10px;padding:12px;"><div style="font-size:13px;font-weight:600;color:var(--amber);margin-bottom:8px;">需要谨慎考虑</div><ul style="padding-left:18px;margin:0;font-size:12px;line-height:1.7;color:var(--text);">'+renderList(caution)+'</ul></div>';
+  html += '<div style="background:#F3F1FF;border-radius:10px;padding:12px;"><div style="font-size:13px;font-weight:600;color:var(--purple);margin-bottom:8px;">家长沟通建议</div><ul style="padding-left:18px;margin:0;font-size:12px;line-height:1.7;color:var(--text);">'+renderList(communication)+'</ul></div>';
+  html += '<div style="background:#EEF6FD;border-radius:10px;padding:12px;"><div style="font-size:13px;font-weight:600;color:var(--blue);margin-bottom:8px;">查询重点</div><ul style="padding-left:18px;margin:0;font-size:12px;line-height:1.7;color:var(--text);">'+renderList(query)+'</ul></div>';
+  html += '</div></div></div>';
+  return html;
 }
 
 function countAnswered(prefix, total) {
@@ -3397,20 +3463,10 @@ function generateReport() {
   rpt+='<strong>校准说明：</strong>五个维度的得分反映了你当前对各维度重要性的自我认知。得分较高的维度意味着你在选择专业时应优先考虑该维度的匹配度。建议结合下方的性格兴趣测评结果，综合判断最适合自己的专业方向。</div>';
   rpt+='</div></div>';
 
-  // 现实约束采集结果（如果有填写）
+  // 志愿决策适配提醒（如果有填写）
   var rcData = collectRealityConstraints();
   if(rcData.hasData) {
-    rpt+='<div class="result-section"><div class="result-head" style="background:var(--amber-light);color:var(--amber);">📋 现实约束信息</div><div class="result-body">';
-    rpt+='<div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">以下信息为你选填的现实约束条件，已纳入专业推荐参考。</div>';
-    if(rcData.subjectCombo) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>选科组合：</strong>'+rcData.subjectCombo+'</div>';
-    if(rcData.parentExpect) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>父母期望：</strong>'+rcData.parentExpect+'</div>';
-    if(rcData.parentOppose) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>父母反对：</strong>'+rcData.parentOppose+'</div>';
-    if(rcData.tuitionChoice) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>学费态度：</strong>'+rcData.tuitionChoice+'</div>';
-    if(rcData.cityPrefer) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>城市偏好：</strong>'+rcData.cityPrefer+'</div>';
-    if(rcData.workAvoid) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>不能接受：</strong>'+rcData.workAvoid+'</div>';
-    if(rcData.parentWorry) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>父母担心：</strong>'+rcData.parentWorry+'</div>';
-    if(rcData.personalNo) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>个人排斥：</strong>'+rcData.personalNo+'</div>';
-    rpt+='</div></div>';
+    rpt += renderDecisionCalibrationAdvice(rcData);
   }
 
   // 霍兰德
