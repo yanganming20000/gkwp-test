@@ -1313,7 +1313,7 @@ body.module1-mode .header {
       <button class="m1-btn-start" onclick="startAssessment()">
         ✅ 我已了解，开始测评 →
       </button>
-      <div class="m1-note">接下来进入模块二：性格与兴趣测评（约90分钟）</div>
+      <div class="m1-note">接下来进入幸福五维校准问卷（约8-10分钟），校准完成后再进入性格与兴趣测评</div>
     </div>
 
     <!-- 导航 -->
@@ -1324,6 +1324,36 @@ body.module1-mode .header {
     </div>
   </div>
 </div>
+
+<!-- 幸福五维校准问卷页面 -->
+<div id="happiness-calibration-page" style="display:none;max-width:760px;margin:0 auto;padding:24px 16px 40px;">
+  <div class="section-card" style="background:linear-gradient(135deg,#1F3864 0%,#2E5F9E 100%);color:#fff;border-radius:20px;padding:32px 24px;margin-bottom:24px;text-align:center;">
+    <div style="font-size:14px;opacity:0.8;margin-bottom:8px;">📊 盖洛普幸福五维度 · 个人校准</div>
+    <div style="font-size:26px;font-weight:700;margin-bottom:12px;">幸福五维校准问卷</div>
+    <div style="font-size:14px;opacity:0.85;line-height:1.7;">
+      基于盖洛普幸福五维度理论，帮你校准每个维度的重要程度和当前状态<br>
+      共25题，约需8-10分钟完成
+    </div>
+  </div>
+
+  <div class="section-card" style="margin-bottom:20px;">
+    <div style="padding:16px 20px;background:#F0F4F8;border-radius:12px;margin-bottom:20px;">
+      <div style="font-size:13px;color:#666;line-height:1.8;">
+        <strong>填写说明：</strong><br>
+        · 每题按1-5分打分，1=完全不符合，5=完全符合<br>
+        · 请根据你的真实感受作答，没有对错之分<br>
+        · 本问卷结果将直接影响最终报告的校准精度
+      </div>
+    </div>
+    <div id="happiness-questions"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-outline" onclick="showModule1()">← 返回模块一</button>
+    <button class="btn btn-primary" id="happiness-submit-btn" onclick="submitHappinessCalibration()">完成校准，进入测评 →</button>
+  </div>
+</div>
+
 
 <script>
 // ── 落地页逻辑 ────────────────────────────────────────────────
@@ -1410,13 +1440,149 @@ function m1Prev() {
   window.scrollTo(0,0);
 }
 
-function startAssessment() {
-  document.body.classList.add('app-mode');
+
+// ── 幸福五维校准问卷 ──────────────────────────────────────────
+var happinessAnswers = {};
+var happinessData = [
+  // 维度1：职业生活幸福感
+  {dim:'职业幸福', dimKey:'career', questions:[
+    {q:'1. 我希望能从事一份让我每天早上醒来都充满期待的工作。'},
+    {q:'2. 比起高薪但无聊的工作，我更愿意选择收入一般但能做自己喜欢的事。'},
+    {q:'3. 我认为工作最重要的不是头衔和收入，而是能否发挥我的优势和热情。'},
+    {q:'4. 我倾向于选择能让我持续学习和成长的专业方向，而不是一毕业就能赚钱的。'},
+    {q:'5. 如果一份工作让我感到空虚，即使收入稳定，我也会考虑转行。'},
+  ]},
+  // 维度2：社交关系幸福感
+  {dim:'社交幸福', dimKey:'social', questions:[
+    {q:'6. 我在团队协作中比独自工作时更有能量和创造力。'},
+    {q:'7. 我希望能从事需要频繁与人沟通交流的工作（如教师、销售、咨询等）。'},
+    {q:'8. 如果一份工作让我长期独自面对电脑、很少与人交流，我会感到孤独和压抑。'},
+    {q:'9. 我很在意工作环境中的人际关系氛围，和谐的团队对我很重要。'},
+    {q:'10. 比起技术型岗位，我更倾向于选择服务型或人际互动型的工作。'},
+  ]},
+  // 维度3：财务状况幸福感
+  {dim:'财务幸福', dimKey:'financial', questions:[
+    {q:'11. 我家庭对我的专业选择有一定经济层面的期望和约束。'},
+    {q:'12. 在选专业时，我会认真考虑毕业后初期的收入水平和就业稳定性。'},
+    {q:'13. 如果某个专业方向未来收入前景很好但我不感兴趣，我还是会优先考虑它。'},
+    {q:'14. 我倾向于选择"先苦后甜"的专业（如医学、法学），接受前期低收入换取后期高回报。'},
+    {q:'15. 我对家庭经济支持大学四年及后续发展的信心程度较高。'},
+  ]},
+  // 维度4：健康状况幸福感
+  {dim:'健康幸福', dimKey:'health', questions:[
+    {q:'16. 我的身体素质较好，能够承受需要体力或长期加班的工作（如医生、工程师、建筑等）。'},
+    {q:'17. 我在高压环境下容易出现焦虑、失眠或情绪波动。'},
+    {q:'18. 我宁愿选择工作节奏稳定、压力适中的专业，也不愿选择高强度、高竞争的专业。'},
+    {q:'19. 我认为身心健康比事业成功更重要，不会为了工作牺牲健康。'},
+    {q:'20. 我了解自己的压力承受边界，并有意识地避开超出我承受范围的工作环境。'},
+  ]},
+  // 维度5：社会环境幸福感
+  {dim:'环境幸福', dimKey:'environment', questions:[
+    {q:'21. 我希望大学毕业后在大城市（如北上广深）发展，即使生活成本高。'},
+    {q:'22. 我更倾向于选择体制内或大型企业的工作，看重稳定性和归属感。'},
+    {q:'23. 我希望能从事能直接影响社会、帮助他人或推动进步的工作。'},
+    {q:'24. 我对工作所在的城市、行业文化和组织氛围有比较明确的偏好。'},
+    {q:'25. 如果一份工作让我感觉"只是机械地完成任务，看不到意义"，我会很快失去动力。'},
+  ]},
+];
+
+function showHappinessCalibration() {
   document.body.classList.remove('landing-mode', 'module1-mode');
   document.getElementById('module1-page').style.display = 'none';
   document.getElementById('landing-page').style.display = 'none';
+  document.getElementById('main_app').style.display = 'none';
+  document.getElementById('happiness-calibration-page').style.display = 'block';
+  document.getElementById('happiness-calibration-page').style.maxWidth = '760px';
+  document.getElementById('happiness-calibration-page').style.margin = '0 auto';
+  document.getElementById('happiness-calibration-page').style.padding = '24px 16px 40px';
+  buildHappinessQuestions();
+  window.scrollTo(0,0);
+}
+
+function buildHappinessQuestions() {
+  var html = '';
+  happinessData.forEach(function(dim, di) {
+    html += '<div style="margin-bottom:28px;">';
+    html += '<div style="font-size:16px;font-weight:600;color:var(--dark-blue);margin-bottom:12px;padding:10px 14px;background:' + ['#E6F1FB','#EDE7F6','#FFF3E0','#FAECEA','#E1F5EE'][di] + ';border-radius:10px;">';
+    html += ['💼','👥','💰','❤️','🌍'][di] + ' ' + dim.dim + '（第' + (di*5+1) + '-' + (di*5+5) + '题）</div>';
+    dim.questions.forEach(function(q, qi) {
+      var qid = 'hc_' + dim.dimKey + '_' + qi;
+      html += '<div style="margin-bottom:14px;padding:12px 14px;background:#FAFAFA;border-radius:10px;border:0.5px solid #eee;">';
+      html += '<div style="font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.6;">' + q.q + '</div>';
+      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+      for(var s=1; s<=5; s++) {
+        html += '<label style="cursor:pointer;flex:1;min-width:60px;text-align:center;">';
+        html += '<input type="radio" name="' + qid + '" value="' + s + '" style="display:none;" onchange="markHappinessAnswered(this)">';
+        html += '<span style="display:block;padding:8px 4px;border-radius:8px;border:1.5px solid #ddd;font-size:12px;color:#666;background:#fff;transition:all 0.2s;" class="hc-option" data-val="' + s + '">' + s + '</span>';
+        html += '</label>';
+      }
+      html += '</div>';
+      html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:#999;margin-top:4px;"><span>完全不符合</span><span>完全符合</span></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('happiness-questions').innerHTML = html;
+}
+
+function markHappinessAnswered(input) {
+  var name = input.name;
+  var val = input.value;
+  happinessAnswers[name] = parseInt(val);
+  // Visual feedback
+  var labels = document.querySelectorAll('input[name="' + name + '"]');
+  labels.forEach(function(radio) {
+    var span = radio.nextElementSibling;
+    if(radio.checked) {
+      span.style.background = 'var(--green)';
+      span.style.color = '#fff';
+      span.style.borderColor = 'var(--green)';
+    } else {
+      span.style.background = '#fff';
+      span.style.color = '#666';
+      span.style.borderColor = '#ddd';
+    }
+  });
+}
+
+function submitHappinessCalibration() {
+  var totalQuestions = 25;
+  var answered = Object.keys(happinessAnswers).length;
+  if(answered < 15) {
+    alert('请至少完成15题后再提交（已完成 ' + answered + '/25 题）。未完成的题目将按中间值处理。');
+    return;
+  }
+  // Calculate dimension scores
+  var dimScores = {};
+  happinessData.forEach(function(dim) {
+    var sum = 0, count = 0;
+    dim.questions.forEach(function(q, qi) {
+      var qid = 'hc_' + dim.dimKey + '_' + qi;
+      if(happinessAnswers[qid]) {
+        sum += happinessAnswers[qid];
+        count++;
+      }
+    });
+    dimScores[dim.dimKey] = count > 0 ? (sum / count).toFixed(1) : '3.0';
+  });
+  window.happinessDimScores = dimScores;
+  // Store in localStorage for report generation
+  localStorage.setItem('gkhyp_happiness_scores', JSON.stringify(dimScores));
+  localStorage.setItem('gkhyp_happiness_answers', JSON.stringify(happinessAnswers));
+  // Proceed to main assessment
+  document.getElementById('happiness-calibration-page').style.display = 'none';
+  document.body.classList.add('app-mode');
   document.getElementById('main_app').style.display = 'block';
   initApp();
+  window.scrollTo(0,0);
+}
+
+// ── 现实约束采集（整合到基本信息中）────────────────────────────
+
+function startAssessment() {
+  // 先显示幸福五维校准问卷
+  showHappinessCalibration();
+}
   window.scrollTo(0,0);
 }
 
@@ -1647,6 +1813,140 @@ function checkPassword() { lpVerify(); }
         <div class="module-card-text">
           <h4>模块五：职业价值观评估</h4>
           <p>10题 · 价值匹配 · 约5分钟</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 现实约束采集（选填） -->
+  <div class="section-card" style="margin-top:20px;">
+    <div class="section-head">
+      <div class="section-icon" style="background:#FAEEDA;">📋</div>
+      <div class="section-head-text">
+        <h2>现实约束信息采集（选填）</h2>
+        <p>以下信息将帮助系统生成更精准的专业推荐，全部选填，不填也能出报告</p>
+      </div>
+    </div>
+    <div style="padding:0 24px 20px;">
+      <!-- 选科信息 -->
+      <div class="info-field" style="margin-bottom:16px;">
+        <label>选科组合（选填）</label>
+        <select id="f_subject_combo" style="width:100%;padding:8px 10px;border:0.5px solid var(--border-gray);border-radius:var(--radius);font-size:13px;">
+          <option value="">请选择</option>
+          <option>物理+化学+生物</option>
+          <option>物理+化学+地理</option>
+          <option>物理+化学+政治</option>
+          <option>物理+生物+地理</option>
+          <option>物理+生物+政治</option>
+          <option>物理+地理+政治</option>
+          <option>历史+政治+地理</option>
+          <option>历史+政治+化学</option>
+          <option>历史+政治+生物</option>
+          <option>历史+地理+化学</option>
+          <option>历史+地理+生物</option>
+          <option>历史+化学+生物</option>
+          <option>其他</option>
+          <option>未分科（高一）</option>
+        </select>
+      </div>
+
+      <!-- 父母期望 -->
+      <div class="info-field" style="margin-bottom:16px;">
+        <label>父母对你选专业的最大期望是什么？（多选，选填）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_expect" value="稳定就业"> 稳定就业</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_expect" value="高收入"> 高收入</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_expect" value="有发展前景"> 有发展前景</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_expect" value="离家近"> 离家近</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_expect" value="工作轻松"> 工作轻松</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_expect" value="社会地位高"> 社会地位高</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_expect" value="不确定/没聊过"> 不确定/没聊过</label>
+        </div>
+      </div>
+
+      <!-- 父母反对 -->
+      <div class="info-field" style="margin-bottom:16px;">
+        <label>你父母最反对的专业类型是什么？（多选，选填）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_oppose" value="艺术类"> 艺术类</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_oppose" value="冷门专业"> 冷门专业</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_oppose" value="离家太远"> 离家太远</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_oppose" value="需要考研/读博"> 需要考研/读博</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_oppose" value="就业不稳定"> 就业不稳定</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_oppose" value="学费太高"> 学费太高</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_oppose" value="没有明确反对"> 没有明确反对</label>
+        </div>
+      </div>
+
+      <!-- 学费承受 -->
+      <div class="info-field" style="margin-bottom:16px;">
+        <label>如果某个专业很好但学费较高，你会怎么办？（单选，选填）</label>
+        <select id="f_tuition_choice" style="width:100%;padding:8px 10px;border:0.5px solid var(--border-gray);border-radius:var(--radius);font-size:13px;">
+          <option value="">请选择</option>
+          <option>放弃，选学费低的专业</option>
+          <option>申请助学金/助学贷款</option>
+          <option>打工兼职补贴学费</option>
+          <option>坚持选择，家里会支持</option>
+          <option>还没想过这个问题</option>
+        </select>
+      </div>
+
+      <!-- 城市偏好 -->
+      <div class="info-field" style="margin-bottom:16px;">
+        <label>你对大学所在城市的偏好？（多选，选填）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_city_prefer" value="北上广深"> 北上广深</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_city_prefer" value="新一线城市"> 新一线城市</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_city_prefer" value="省会城市"> 省会城市</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_city_prefer" value="本省即可"> 本省即可</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_city_prefer" value="离家越近越好"> 离家越近越好</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_city_prefer" value="不限"> 不限</label>
+        </div>
+      </div>
+
+      <!-- 不能接受的工作状态 -->
+      <div class="info-field" style="margin-bottom:16px;">
+        <label>你最不能接受的工作状态是什么？（多选，选填）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_work_avoid" value="长期加班/996"> 长期加班/996</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_work_avoid" value="频繁出差"> 频繁出差</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_work_avoid" value="人际复杂/勾心斗角"> 人际复杂/勾心斗角</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_work_avoid" value="重复枯燥"> 重复枯燥</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_work_avoid" value="收入不稳定"> 收入不稳定</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_work_avoid" value="看不到上升空间"> 看不到上升空间</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_work_avoid" value="没有社会价值感"> 没有社会价值感</label>
+        </div>
+      </div>
+
+      <!-- 父母最担心 -->
+      <div class="info-field" style="margin-bottom:16px;">
+        <label>你父母最担心的问题是什么？（多选，选填）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_worry" value="毕业后找不到工作"> 毕业后找不到工作</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_worry" value="专业太冷门"> 专业太冷门</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_worry" value="学校层次不够"> 学校层次不够</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_worry" value="学费负担重"> 学费负担重</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_worry" value="孩子不喜欢这个专业"> 孩子不喜欢这个专业</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_worry" value="未来发展不确定"> 未来发展不确定</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_parent_worry" value="不知道/没聊过"> 不知道/没聊过</label>
+        </div>
+      </div>
+
+      <!-- 个人禁忌 -->
+      <div class="info-field" style="margin-bottom:16px;">
+        <label>你个人坚决不想从事的领域？（多选，选填）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="医学/护理"> 医学/护理</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="教师/教育"> 教师/教育</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="法律/政法"> 法律/政法</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="金融/经济"> 金融/经济</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="计算机/IT"> 计算机/IT</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="艺术/设计"> 艺术/设计</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="工程/制造"> 工程/制造</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="销售/市场"> 销售/市场</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="科研/学术"> 科研/学术</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="公务员/体制内"> 公务员/体制内</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="f_personal_no" value="没有特别排斥"> 没有特别排斥</label>
         </div>
       </div>
     </div>
@@ -2067,6 +2367,41 @@ const hollandColors = {R:'#185FA5',I:'#534AB7',A:'#993556',S:'#3B6D11',E:'#854F0
 const hollandBg = {R:'#E6F1FB',I:'#EEEDFE',A:'#FBEAF0',S:'#EAF3DE',E:'#FAEEDA',C:'#F1EFE8'};
 
 const miColors = ['#185FA5','#534AB7','#993556','#3B6D11','#854F0B','#5F5E5A','#0F6E56','#BA7517'];
+
+function collectRealityConstraints() {
+  var data = {hasData:false};
+  var subjectCombo = document.getElementById('f_subject_combo') ? document.getElementById('f_subject_combo').value : '';
+  if(subjectCombo) { data.subjectCombo = subjectCombo; data.hasData = true; }
+
+  function getCheckedValues(name) {
+    var vals = [];
+    document.querySelectorAll('input[name="'+name+'"]:checked').forEach(function(cb){ vals.push(cb.value); });
+    return vals.join('、');
+  }
+
+  var parentExpect = getCheckedValues('f_parent_expect');
+  if(parentExpect) { data.parentExpect = parentExpect; data.hasData = true; }
+
+  var parentOppose = getCheckedValues('f_parent_oppose');
+  if(parentOppose) { data.parentOppose = parentOppose; data.hasData = true; }
+
+  var tuitionChoice = document.getElementById('f_tuition_choice') ? document.getElementById('f_tuition_choice').value : '';
+  if(tuitionChoice) { data.tuitionChoice = tuitionChoice; data.hasData = true; }
+
+  var cityPrefer = getCheckedValues('f_city_prefer');
+  if(cityPrefer) { data.cityPrefer = cityPrefer; data.hasData = true; }
+
+  var workAvoid = getCheckedValues('f_work_avoid');
+  if(workAvoid) { data.workAvoid = workAvoid; data.hasData = true; }
+
+  var parentWorry = getCheckedValues('f_parent_worry');
+  if(parentWorry) { data.parentWorry = parentWorry; data.hasData = true; }
+
+  var personalNo = getCheckedValues('f_personal_no');
+  if(personalNo) { data.personalNo = personalNo; data.hasData = true; }
+
+  return data;
+}
 
 function countAnswered(prefix, total) {
   let n = 0;
@@ -3006,6 +3341,50 @@ function generateReport() {
   rpt+='<div style="font-size:22px;font-weight:700;margin-bottom:4px;">'+name+' 的综合测评报告</div>';
   rpt+='<div style="font-size:12px;opacity:0.8;">测评日期：'+date+' &nbsp; 预估分数：'+score+' &nbsp; 画像代码：'+code3+'-'+m.type+'</div>';
   rpt+='<div style="margin-top:12px;font-size:13px;opacity:0.85;background:rgba(255,255,255,0.1);padding:10px;border-radius:8px;">幸福目标宣言：'+decl+'</div></div>';
+
+  // 幸福五维校准结果
+  var hcScores = window.happinessDimScores || JSON.parse(localStorage.getItem('gkhyp_happiness_scores') || '{}');
+  var hcLabels = {career:'职业幸福', social:'社交幸福', financial:'财务幸福', health:'健康幸福', environment:'环境幸福'};
+  var hcIcons = {career:'💼', social:'👥', financial:'💰', health:'❤️', environment:'🌍'};
+  var hcColors = {career:'#E6F1FB', social:'#EDE7F6', financial:'#FFF3E0', health:'#FAECEA', environment:'#E1F5EE'};
+  var hcTextColors = {career:'var(--blue)', social:'var(--purple)', financial:'var(--amber)', health:'#C94A4A', environment:'var(--green)'};
+
+  rpt+='<div class="result-section"><div class="result-head" style="background:linear-gradient(135deg,#1F3864 0%,#2E5F9E 100%);color:#fff;">📊 幸福五维校准结果</div><div class="result-body">';
+  rpt+='<div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">以下结果基于你完成的25题幸福五维校准问卷，反映你在五个幸福维度上的自我评估得分（满分5分）。</div>';
+  rpt+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px;">';
+  Object.keys(hcLabels).forEach(function(key) {
+    var score = parseFloat(hcScores[key] || '3.0');
+    var pct = Math.round(score / 5 * 100);
+    var level = score >= 4 ? '高' : (score >= 3 ? '中' : '低');
+    var levelColor = score >= 4 ? 'var(--green)' : (score >= 3 ? 'var(--amber)' : '#C94A4A');
+    rpt+='<div style="background:'+hcColors[key]+';border-radius:var(--radius);padding:12px;text-align:center;">';
+    rpt+='<div style="font-size:20px;margin-bottom:4px;">'+hcIcons[key]+'</div>';
+    rpt+='<div style="font-size:12px;font-weight:500;color:'+hcTextColors[key]+';margin-bottom:6px;">'+hcLabels[key]+'</div>';
+    rpt+='<div style="font-size:22px;font-weight:700;color:'+hcTextColors[key]+';">'+score+'</div>';
+    rpt+='<div style="font-size:11px;color:'+levelColor+';font-weight:500;">'+level+'</div>';
+    rpt+='<div class="bar-track" style="height:4px;margin-top:6px;"><div class="bar-fill" style="width:'+pct+'%;background:'+hcTextColors[key]+';"></div></div>';
+    rpt+='</div>';
+  });
+  rpt+='</div>';
+  rpt+='<div style="background:var(--green-light);border-left:3px solid var(--green);padding:10px;border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:var(--green);line-height:1.7;">';
+  rpt+='<strong>校准说明：</strong>五个维度的得分反映了你当前对各维度重要性的自我认知。得分较高的维度意味着你在选择专业时应优先考虑该维度的匹配度。建议结合下方的性格兴趣测评结果，综合判断最适合自己的专业方向。</div>';
+  rpt+='</div></div>';
+
+  // 现实约束采集结果（如果有填写）
+  var rcData = collectRealityConstraints();
+  if(rcData.hasData) {
+    rpt+='<div class="result-section"><div class="result-head" style="background:var(--amber-light);color:var(--amber);">📋 现实约束信息</div><div class="result-body">';
+    rpt+='<div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">以下信息为你选填的现实约束条件，已纳入专业推荐参考。</div>';
+    if(rcData.subjectCombo) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>选科组合：</strong>'+rcData.subjectCombo+'</div>';
+    if(rcData.parentExpect) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>父母期望：</strong>'+rcData.parentExpect+'</div>';
+    if(rcData.parentOppose) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>父母反对：</strong>'+rcData.parentOppose+'</div>';
+    if(rcData.tuitionChoice) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>学费态度：</strong>'+rcData.tuitionChoice+'</div>';
+    if(rcData.cityPrefer) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>城市偏好：</strong>'+rcData.cityPrefer+'</div>';
+    if(rcData.workAvoid) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>不能接受：</strong>'+rcData.workAvoid+'</div>';
+    if(rcData.parentWorry) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>父母担心：</strong>'+rcData.parentWorry+'</div>';
+    if(rcData.personalNo) rpt+='<div style="margin-bottom:6px;font-size:12px;"><strong>个人排斥：</strong>'+rcData.personalNo+'</div>';
+    rpt+='</div></div>';
+  }
 
   // 霍兰德
   rpt+='<div class="result-section"><div class="result-head" style="background:var(--blue-light);color:var(--blue);">🔵 模块一：霍兰德职业兴趣（RIASEC）</div><div class="result-body">';
