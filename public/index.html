@@ -1538,11 +1538,11 @@ function buildHappinessQuestions() {
       var qid = 'hc_' + dim.dimKey + '_' + qi;
       html += '<div style="margin-bottom:14px;padding:12px 14px;background:#FAFAFA;border-radius:10px;border:0.5px solid #eee;">';
       html += '<div style="font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.6;">' + q.q + '</div>';
-      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+      html += '<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;">';
       for(var s=1; s<=5; s++) {
-        html += '<label style="cursor:pointer;flex:1;min-width:60px;text-align:center;">';
+        html += '<label style="cursor:pointer;min-width:0;text-align:center;">';
         html += '<input type="radio" name="' + qid + '" value="' + s + '" style="display:none;" onchange="markHappinessAnswered(this)">';
-        html += '<span style="display:block;padding:8px 4px;border-radius:8px;border:1.5px solid #ddd;font-size:12px;color:#666;background:#fff;transition:all 0.2s;" class="hc-option" data-val="' + s + '">' + s + '</span>';
+        html += '<span style="display:block;padding:8px 2px;border-radius:8px;border:1.5px solid #ddd;font-size:12px;color:#666;background:#fff;transition:all 0.2s;" class="hc-option" data-val="' + s + '">' + s + '</span>';
         html += '</label>';
       }
       html += '</div>';
@@ -3806,7 +3806,7 @@ function renderQueryLinks(majors, province, score) {
   html += '③ 点击「热门专业深度解读」，查看官方权威的专业分析<br>';
   html += '④ 进入「省教育考试院官网」，查询本省2025年最新录取分数线<br>';
   html += '⑤ 查阅目标院校「招生章程」，确认录取规则和加分政策<br>';
-  html += '⑥ 携带本报告与升学顾问进行一对一深度志愿规划（另行付费咨询，微信见测评主题）';
+  html += '⑥ 携带本报告与升学顾问进行一对一深度志愿规划（另行付费咨询，微信见测评主页）';
   html += '</div>';
 
   html += '</div></div>';
